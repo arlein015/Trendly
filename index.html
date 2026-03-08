@@ -3,30 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threndly - Bienvenue</title>
+    <title>Threndly - Inscription</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-box">
+    <div class="signup-container">
+        <div class="signup-card">
             <div class="brand-logo">T</div>
+            <h1 class="brand-name">THRENDLY</h1>
             
-            <h2>Connexion à Threndly</h2>
-            
-            <form id="loginForm">
-                <div class="input-group">
-                    <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+            <form id="signupForm">
+                <div class="input-row">
+                    <input type="text" placeholder="Nom" required>
+                    <input type="text" placeholder="Username" required>
                 </div>
-                <div class="input-group">
-                    <input type="password" id="password" placeholder="Mot de passe" required>
-                </div>
+                <input type="text" placeholder="E-mail ou numéro" required>
+                <input type="password" placeholder="Mot de passe" required>
+                <input type="password" placeholder="Confirmer mot de passe" required>
                 
-                <button type="submit" class="btn-login">Continuer</button>
+                <button type="submit" class="btn-primary">S'inscrire</button>
             </form>
-            
-            <p class="footer-text">Nouveau sur Threndly ? <a href="#">Créer un compte</a></p>
+
+            <div class="divider">OU</div>
+
+            <div class="social-login">
+                <button class="btn-google">Continuer avec Google</button>
+                <button class="btn-fb">Continuer avec Facebook</button>
+            </div>
+
+            <div class="footer-links">
+                <a href="#">Mot de passe oublié ?</a>
+                <p>Déjà un compte ? <a href="#" class="bold">Se connecter</a></p>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
