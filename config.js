@@ -1,18 +1,17 @@
-// --- CONFIGURATION CENTRALISÉE THRENDLY ---
+// Configuration Threndly
 const CONFIG = {
-    // Firebase (Tes vrais IDs de la console Firebase)
     firebase: {
         databaseURL: "https://trendly-fca7c-default-rtdb.firebaseio.com",
         projectId: "trendly-fca7c"
     },
-    // EmailJS (Tes IDs de ton interface EmailJS)
     emailjs: {
-        publicKey: "VOTRE_CLE_PUBLIQUE",
-        serviceId: "service_id",
-        templateId: "template_id"
+        publicKey: "TON_ID_PUBLIC", // À copier depuis EmailJS
+        serviceId: "TON_SERVICE_ID",
+        templateId: "TON_TEMPLATE_ID"
     }
 };
 
-// Initialisation immédiate
+// Initialisation automatique
 firebase.initializeApp(CONFIG.firebase);
+const db = firebase.database();
 emailjs.init(CONFIG.emailjs.publicKey);
