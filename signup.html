@@ -33,6 +33,18 @@
             border: none; padding: 16px; border-radius: 15px;
             font-weight: 700; cursor: pointer; margin-top: 10px;
         }
+    .auth-container {
+        height: 100vh; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; padding: 20px;
+    }
+    .input-field {
+        width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+        padding: 18px; border-radius: 15px; color: white; margin-bottom: 15px;
+    }
+    .btn-orange {
+        width: 100%; background: var(--floy-orange); border: none;
+        padding: 18px; border-radius: 15px; color: white; font-weight: 700;
+    }
     </style>
 </head>
 <body>
@@ -42,6 +54,12 @@
         <input type="email" class="input-box" placeholder="Email">
         <input type="password" class="input-box" placeholder="Mot de passe">
         <input type="password" class="input-box" placeholder="Confirmer mot de passe">
+     <div class="auth-container">
+    <h1 style="margin-bottom: 30px;">Bienvenue sur <span style="color: var(--floy-orange);">Floy</span></h1>
+    <input type="email" class="input-field" placeholder="Email">
+    <input type="password" class="input-field" placeholder="Mot de passe">
+    <button class="btn-orange">Créer un compte</button>
+</div>
         
         <button class="btn-reg" onclick="window.location.href='verify.html'">Continuer</button>
         
