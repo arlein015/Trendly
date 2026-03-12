@@ -1,1 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Floy - Messages</title>
+</head>
+<body class="chat-body">
+    <div class="chat-header">
+        <a href="feed.html" style="color: white; text-decoration: none;">←</a>
+        <h2>Messages</h2>
+        <span class="online-status">●</span>
+    </div>
 
+    <div class="messages-container" id="chatBox">
+        <div class="msg received">Bienvenue sur la messagerie Floy ! 🚀</div>
+        <div class="msg sent">Salut ! C'est stylé en violet.</div>
+        <div class="msg received">On peut envoyer des vidéos ici aussi ?</div>
+    </div>
+
+    <div class="chat-input-area">
+        <button class="attach-btn">+</button>
+        <input type="text" id="userInput" placeholder="Écris ton message...">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
