@@ -112,3 +112,24 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
     // Redirection vers la vérification à 6 chiffres
     window.location.href = 'verify.html';
 });
+const inputs = document.querySelectorAll('.otp-input');
+
+inputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+        if (e.target.value.length > 0 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+        }
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            inputs[index - 1].focus();
+        }
+    });
+});
+
+document.getElementById('verifyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Une fois vérifié, on envoie l'utilisateur sur le flux vidéo FLOY
+    window.location.href = 'feed.html';
+});
