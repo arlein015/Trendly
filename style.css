@@ -234,3 +234,89 @@ body.dark-theme {
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
+/* Style Page Explore */
+.explore-container {
+    padding-bottom: 80px;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 15px;
+    background: #000;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.search-bar {
+    flex: 1;
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    outline: none;
+}
+
+.trending-banner {
+    height: 150px;
+    margin: 10px 15px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #8a2be2 0%, #007bff 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+}
+
+.banner-content span { font-weight: bold; font-size: 18px; }
+.banner-content p { font-size: 12px; margin: 5px 0 0; opacity: 0.8; }
+
+.explore-section {
+    margin: 20px 0;
+    padding-left: 15px;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 15px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.section-title a { color: #888; text-decoration: none; font-size: 12px; }
+
+/* Défilement horizontal des vidéos */
+.horizontal-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-right: 15px;
+}
+
+.horizontal-scroll::-webkit-scrollbar { display: none; } /* Cache la barre de défilement */
+
+.scroll-item {
+    min-width: 120px;
+    height: 160px;
+    background: #111;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.scroll-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
