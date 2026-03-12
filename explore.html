@@ -2,55 +2,164 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Threndly - Explorer</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Explorer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="logo.png">
+
     <style>
-        .search-container { padding: 20px; }
+        :root {
+            --floy-orange: #ff8c00;      /* Orange du logo */
+            --floy-dark-gray: #2f4f4f;  /* Gris du logo */
+            --floy-blue: #0000cd;       /* Bleu du logo */
+            --bg-black: #000000;
+        }
+
+        body { 
+            margin: 0; background: var(--bg-black); color: white; 
+            font-family: 'Poppins', sans-serif; padding-bottom: 80px; 
+        }
+
+        /* Barre de recherche stylée */
+        .search-container {
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            background: var(--bg-black);
+            z-index: 10;
+        }
+
         .search-bar {
             background: #111;
-            border-radius: 25px;
-            padding: 10px 20px;
+            border: 1px solid #222;
+            border-radius: 12px;
             display: flex;
             align-items: center;
+            padding: 10px 15px;
             gap: 10px;
         }
+
         .search-bar input {
-            background: none; border: none; color: white; width: 100%; outline: none;
+            background: none;
+            border: none;
+            color: white;
+            width: 100%;
+            outline: none;
+            font-family: inherit;
         }
-        .grid-explore {
+
+        .search-bar i { color: var(--floy-dark-gray); }
+
+        /* Catégories (Tendances) */
+        .categories-row {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .categories-row::-webkit-scrollbar { display: none; }
+
+        .cat-tag {
+            background: #1a1a1a;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+        .cat-tag.active {
+            background: var(--floy-orange);
+            border-color: var(--floy-orange);
+            font-weight: 600;
+        }
+
+        /* Grille d'exploration */
+        .explore-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            margin-top: 10px;
         }
-        .grid-item {
+
+        .explore-item {
             aspect-ratio: 9/16;
-            background: #222;
-            background-size: cover;
+            background: #0a0a0a;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
         }
+
+        .explore-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .item-meta {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Navigation Basse (Fonctionnelle) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; 
+            border-top: 0.5px solid #111; display: flex; justify-content: space-around; align-items: center; 
+        }
+        .nav-icon { color: var(--floy-dark-gray); font-size: 22px; cursor: pointer; }
+        .nav-icon.active { color: var(--floy-orange); }
+        .plus-btn { background: white; color: black; padding: 6px 15px; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
+
     <div class="search-container">
         <div class="search-bar">
-            <i class="fas fa-search" style="color: #888;"></i>
-            <input type="text" placeholder="Rechercher des créateurs...">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher sur Floy...">
         </div>
     </div>
 
-    <div class="grid-explore">
-        <div class="grid-item" style="background-image: url('https://via.placeholder.com/200x350')"></div>
-        <div class="grid-item" style="background-image: url('https://via.placeholder.com/200x350')"></div>
-        <div class="grid-item" style="background-image: url('https://via.placeholder.com/200x350')"></div>
+    <div class="categories-row">
+        <div class="cat-tag active">Pour toi</div>
+        <div class="cat-tag">Tendances</div>
+        <div class="cat-tag">Musique</div>
+        <div class="cat-tag">Sport</div>
+        <div class="cat-tag">Gaming</div>
+    </div>
+
+    <div class="explore-grid">
+        <div class="explore-item" onclick="window.location.href='feed.html'">
+            <img src="https://via.placeholder.com/300x500/111/fff?text=Floy+Video">
+            <div class="item-meta"><i class="fas fa-play"></i> 1.2M</div>
+        </div>
+        <div class="explore-item" onclick="window.location.href='feed.html'">
+            <img src="https://via.placeholder.com/300x500/222/fff?text=Trending">
+            <div class="item-meta"><i class="fas fa-play"></i> 850k</div>
+        </div>
+        <div class="explore-item" onclick="window.location.href='feed.html'">
+            <div class="item-meta"><i class="fas fa-play"></i> 500k</div>
+        </div>
+        <div class="explore-item" onclick="window.location.href='feed.html'"></div>
+        <div class="explore-item" onclick="window.location.href='feed.html'"></div>
+        <div class="explore-item" onclick="window.location.href='feed.html'"></div>
     </div>
 
     <nav class="bottom-nav">
         <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
         <i class="fas fa-search nav-icon active"></i>
-        <div style="background:white; color:black; padding:6px 15px; border-radius:10px;"><i class="fas fa-plus"></i></div>
-        <i class="fas fa-comment nav-icon" onclick="window.location.href='message.html'"></i>
+        <div class="plus-btn" onclick="window.location.href='upload.html'"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-heart nav-icon" onclick="window.location.href='norifications.html'"></i>
         <i class="fas fa-user nav-icon" onclick="window.location.href='profile.html'"></i>
     </nav>
+
 </body>
 </html>
