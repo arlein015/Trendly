@@ -21,11 +21,11 @@ body {
     border-radius: 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
-
-/* --- Badge de certification bleu de Floy --- */
-.badge-verified {
-    color: var(--floy-blue); /* Bleu électrique exact */
+/* Couleur exacte du badge de ton image */
+.badge-verified, .fa-check-circle {
+    color: #00e5ff !important; /* Ce bleu cyan électrique et brillant */
     margin-left: 5px;
+    filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.3)); /* Petit effet brillant */
 }
 
 /* --- Barre de navigation basse --- */
