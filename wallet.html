@@ -3,50 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOY - Portefeuille</title>
+    <title>Threndly - Portefeuille</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --threndly-violet: #8a2be2;
+            --threndly-blue: #007bff;
+        }
+
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .wallet-header {
+            padding: 30px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, #111 0%, #000 100%);
+            border-bottom: 0.5px solid #222;
+        }
+
+        .balance-card {
+            background: linear-gradient(45deg, var(--threndly-violet), var(--threndly-blue));
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px;
+            text-align: left;
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        .balance-label { font-size: 14px; opacity: 0.9; }
+        .balance-amount { font-size: 36px; font-weight: 800; margin: 10px 0; }
+        
+        .wallet-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .action-btn {
+            background: #111;
+            border: 1px solid #333;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .action-btn i { color: var(--threndly-blue); font-size: 20px; }
+
+        .history-section {
+            flex: 1;
+            margin-top: 30px;
+            padding: 20px;
+            background: #050505;
+            border-radius: 30px 30px 0 0;
+        }
+
+        .history-title { font-weight: 700; margin-bottom: 20px; font-size: 18px; }
+
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 0.5px solid #111;
+        }
+
+        .trans-info b { display: block; font-size: 14px; }
+        .trans-info span { font-size: 12px; color: #555; }
+        .trans-amount { font-weight: 700; color: #00ff88; } /* Vert pour les gains */
+    </style>
 </head>
-<body class="dark-theme">
-    <div class="wallet-container">
-        <div class="wallet-header">
-            <a href="profile.html"><i class="fas fa-chevron-left"></i></a>
-            <h1>Mon Portefeuille</h1>
-        </div>
+<body>
 
-        <div class="balance-card">
-            <p>Solde FLOY</p>
-            <h2 id="userBalance">0.00 $</h2>
-            <button class="btn-cashout">Retirer l'argent</button>
-        </div>
+    <div class="wallet-header">
+        <h2 style="margin: 0;">Mon Portefeuille</h2>
+    </div>
 
-        <div class="wallet-stats">
-            <div class="stat-item">
-                <i class="fas fa-eye"></i>
-                <span>Vues payées</span>
-                <p>0</p>
-            </div>
-            <div class="stat-item">
-                <i class="fas fa-gift"></i>
-                <span>Cadeaux</span>
-                <p>0.00 $</p>
-            </div>
-        </div>
+    <div class="balance-card">
+        <div class="balance-label">Solde disponible</div>
+        <div class="balance-amount">125.50 €</div>
+        <div style="font-size: 12px; opacity: 0.8;">FLOY ID: @createur_floy <i class="fas fa-check-circle" style="font-size: 10px;"></i></div>
+    </div>
 
-        <div class="history-section">
-            <h3>Historique des gains</h3>
-            <div class="history-list">
-                <p class="empty-msg">Aucune transaction pour le moment.</p>
-            </div>
+    <div class="wallet-actions">
+        <div class="action-btn">
+            <i class="fas fa-arrow-down"></i>
+            Recharger
+        </div>
+        <div class="action-btn">
+            <i class="fas fa-university"></i>
+            Retirer
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="feed.html"><i class="fas fa-home"></i></a>
-        <a href="explore.html"><i class="fas fa-search"></i></a>
-        <a href="upload.html" class="upload-icon"><i class="fas fa-plus"></i></a>
-        <a href="message.html"><i class="fas fa-envelope"></i></a>
-        <a href="profile.html" class="active-nav"><i class="fas fa-user"></i></a>
+    <div class="history-section">
+        <div class="history-title">Historique des gains</div>
+        
+        <div class="transaction">
+            <div class="trans-info">
+                <b>Cadeau de Arlein</b>
+                <span>Aujourd'hui, 14:20</span>
+            </div>
+            <div class="trans-amount">+ 5.00 €</div>
+        </div>
+
+        <div class="transaction">
+            <div class="trans-info">
+                <b>Revenus Publicité</b>
+                <span>Hier, 23:10</span>
+            </div>
+            <div class="trans-amount">+ 12.40 €</div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav" style="background: #050505;">
+        <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
+        <i class="fas fa-search nav-icon" onclick="window.location.href='explore.html'"></i>
+        <div style="background:white; color:black; padding:6px 15px; border-radius:10px;"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-comment nav-icon" onclick="window.location.href='message.html'"></i>
+        <i class="fas fa-user nav-icon active" onclick="window.location.href='profile.html'"></i>
     </nav>
+
 </body>
 </html>
