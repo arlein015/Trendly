@@ -185,5 +185,36 @@
         <i class="fas fa-user nav-icon" style="color: white;"></i>
     </nav>
 
+<script>
+    // Cette fonction lit les données enregistrées dans le navigateur
+    function loadSavedVideos() {
+        const grid = document.getElementById('savedGrid');
+        // On récupère les vidéos stockées par feed.html
+        const savedVideos = JSON.parse(localStorage.getItem('threndly_saved')) || [];
+
+        // Si la grille est vide
+        if (savedVideos.length === 0) {
+            grid.innerHTML = "<p style='grid-column: span 3; padding: 20px; color: #555; text-align:center;'>Aucune vidéo enregistrée.</p>";
+            return;
+        }
+
+        // On vide la grille avant d'afficher pour éviter les doublons
+        grid.innerHTML = "";
+        
+        // On crée chaque élément de la grille
+        savedVideos.forEach(video => {
+            const item = document.createElement('div');
+            item.className = 'video-item';
+            item.innerHTML = `
+                <img src="${video.thumbnail}" alt="Video">
+                <div class="video-views"><i class="fas fa-play"></i> ${video.views}</div>
+            `;
+            grid.appendChild(item);
+        });
+    }
+
+    // Très important : On lance la fonction dès que la page est chargée
+    window.onload = loadSavedVideos;
+</script>
 </body>
 </html>
