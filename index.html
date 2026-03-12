@@ -3,17 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>Floy - Bienvenue</title>
+    <style>
+        :root {
+            --fond: #000000;
+            --violet: #8A2BE2;
+            --bleu: #00BFFF;
+        }
+
+        body {
+            background-color: var(--fond);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .logo-placeholder {
+            color: var(--violet);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 50px;
+            letter-spacing: 5px;
+            margin: 0;
+            color: white;
+            text-shadow: 0 0 20px var(--violet);
+        }
+
+        p {
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .btn-start {
+            background: var(--violet);
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--violet);
+            transition: 0.3s;
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--violet);
+        }
+    </style>
 </head>
-<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
-    <img src="logo.png" alt="Floy Logo" style="width: 150px; margin-bottom: 20px;">
-    <h1 style="color: var(--violet); text-shadow: 0 0 10px var(--violet);">FLOY</h1>
-    <p style="margin-bottom: 40px;">Le monde en vidéo.</p>
+<body>
+    <div class="logo-placeholder">Floy Logo</div>
+    <h1>FLOY</h1>
+    <p>Le monde en vidéo.</p>
     
-    <div style="display: flex; flex-direction: column; gap: 15px; width: 80%; max-width: 300px;">
-        <a href="feed.html" style="text-decoration: none; text-align: center; background: var(--violet); color: white; padding: 15px; border-radius: 30px; font-weight: bold;">Regarder maintenant</a>
-        <a href="signup.html" style="text-decoration: none; text-align: center; border: 2px solid var(--bleu); color: var(--bleu); padding: 15px; border-radius: 30px; font-weight: bold;">S'inscrire</a>
-    </div>
+    <a href="feed.html" class="btn-start">S'inscrire</a>
 </body>
 </html>
