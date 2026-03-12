@@ -3,149 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threndly - Discussion Privée</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Chat Privé</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
-        :root {
-            --bg-violet: #1a0033; /* Violet sombre de f2.jpg */
-            --floy-cyan: #00e5ff; /* Cyan du badge image_02b375.png */
-            --floy-orange: #ff8c00; /* Orange du bouton image_0237bb.png */
-            --dark-bubble: rgba(0, 0, 0, 0.6);
-        }
-
-        body {
-            margin: 0;
-            background: linear-gradient(180deg, var(--bg-violet) 0%, #000000 100%);
-            background-attachment: fixed;
-            font-family: 'Poppins', sans-serif;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* Header avec flou (Glassmorphism sombre) */
-        .chat-header {
-            padding: 45px 20px 15px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            z-index: 10;
-        }
-
-        .user-profile-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        /* Zone de messages */
-        .messages-area {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* Bulle de l'autre utilisateur (Noir transparent) */
-        .msg-left {
-            align-self: flex-start;
-            max-width: 75%;
-            background: var(--dark-bubble);
-            padding: 12px 18px;
-            border-radius: 20px 20px 20px 5px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Ta bulle (Dégradé Violet/Bleu) */
-        .msg-right {
-            align-self: flex-end;
-            max-width: 75%;
-            background: linear-gradient(135deg, #a456f0 0%, #3a55d1 100%);
-            padding: 12px 18px;
-            border-radius: 20px 20px 5px 20px;
-            font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Barre d'entrée de texte */
-        .input-container {
-            padding: 20px;
-            background: #000; /* Noir pur comme la nav-bar de image_01bedc.png */
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .input-box {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            color: white;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .icon-btn {
-            font-size: 20px;
-            color: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-        }
-
-        .send-btn {
-            color: var(--floy-cyan);
-            font-size: 22px;
-        }
-
-        .badge-mini {
-            color: var(--floy-cyan);
-            font-size: 12px;
-        }
+        body { margin: 0; height: 100vh; background: #1a0033; display: flex; flex-direction: column; font-family: 'Poppins', sans-serif; color: white; }
+        .chat-header { padding: 45px 20px 15px; background: rgba(0,0,0,0.7); display: flex; align-items: center; gap: 15px; }
+        .msg-left { align-self: flex-start; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 20px 20px 20px 5px; margin: 10px; max-width: 70%; }
+        .msg-right { align-self: flex-end; background: linear-gradient(135deg, #a456f0, #3a55d1); padding: 12px; border-radius: 20px 20px 5px 20px; margin: 10px; max-width: 70%; }
+        .input-area { padding: 20px; background: #000; display: flex; gap: 10px; align-items: center; }
+        .input-box { flex: 1; background: rgba(255,255,255,0.1); border: none; padding: 12px; border-radius: 25px; color: white; }
     </style>
 </head>
 <body>
-
-    <div class="chat-header">
-        <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
-        <img src="logo.png" class="user-profile-img">
-        <div style="flex: 1;">
-            <div style="font-weight: 700; font-size: 15px;">
-                @bouta <i class="fas fa-check-circle badge-mini"></i>
-            </div>
-            <div style="font-size: 10px; opacity: 0.5;">En ligne</div>
-        </div>
-        <i class="fas fa-video icon-btn"></i>
-        <i class="fas fa-phone-alt icon-btn"></i>
+    <div class="chat-header"><i class="fas fa-arrow-left" onclick="window.history.back()"></i> <span>@bouta</span></div>
+    <div style="flex:1; display:flex; flex-direction:column; overflow-y:auto">
+        <div class="msg-left">C'est privé ?</div>
+        <div class="msg-right">Oui, chiffrement total ici. 🔒</div>
     </div>
-
-    <div class="messages-area">
-        <div style="text-align: center; font-size: 11px; opacity: 0.4; margin: 10px 0;">AUJOURD'HUI</div>
-
-        <div class="msg-left">Salut ! Est-ce que le nouveau thème est prêt ?</div>
-        
-        <div class="msg-right">Oui ! J'ai utilisé le violet et le noir comme prévu. Tout fonctionne parfaitement. 🔥</div>
-
-        <div class="msg-left">Génial ! C'est exactement ce que je voulais pour le côté privé.</div>
-    </div>
-
-    <div class="input-container">
-        <i class="fas fa-camera icon-btn"></i>
+    <div class="input-area">
         <input type="text" class="input-box" placeholder="Message privé...">
-        <i class="fas fa-microphone icon-btn"></i>
-        <i class="fas fa-paper-plane send-btn"></i>
+        <i class="fas fa-paper-plane" style="color:#00e5ff"></i>
     </div>
-
 </body>
 </html>
