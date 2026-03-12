@@ -1,1 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Poster - Floy</title>
+</head>
+<body class="upload-page">
+    <header class="upload-header">
+        <a href="feed.html">Annuler</a>
+        <h3>Nouvelle Vidéo</h3>
+    </header>
 
+    <div class="upload-container">
+        <div class="upload-box" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">⬆️</div>
+            <p>Cliquez pour choisir une vidéo</p>
+            <span>Format vertical (9:16) conseillé</span>
+            <input type="file" id="fileInput" hidden accept="video/*">
+        </div>
+
+        <div class="upload-details">
+            <textarea placeholder="Ajouter une légende... #Floy #Video"></textarea>
+            <div class="settings-list">
+                <div class="setting-item"><span>Autoriser les commentaires</span><input type="checkbox" checked></div>
+                <div class="setting-item"><span>Enregistrer sur l'appareil</span><input type="checkbox"></div>
+            </div>
+        </div>
+
+        <button class="post-btn">Publier sur Floy</button>
+    </div>
+</body>
+</html>
