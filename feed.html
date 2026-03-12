@@ -3,107 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOY - Feed</title>
+    <title>Threndly - Feed</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-    :root {
-        --floy-violet: #8a2be2;
-    }
+        :root {
+            --threndly-violet: #8a2be2;
+            --threndly-blue: #007bff;
+        }
 
-    body {
-        margin: 0;
-        background-color: #000;
-        color: white;
-        font-family: 'Poppins', sans-serif;
-        height: 100vh;
-        overflow: hidden;
-    }
+        body { margin: 0; padding: 0; background-color: #000; font-family: 'Poppins', sans-serif; color: white; overflow: hidden; height: 100vh; }
 
-    /* Container plein écran */
-    .feed-container {
-        position: relative;
-        height: 100vh;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
+        /* Container Principal */
+        .feed-container { position: relative; height: 100vh; width: 100%; display: flex; flex-direction: column; }
 
-    /* Actions à droite (Like, Com, Share) */
-    .action-bar {
-        position: absolute;
-        right: 15px;
-        bottom: 120px; /* Aligné au-dessus de la nav */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        z-index: 10;
-    }
+        /* Zone Vidéo */
+        .video-wrapper { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
 
-    .action-item {
-        text-align: center;
-        cursor: pointer;
-    }
+        /* Actions à droite (Like, Com, Share) */
+        .action-bar { position: absolute; right: 15px; bottom: 100px; display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 10; }
+        .action-item { text-align: center; cursor: pointer; }
+        .action-item i { font-size: 30px; margin-bottom: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); transition: 0.2s; }
+        .action-item span { font-size: 11px; font-weight: 600; display: block; }
+        
+        .liked { color: #ff2d55; }
+        .saved { color: #ffcc00; }
 
-    .action-item i {
-        font-size: 28px;
-        display: block;
-        margin-bottom: 2px;
-    }
+        /* Infos Vidéo bas gauche */
+        .video-info { position: absolute; left: 15px; bottom: 90px; z-index: 10; max-width: 75%; }
+        .user-name { font-weight: 700; font-size: 16px; margin-bottom: 5px; display: flex; align-items: center; }
+        .badge-verified { color: #007bff; margin-left: 5px; font-size: 14px; }
+        .description { font-size: 13px; opacity: 0.9; }
 
-    .action-item span {
-        font-size: 11px;
-        font-weight: 600;
-    }
+        /* MODALES (Style Tiroir qui monte du bas) */
+        .modal {
+            position: fixed; bottom: -100%; left: 0; width: 100%; background: white;
+            border-radius: 20px 20px 0 0; color: #333; transition: 0.4s ease-in-out; z-index: 100; padding: 20px; box-sizing: border-box;
+        }
+        .modal.active { bottom: 0; }
+        .modal-header { font-weight: 700; font-size: 16px; margin-bottom: 20px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
-    /* Barre de Navigation Basse */
-    .bottom-nav {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 70px;
-        background: #000;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding-bottom: env(safe-area-inset-bottom); /* Pour mobile */
-        border-top: 0.5px solid #111;
-    }
+        /* Design Partage */
+        .share-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; }
+        .share-option { cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #333; text-decoration: none; }
+        .share-option i { font-size: 35px; }
+        .fa-whatsapp { color: #25D366; } .fa-facebook { color: #1877F2; } .fa-facebook-messenger { color: #0084FF; }
 
-    .nav-icon {
-        color: var(--floy-violet); /* Tes icônes violettes */
-        font-size: 22px;
-        cursor: pointer;
-    }
+        /* Design Commentaires */
+        .comments-list { max-height: 250px; overflow-y: auto; margin-bottom: 15px; }
+        .comment-item { display: flex; gap: 10px; margin-bottom: 15px; font-size: 14px; text-align: left; }
+        .comment-avatar { width: 35px; height: 35px; border-radius: 50%; background: #ddd; flex-shrink: 0; }
+        .comment-input-area { display: flex; gap: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .comment-input-area input { flex: 1; border: none; background: #f0f2f5; padding: 10px; border-radius: 20px; outline: none; }
 
-    /* Bouton Plus central blanc */
-    .plus-icon {
-        background: white;
-        color: black;
-        padding: 6px 14px;
-        border-radius: 10px;
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+        /* Barre de Navigation Basse */
+        .bottom-nav { position: absolute; bottom: 0; width: 100%; height: 70px; background: #000; border-top: 0.5px solid #111; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
+        .nav-icon { color: var(--threndly-violet); font-size: 22px; cursor: pointer; }
+        .plus-icon { background: white; color: black; padding: 6px 15px; border-radius: 10px; font-size: 20px; cursor: pointer; }
 
-    /* Infos utilisateur en bas à gauche */
-    .video-info {
-        position: absolute;
-        left: 15px;
-        bottom: 90px;
-        z-index: 10;
-        text-align: left;
-    }
-
-    .badge-verified {
-        color: #1d75bd; /* Bleu officiel */
-        font-size: 14px;
-        margin-left: 5px;
-    }
-</style>
+        .close-btn { margin-top: 15px; padding: 12px; text-align: center; background: #f5f5f5; border-radius: 10px; cursor: pointer; font-weight: 600; }
+    </style>
 </head>
 <body>
 
@@ -114,9 +73,9 @@
             <div class="action-bar">
                 <div class="action-item" onclick="toggleLike(this)">
                     <i class="fas fa-heart"></i>
-                    <span id="like-count">12.5k</span>
+                    <span id="like-count">12.6k</span>
                 </div>
-                <div class="action-item">
+                <div class="action-item" onclick="openModal('commentModal')">
                     <i class="fas fa-comment-dots"></i>
                     <span>850</span>
                 </div>
@@ -124,94 +83,111 @@
                     <i class="fas fa-bookmark"></i>
                     <span>Enregistrer</span>
                 </div>
-                <div class="action-item" onclick="openShare()">
+                <div class="action-item" onclick="openModal('shareModal')">
                     <i class="fas fa-share"></i>
                     <span>Partager</span>
-                </div>
-                <div class="disc-container">
-                    <div class="disc-icon"></div>
                 </div>
             </div>
 
             <div class="video-info">
                 <div class="user-name">@createur_floy <i class="fas fa-check-circle badge-verified"></i></div>
-                <div class="description">Test de l'animation et du partage sur FLOY ! 🚀</div>
+                <div class="description">Le code complet est prêt ! 🚀 #Threndly #Dev</div>
             </div>
         </div>
 
-        <div id="shareModal" class="share-modal">
-            <div class="share-header">Partager via</div>
+        <div id="shareModal" class="modal">
+            <div class="modal-header">Partager via</div>
             <div class="share-grid">
-                <div class="share-option" onclick="shareTo('whatsapp')"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
-                <div class="share-option" onclick="shareTo('messenger')"><i class="fab fa-facebook-messenger"></i><span>Messenger</span></div>
-                <div class="share-option" onclick="shareTo('facebook')"><i class="fab fa-facebook"></i><span>Facebook</span></div>
-                <div class="share-option" onclick="copyLink()"><i class="fas fa-link"></i><span>Lien</span></div>
+                <div class="share-option" onclick="shareTo('WhatsApp')"><i class="fab fa-whatsapp"></i><span style="font-size: 11px;">WhatsApp</span></div>
+                <div class="share-option" onclick="shareTo('Messenger')"><i class="fab fa-facebook-messenger"></i><span style="font-size: 11px;">Messenger</span></div>
+                <div class="share-option" onclick="shareTo('Facebook')"><i class="fab fa-facebook"></i><span style="font-size: 11px;">Facebook</span></div>
+                <div class="share-option" onclick="copyLink()"><i class="fas fa-link"></i><span style="font-size: 11px;">Lien</span></div>
             </div>
-            <div class="close-share" onclick="closeShare()">Annuler</div>
+            <div class="close-btn" onclick="closeModals()">Annuler</div>
+        </div>
+
+        <div id="commentModal" class="modal">
+            <div class="modal-header">850 Commentaires</div>
+            <div class="comments-list" id="commentsList">
+                <div class="comment-item">
+                    <div class="comment-avatar"></div>
+                    <div><strong>Arlein</strong><br>Incroyable ce menu qui glisse !</div>
+                </div>
+                <div class="comment-item">
+                    <div class="comment-avatar"></div>
+                    <div><strong>Bouta</strong><br>Le design est vraiment propre 🔥</div>
+                </div>
+            </div>
+            <div class="comment-input-area">
+                <input type="text" id="newComment" placeholder="Ajouter un commentaire...">
+                <button onclick="addComment()" style="border:none; background:none; color:var(--threndly-blue); font-weight:700; cursor:pointer;">Publier</button>
+            </div>
+            <div class="close-btn" onclick="closeModals()">Fermer</div>
         </div>
 
         <nav class="bottom-nav">
-            <i class="fas fa-home nav-icon"></i>
+            <i class="fas fa-home nav-icon" style="color: white;"></i>
             <i class="fas fa-search nav-icon"></i>
-            <div class="plus-icon"><i class="fas fa-plus"></i></div>
+            <div class="plus-icon" onclick="openGallery()"><i class="fas fa-plus"></i></div>
             <i class="fas fa-comment nav-icon"></i>
-            <i class="fas fa-user nav-icon"></i>
+            <i class="fas fa-user nav-icon" onclick="window.location.href='profile.html'"></i>
         </nav>
     </div>
 
     <script>
-        // Fonction Like
-        function toggleLike(element) {
-            element.classList.toggle('liked');
+        // Gestion des fenêtres (Modales)
+        function openModal(id) {
+            closeModals();
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModals() {
+            document.getElementById('shareModal').classList.remove('active');
+            document.getElementById('commentModal').classList.remove('active');
+        }
+
+        // Like
+        function toggleLike(el) {
+            el.classList.toggle('liked');
             let count = document.getElementById('like-count');
-            if(element.classList.contains('liked')) {
-                count.innerText = "12.6k";
-            } else {
-                count.innerText = "12.5k";
+            count.innerText = el.classList.contains('liked') ? "12.7k" : "12.6k";
+        }
+
+        // Sauvegarde vidéo
+        function toggleSave(el) {
+            el.classList.toggle('saved');
+            if(el.classList.contains('saved')) {
+                alert("Enregistré dans votre profil !");
             }
         }
 
-        // Fonction Enregistrer sur le profil
-       function toggleSave(element) {
-    element.classList.toggle('saved');
-    
-    // On crée un objet pour la vidéo actuelle
-    const videoData = {
-        id: Date.now(),
-        thumbnail: "https://via.placeholder.com/150/8a2be2/ffffff?text=Video", // Image temporaire
-        views: "1.2k"
-    };
+        // Ajouter un commentaire en direct
+        function addComment() {
+            const input = document.getElementById('newComment');
+            if(input.value.trim() !== "") {
+                const list = document.getElementById('commentsList');
+                const div = document.createElement('div');
+                div.className = 'comment-item';
+                div.innerHTML = `<div class="comment-avatar"></div><div><strong>Moi</strong><br>${input.value}</div>`;
+                list.prepend(div);
+                input.value = "";
+            }
+        }
 
-    if(element.classList.contains('saved')) {
-        // Récupérer la liste existante ou en créer une nouvelle
-        let savedVideos = JSON.parse(localStorage.getItem('threndly_saved')) || [];
-        savedVideos.push(videoData);
-        localStorage.setItem('threndly_saved', JSON.stringify(savedVideos));
-        
-        alert("Vidéo enregistrée dans votre profil !");
-    }
-}
-
-        // Gestion du Partage
-        function openShare() { document.getElementById('shareModal').classList.add('active'); }
-        function closeShare() { document.getElementById('shareModal').classList.remove('active'); }
-
-        function shareTo(platform) {
-            const url = window.location.href;
-            let shareUrl = "";
-            if(platform === 'whatsapp') shareUrl = `https://wa.me/?text=Regarde cette vidéo sur FLOY : ${url}`;
-            if(platform === 'facebook') shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-            if(platform === 'messenger') shareUrl = `fb-messenger://share/?link=${url}`;
-            
-            window.open(shareUrl, '_blank');
-            closeShare();
+        // Ouvrir la galerie du téléphone
+        function openGallery() {
+            const inp = document.createElement('input');
+            inp.type = 'file'; inp.accept = 'video/*';
+            inp.onchange = e => { if(e.target.files[0]) alert("Vidéo sélectionnée : " + e.target.files[0].name); };
+            inp.click();
         }
 
         function copyLink() {
             navigator.clipboard.writeText(window.location.href);
-            alert("Lien copié dans le presse-papier !");
-            closeShare();
+            alert("Lien copié !");
         }
+
+        function shareTo(p) { alert("Partage vers " + p + "..."); }
     </script>
 </body>
 </html>
