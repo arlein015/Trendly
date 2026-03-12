@@ -3,152 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Mon Profil</title>
+    <title>Floy - Profil</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="icon" type="image/png" href="logo.png">
 
     <style>
         :root {
-            --floy-orange: #ff8c00;      /* Orange vibrant du logo */
-            --floy-blue: #0000cd;       /* Bleu électrique du logo */
-            --floy-dark-gray: #2f4f4f;  /* Gris anthracite du logo */
-            --bg-black: #000000;
+            --floy-gradient: linear-gradient(135deg, #3a55d1 0%, #a456f0 100%);
+            --floy-orange: #ff5e3a;
+            --floy-cyan: #00e5ff;
         }
 
         body { 
-            margin: 0; background: var(--bg-black); color: white; 
-            font-family: 'Poppins', sans-serif; padding-bottom: 90px; 
+            margin: 0; background: var(--floy-gradient); background-attachment: fixed;
+            color: white; font-family: 'Poppins', sans-serif; padding-bottom: 80px;
         }
 
-        /* Barre d'outils supérieure */
-        .profile-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; position: sticky; top: 0; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px); z-index: 100;
+        .header {
+            padding: 20px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.1); backdrop-filter: blur(10px);
         }
 
-        /* En-tête du profil */
-        .profile-main-info { text-align: center; padding: 10px 0 20px; }
+        .profile-top { text-align: center; padding: 30px 20px; }
         
-        .avatar-wrapper {
-            width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 15px;
-            background: linear-gradient(45deg, var(--floy-orange), var(--floy-blue));
-            padding: 3px; position: relative;
-        }
-        .avatar-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: black; }
-
-        .name-container { font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .badge-verified { color: var(--floy-blue); font-size: 16px; }
-
-        /* Stats Row */
-        .stats-container { display: flex; justify-content: center; gap: 35px; margin: 25px 0; }
-        .stat-box { text-align: center; cursor: pointer; }
-        .stat-value { display: block; font-weight: 700; font-size: 18px; color: white; }
-        .stat-title { font-size: 12px; color: var(--floy-dark-gray); font-weight: 600; }
-
-        /* Boutons d'action */
-        .action-buttons { display: flex; justify-content: center; gap: 12px; padding: 0 20px; }
-        
-        .btn-edit { 
-            flex: 2; background: #1a1a1a; border: 1px solid #333; color: white; 
-            padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-edit:active { background: #252525; transform: scale(0.98); }
-
-        .btn-wallet-link { 
-            flex: 1; background: var(--floy-orange); color: white; border: none; 
-            padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+        .avatar {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 3px solid white; margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
-        /* Grille de contenu */
-        .content-tabs {
-            display: flex; border-top: 1px solid #111; margin-top: 30px;
-        }
-        .tab { flex: 1; text-align: center; padding: 15px; color: var(--floy-dark-gray); font-size: 20px; cursor: pointer; }
-        .tab.active { color: white; border-bottom: 2px solid white; }
+        .username { font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+        .badge-verified { color: var(--floy-cyan); margin-left: 6px; font-size: 16px; }
 
-        .video-feed-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+        /* Grille de stats brillante */
+        .stats-grid {
+            display: flex; justify-content: center; gap: 20px; margin: 25px 0;
         }
-        .video-item { aspect-ratio: 9/12; background: #0a0a0a; position: relative; overflow: hidden; cursor: pointer; }
-        .video-item i { position: absolute; bottom: 8px; left: 8px; font-size: 12px; opacity: 0.8; }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px; border-radius: 15px; min-width: 80px;
+        }
 
-        /* Barre de Navigation (TOUS LES LIENS MARCHENT) */
+        .btn-wallet {
+            background: var(--floy-orange); color: white; border: none;
+            padding: 12px 25px; border-radius: 12px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px; margin: 0 auto;
+        }
+
+        .video-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 30px;
+        }
+        .video-item { aspect-ratio: 9/12; background: rgba(0,0,0,0.2); border: 0.5px solid rgba(255,255,255,0.05); }
+
         .bottom-nav { 
-            position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; 
-            border-top: 0.5px solid #111; display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+            position: fixed; bottom: 0; width: 100%; height: 70px; 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; justify-content: space-around; align-items: center;
         }
-        .nav-icon { color: var(--floy-dark-gray); font-size: 22px; cursor: pointer; transition: 0.2s; }
-        .nav-icon.active { color: var(--floy-orange); }
-        .center-plus { background: white; color: black; padding: 6px 15px; border-radius: 10px; font-size: 20px; }
-    /* Intègre le CSS ci-dessus ici */
-    .profile-header { background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); }
-    .avatar-wrapper { border: 3px solid white; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
-    .btn-wallet-link { background: var(--floy-orange); box-shadow: 0 4px 15px rgba(255, 94, 58, 0.4); }
+        .nav-icon { color: rgba(255,255,255,0.4); font-size: 22px; }
+        .nav-icon.active { color: white; }
     </style>
 </head>
 <body>
 
-    <div class="profile-header">
-        <i class="fas fa-chart-line" onclick="window.location.href='analytics.html'"></i>
-        <span style="font-weight: 700;">@createur_floy</span>
-        <i class="fas fa-bars" onclick="window.location.href='settings.html'"></i>
+    <div class="header">
+        <i class="fas fa-chart-bar" onclick="window.location.href='analytics.html'"></i>
+        <span style="font-weight: 700;">Profil</span>
+        <i class="fas fa-cog" onclick="window.location.href='settings.html'"></i>
     </div>
 
-    <div class="profile-main-info">
-        <div class="avatar-wrapper">
-            <img src="logo.png" alt="Floy Creator">
-        </div>
-        <div class="name-container">
-            Floy Creator <i class="fas fa-check-circle badge-verified"></i>
-        </div>
+    <div class="profile-top">
+        <img src="logo.png" class="avatar">
+        <div class="username">@bouta <i class="fas fa-check-circle badge-verified"></i></div>
         
-        <div class="stats-container">
-            <div class="stat-box">
-                <span class="stat-value">128</span>
-                <span class="stat-title">Abonnements</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-value">45.8k</span>
-                <span class="stat-title">Abonnés</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-value">2.4M</span>
-                <span class="stat-title">J'aime</span>
-            </div>
+        <div class="stats-grid">
+            <div class="stat-card"><strong>12</strong><br><small>Posts</small></div>
+            <div class="stat-card"><strong>45k</strong><br><small>Abonnés</small></div>
+            <div class="stat-card"><strong>2.4M</strong><br><small>Likes</small></div>
         </div>
 
-        <div class="action-buttons">
-            <button class="btn-edit" onclick="window.location.href='edit-video.html'">Modifier le profil</button>
-            <button class="btn-wallet-link" onclick="window.location.href='wallet.html'">
-                <i class="fas fa-wallet"></i> Portefeuille
-            </button>
-        </div>
+        <button class="btn-wallet" onclick="window.location.href='wallet.html'">
+            <i class="fas fa-wallet"></i> Portefeuille
+        </button>
     </div>
 
-    <div class="content-tabs">
-        <div class="tab active"><i class="fas fa-th"></i></div>
-        <div class="tab"><i class="fas fa-heart"></i></div>
-        <div class="tab"><i class="fas fa-bookmark"></i></div>
-    </div>
-
-    <div class="video-feed-grid">
-        <div class="video-item" onclick="window.location.href='feed.html'"><i class="fas fa-play"></i> 12k</div>
-        <div class="video-item" onclick="window.location.href='feed.html'"><i class="fas fa-play"></i> 8k</div>
-        <div class="video-item" onclick="window.location.href='feed.html'"><i class="fas fa-play"></i> 45k</div>
-        <div class="video-item" onclick="window.location.href='feed.html'"></div>
-        <div class="video-item" onclick="window.location.href='feed.html'"></div>
-        <div class="video-item" onclick="window.location.href='feed.html'"></div>
+    <div class="video-grid">
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
     </div>
 
     <nav class="bottom-nav">
         <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
         <i class="fas fa-search nav-icon" onclick="window.location.href='explore.html'"></i>
-        <div class="center-plus" onclick="window.location.href='upload.html'"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-plus-square nav-icon" onclick="window.location.href='upload.html'"></i>
         <i class="fas fa-bell nav-icon" onclick="window.location.href='norifications.html'"></i>
         <i class="fas fa-user nav-icon active"></i>
     </nav>
