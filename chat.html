@@ -2,52 +2,150 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Threndly - Chat Live</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threndly - Discussion Privée</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        :root { --blue: #2D9CDB; --grad: linear-gradient(135deg, #2D9CDB 0%, #BB6BD9 100%); }
-        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; }
-        
-        header { padding: 20px; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; }
-        #msg-list { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        
-        /* Bulles */
-        .msg-container { display: flex; flex-direction: column; max-width: 80%; }
-        .sender-name { font-size: 0.7rem; color: #555; margin-bottom: 4px; margin-left: 10px; }
-        .bubble { padding: 12px 18px; border-radius: 20px; font-size: 0.95rem; }
-        
-        .me { align-self: flex-end; }
-        .me .bubble { background: var(--grad); border-bottom-right-radius: 4px; }
-        
-        .other { align-self: flex-start; }
-        .other .bubble { background: #1a1a1a; border: 1px solid #222; border-bottom-left-radius: 4px; }
+        :root {
+            --bg-violet: #1a0033; /* Violet sombre de f2.jpg */
+            --floy-cyan: #00e5ff; /* Cyan du badge image_02b375.png */
+            --floy-orange: #ff8c00; /* Orange du bouton image_0237bb.png */
+            --dark-bubble: rgba(0, 0, 0, 0.6);
+        }
 
-        footer { padding: 20px; display: flex; gap: 10px; background: #050505; border-top: 1px solid #1a1a1a; }
-        input { flex: 1; padding: 14px; border-radius: 25px; border: 1px solid #222; background: #111; color: white; outline: none; }
-        .send-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--grad); color: white; cursor: pointer; }
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, var(--bg-violet) 0%, #000000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header avec flou (Glassmorphism sombre) */
+        .chat-header {
+            padding: 45px 20px 15px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 10;
+        }
+
+        .user-profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Zone de messages */
+        .messages-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Bulle de l'autre utilisateur (Noir transparent) */
+        .msg-left {
+            align-self: flex-start;
+            max-width: 75%;
+            background: var(--dark-bubble);
+            padding: 12px 18px;
+            border-radius: 20px 20px 20px 5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Ta bulle (Dégradé Violet/Bleu) */
+        .msg-right {
+            align-self: flex-end;
+            max-width: 75%;
+            background: linear-gradient(135deg, #a456f0 0%, #3a55d1 100%);
+            padding: 12px 18px;
+            border-radius: 20px 20px 5px 20px;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Barre d'entrée de texte */
+        .input-container {
+            padding: 20px;
+            background: #000; /* Noir pur comme la nav-bar de image_01bedc.png */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-box {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .icon-btn {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .send-btn {
+            color: var(--floy-cyan);
+            font-size: 22px;
+        }
+
+        .badge-mini {
+            color: var(--floy-cyan);
+            font-size: 12px;
+        }
     </style>
 </head>
-<body onload="loadMessages()">
+<body>
 
-    <header>
-        <div style="font-weight: bold;">THRENDLY <span style="color:var(--blue); font-size:0.8rem; margin-left:10px;">● LIVE</span></div>
-        <i class="fas fa-sign-out-alt" onclick="logout()" style="cursor:pointer; color:#444;"></i>
-    </header>
+    <div class="chat-header">
+        <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
+        <img src="logo.png" class="user-profile-img">
+        <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 15px;">
+                @bouta <i class="fas fa-check-circle badge-mini"></i>
+            </div>
+            <div style="font-size: 10px; opacity: 0.5;">En ligne</div>
+        </div>
+        <i class="fas fa-video icon-btn"></i>
+        <i class="fas fa-phone-alt icon-btn"></i>
+    </div>
 
-    <div id="msg-list"></div>
+    <div class="messages-area">
+        <div style="text-align: center; font-size: 11px; opacity: 0.4; margin: 10px 0;">AUJOURD'HUI</div>
 
-    <footer>
-        <input type="text" id="msg-in" placeholder="Votre message..." onkeypress="handleEnter(event)">
-        <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-    </footer>
+        <div class="msg-left">Salut ! Est-ce que le nouveau thème est prêt ?</div>
+        
+        <div class="msg-right">Oui ! J'ai utilisé le violet et le noir comme prévu. Tout fonctionne parfaitement. 🔥</div>
 
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+        <div class="msg-left">Génial ! C'est exactement ce que je voulais pour le côté privé.</div>
+    </div>
+
+    <div class="input-container">
+        <i class="fas fa-camera icon-btn"></i>
+        <input type="text" class="input-box" placeholder="Message privé...">
+        <i class="fas fa-microphone icon-btn"></i>
+        <i class="fas fa-paper-plane send-btn"></i>
+    </div>
+
 </body>
 </html>
