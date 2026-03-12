@@ -3,194 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOY - Connexion</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="icons/logo.png">
+    <title>Bienvenue sur Floy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <link rel="icon" type="image/png" href="logo.png">
+
     <style>
         :root {
-            --floy-blue: #007bff;
-            --floy-violet: #8a2be2;
-            --floy-gradient: linear-gradient(135deg, #007bff 0%, #8a2be2 100%);
-            --bg-light: #f4f7f6;
+            --floy-orange: #ff8c00;      /* Orange du logo */
+            --floy-blue: #0000cd;       /* Bleu du logo */
+            --bg-black: #000000;
         }
 
         body {
             margin: 0;
+            padding: 0;
+            background-color: var(--bg-black);
+            color: white;
             font-family: 'Poppins', sans-serif;
-            background: var(--bg-light); /* Fond clair pour faire ressortir le violet/bleu */
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
-        }
-
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        /* Titre FLOY avec ton dégradé */
-        .brand-name {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 5px;
-            letter-spacing: -1px;
-        }
-
-        .gradient-text {
-            background: var(--floy-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 14px;
+        /* Logo animé */
+        .logo-container {
             margin-bottom: 30px;
+            animation: fadeIn 1.5s ease-in;
         }
 
-        /* Champs de saisie */
-        .input-group {
-            text-align: left;
-            margin-bottom: 15px;
+        .logo-main {
+            width: 120px;
+            height: 120px;
+            border-radius: 30px;
+            box-shadow: 0 0 30px rgba(255, 140, 0, 0.2);
         }
 
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1.5px solid #eee;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        h1 span {
+            color: var(--floy-orange);
+        }
+
+        .tagline {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 40px;
+            max-width: 250px;
+        }
+
+        /* Boutons fonctionnels */
+        .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .btn-primary {
+            background: var(--floy-orange);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
             transition: 0.3s;
         }
 
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--floy-blue);
-            background: #fff;
-        }
-
-        /* Bouton principal Violet/Bleu */
-        .btn-main {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            background: var(--floy-gradient);
+        .btn-secondary {
+            background: transparent;
             color: white;
+            border: 2px solid #222;
+            padding: 14px;
+            border-radius: 15px;
             font-weight: 600;
-            font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
         }
 
-        /* Séparateur */
-        .separator {
-            margin: 25px 0;
-            border-bottom: 1px solid #eee;
-            position: relative;
-        }
-
-        .separator span {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 0 10px;
-            color: #aaa;
-            font-size: 12px;
-        }
-
-        /* Boutons Sociaux */
-        .social-btns {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn-social {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background: white;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .btn-google { color: #ea4335; }
-        .btn-facebook { color: #1877f2; }
+        .btn-primary:active { transform: scale(0.95); }
 
         .footer-text {
-            margin-top: 25px;
-            font-size: 14px;
-            color: #888;
+            position: absolute;
+            bottom: 30px;
+            font-size: 12px;
+            color: #444;
         }
 
-        .footer-text a {
-            color: var(--floy-blue);
-            text-decoration: none;
-            font-weight: 600;
-        }
+        .badge-mini { color: var(--floy-blue); font-size: 10px; }
     </style>
 </head>
 <body>
 
-    <div style="text-align: center; padding: 50px;">
-    <img src="icons/logo.png" alt="Floy Logo" style="width: 150px; height: 150px;">
-</div>
-    <div class="login-card">
-        <h1 class="brand-name">F<span class="gradient-text">LOY</span></h1>
-        <p class="subtitle">Connectez-vous pour explorer</p>
+    <div class="logo-container">
+        <img src="logo.png" alt="Floy Logo" class="logo-main">
+    </div>
 
-        <form>
-            <div class="input-group">
-                <label>E-mail</label>
-                <input type="email" placeholder="nom@exemple.com">
-            </div>
-            <div class="input-group">
-                <label>Mot de passe</label>
-                <input type="password" placeholder="••••••••">
-            </div>
-            <button type="button" class="btn-main" onclick="window.location.href='feed.html'">Se connecter</button>
-        </form>
+    <h1>Bienvenue sur <span>Floy</span></h1>
+    <p class="tagline">Partagez vos moments, gagnez des récompenses <i class="fas fa-check-circle badge-mini"></i></p>
 
-        <div class="separator"><span>OU</span></div>
+    <div class="auth-buttons">
+        <button class="btn-primary" onclick="window.location.href='feed.html'">Commencer l'aventure</button>
+        <button class="btn-secondary" onclick="window.location.href='signup.html'">Créer un compte</button>
+    </div>
 
-        <div class="social-btns">
-            <button class="btn-social btn-google">
-                <i class="fab fa-google"></i> Google
-            </button>
-            <button class="btn-social btn-facebook">
-                <i class="fab fa-facebook-f"></i> Facebook
-            </button>
-        </div>
-
-        <p class="footer-text">
-            Nouveau sur FLOY ? <a href="signup.html">S'inscrire</a>
-        </p>
+    <div class="footer-text">
+        Propulsé par Threndly Tech
     </div>
 
 </body>
