@@ -3,45 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLOY - Messages</title>
     <link rel="stylesheet" href="style.css">
-    <title>Floy - Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="chat-page">
-    <div class="chat-container">
-        <header class="chat-header">
-            <div class="header-left">
-                <a href="feed.html" class="back-arrow">←</a>
-                <div class="user-info">
-                    <div class="avatar-small"></div>
-                    <div>
-                        <span class="username">Floy Support</span>
-                        <span class="status">En ligne</span>
-                    </div>
+<body class="dark-theme">
+    <div class="messages-container">
+        <div class="messages-header">
+            <h1>Boîte de réception</h1>
+            <i class="fas fa-plus-circle"></i>
+        </div>
+
+        <div class="stories-row">
+            <div class="story-item">
+                <div class="story-plus"><i class="fas fa-plus"></i></div>
+                <span>Votre story</span>
+            </div>
+            <div class="story-item">
+                <div class="story-avatar online">
+                    <img src="https://via.placeholder.com/50" alt="User">
                 </div>
+                <span>Ami 1</span>
             </div>
-            <button class="menu-dots">⋮</button>
-        </header>
+        </div>
 
-        <main class="chat-messages" id="chatBox">
-            <div class="msg-group received">
-                <div class="msg-content">Bienvenue dans ton espace de messagerie Floy. Pose tes questions ici !</div>
-                <span class="msg-time">14:02</span>
+        <div class="chat-list">
+            <div class="chat-item">
+                <div class="chat-avatar">
+                    <img src="https://via.placeholder.com/60" alt="User">
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">
+                        <strong>FLOY Team</strong>
+                        <span class="badge-certifie"><i class="fas fa-check-circle"></i></span>
+                    </div>
+                    <p class="chat-preview">Bienvenue sur FLOY ! Profitez de l'app...</p>
+                </div>
+                <span class="chat-time">12:45</span>
             </div>
-            
-            <div class="msg-group sent">
-                <div class="msg-content">Merci ! J'adore le design noir et violet.</div>
-                <span class="msg-time">14:05</span>
-            </div>
-        </main>
 
-        <footer class="chat-footer">
-            <div class="input-wrapper">
-                <button class="attach-icon">📎</button>
-                <input type="text" id="userInput" placeholder="Message..." onkeypress="handleKey(event)">
-                <button class="send-btn-pro" onclick="sendMessage()">➤</button>
+            <div class="chat-item">
+                <div class="chat-avatar">
+                    <img src="https://via.placeholder.com/60" alt="User">
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">
+                        <strong>Jean Dupont</strong>
+                    </div>
+                    <p class="chat-preview">Hey ! J'ai adoré ta dernière vidéo ! 🔥</p>
+                </div>
+                <span class="chat-time">Hier</span>
             </div>
-        </footer>
+        </div>
     </div>
-    <script src="script.js"></script>
+
+    <nav class="bottom-nav">
+        <a href="feed.html"><i class="fas fa-home"></i></a>
+        <a href="explore.html"><i class="fas fa-search"></i></a>
+        <a href="upload.html" class="upload-icon"><i class="fas fa-plus"></i></a>
+        <a href="message.html" class="active-nav"><i class="fas fa-envelope"></i></a>
+        <a href="profile.html"><i class="fas fa-user"></i></a>
+    </nav>
 </body>
 </html>
