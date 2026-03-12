@@ -3,71 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOY - Notifications</title>
+    <title>Threndly - Notifications</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --threndly-violet: #8a2be2;
+            --threndly-blue: #007bff;
+        }
+
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        .notif-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 0.5px solid #111;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .notif-list {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            gap: 12px;
+            transition: 0.3s;
+        }
+
+        .notif-item:active {
+            background: #111;
+        }
+
+        .notif-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--threndly-violet), var(--threndly-blue));
+            flex-shrink: 0;
+        }
+
+        .notif-content {
+            flex: 1;
+            font-size: 13px;
+        }
+
+        .notif-content b {
+            color: white;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        .notif-preview {
+            width: 40px;
+            height: 50px;
+            background: #222;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .follow-btn {
+            background: var(--threndly-violet);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Badge bleu */
+        .verified-notif {
+            color: var(--threndly-blue);
+            font-size: 10px;
+            margin-left: 2px;
+        }
+    </style>
 </head>
-<body class="dark-theme">
-    <div class="notif-container">
-        <div class="notif-header">
-            <h1>Activités</h1>
-            <div class="notif-filter">
-                <span>Toute l'activité <i class="fas fa-caret-down"></i></span>
+<body>
+
+    <div class="notif-header">Toute l'activité</div>
+
+    <div class="notif-list">
+        <div class="notif-item">
+            <div class="notif-avatar"></div>
+            <div class="notif-content">
+                <b>Arlein</b> <i class="fas fa-check-circle verified-notif"></i> a aimé votre vidéo.
+                <div class="notif-time">Il y a 2m</div>
             </div>
+            <div class="notif-preview"></div>
         </div>
 
-        <div class="notif-section">
-            <h3 class="section-date">Aujourd'hui</h3>
-            
-            <div class="notif-item">
-                <div class="notif-avatar">
-                    <img src="https://via.placeholder.com/45" alt="User">
-                    <div class="notif-icon heart"><i class="fas fa-heart"></i></div>
-                </div>
-                <div class="notif-content">
-                    <p><strong>Floy_Fan</strong> a aimé votre vidéo. <span>2h</span></p>
-                </div>
-                <div class="notif-preview">
-                    <img src="https://via.placeholder.com/40x55" alt="Video">
-                </div>
+        <div class="notif-item">
+            <div class="notif-avatar" style="filter: hue-rotate(45deg);"></div>
+            <div class="notif-content">
+                <b>Bouta</b> a commencé à vous suivre.
+                <div class="notif-time">Il y a 1h</div>
             </div>
-
-            <div class="notif-item">
-                <div class="notif-avatar">
-                    <img src="https://via.placeholder.com/45" alt="User">
-                    <div class="notif-icon follow"><i class="fas fa-user-plus"></i></div>
-                </div>
-                <div class="notif-content">
-                    <p><strong>Admin_Floy</strong> <span class="badge-certifie"><i class="fas fa-check-circle"></i></span> a commencé à vous suivre. <span>5h</span></p>
-                </div>
-                <button class="btn-follow-back">S'abonner</button>
-            </div>
+            <button class="follow-btn">Retour</button>
         </div>
 
-        <div class="notif-section">
-            <h3 class="section-date">Cette semaine</h3>
-            
-            <div class="notif-item">
-                <div class="notif-avatar">
-                    <img src="https://via.placeholder.com/45" alt="User">
-                    <div class="notif-icon comment"><i class="fas fa-comment"></i></div>
-                </div>
-                <div class="notif-content">
-                    <p><strong>Kolo_Design</strong> a commenté : "Incroyable cette vidéo ! 🔥" <span>Hier</span></p>
-                </div>
-                <div class="notif-preview">
-                    <img src="https://via.placeholder.com/40x55" alt="Video">
-                </div>
+        <div class="notif-item">
+            <div class="notif-avatar" style="filter: hue-rotate(90deg);"></div>
+            <div class="notif-content">
+                <b>User123</b> a commenté : "Incroyable cette app ! 🔥"
+                <div class="notif-time">Il y a 3h</div>
             </div>
+            <div class="notif-preview"></div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="feed.html"><i class="fas fa-home"></i></a>
-        <a href="explore.html"><i class="fas fa-search"></i></a>
-        <a href="upload.html" class="upload-icon"><i class="fas fa-plus"></i></a>
-        <a href="message.html"><i class="fas fa-envelope"></i></a>
-        <a href="notifications.html" class="active-nav"><i class="fas fa-inbox"></i></a>
+        <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
+        <i class="fas fa-search nav-icon" onclick="window.location.href='explore.html'"></i>
+        <div style="background:white; color:black; padding:6px 15px; border-radius:10px;" onclick="window.location.href='upload.html'"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-comment nav-icon active"></i>
+        <i class="fas fa-user nav-icon" onclick="window.location.href='profile.html'"></i>
     </nav>
+
 </body>
 </html>
