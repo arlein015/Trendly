@@ -90,8 +90,8 @@
 async function sendMessage() {
     const text = messageInput.value.trim();
     // On récupère le pseudo enregistré (ou "Anonyme" s'il n'y en a pas)
-    const currentUser = localStorage.getItem('floy_username') || "Anonyme";
-
+   const currentUser = localStorage.getItem('floy_username');
+div.classList.add('msg', data.sender === currentUser ? 'msg-sent' : 'msg-received');
     if (text !== "") {
         try {
             await addDoc(collection(db, "chats"), {
