@@ -2,48 +2,111 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Vérification - FLOY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Vérification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="logo.png">
+
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 350px; }
-        .otp-box { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
-        .otp-box input { width: 40px; height: 50px; text-align: center; font-size: 20px; border: 2px solid #ddd; border-radius: 8px; }
-        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        :root {
+            --floy-orange: #ff8c00;
+            --bg-black: #000000;
+        }
+
+        body {
+            margin: 0; background: var(--bg-black); color: white;
+            font-family: 'Poppins', sans-serif; display: flex; align-items: center;
+            justify-content: center; min-height: 100vh;
+        }
+
+        .verify-card {
+            width: 90%; max-width: 380px; text-align: center; padding: 20px;
+        }
+
+        .logo-small { width: 70px; margin-bottom: 20px; border-radius: 15px; }
+
+        h2 { margin-bottom: 10px; font-weight: 700; }
+        p { color: #888; font-size: 14px; margin-bottom: 30px; }
+
+        /* Conteneur des 6 chiffres */
+        .code-container {
+            display: flex; justify-content: space-between; gap: 8px; margin-bottom: 30px;
+        }
+
+        .code-input {
+            width: 45px; height: 55px; background: #111; border: 1px solid #222;
+            border-radius: 10px; color: white; text-align: center; font-size: 24px;
+            font-weight: 700; outline: none; transition: 0.3s;
+        }
+
+        .code-input:focus { border-color: var(--floy-orange); box-shadow: 0 0 10px rgba(255, 140, 0, 0.2); }
+
+        .btn-verify {
+            width: 100%; background: var(--floy-orange); color: white; border: none;
+            padding: 16px; border-radius: 12px; font-weight: 700; font-size: 16px;
+            cursor: pointer; transition: 0.3s;
+        }
+
+        .resend-link {
+            margin-top: 25px; font-size: 13px; color: #555;
+        }
+
+        .resend-link span { color: var(--floy-orange); cursor: pointer; font-weight: 600; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h3>Vérifier votre code</h3>
-        <p id="timer">Expire dans 60s</p>
-        <div class="otp-box" id="inputs">
-            <input type="text" maxlength="1"> <input type="text" maxlength="1">
-            <input type="text" maxlength="1"> <input type="text" maxlength="1">
-            <input type="text" maxlength="1"> <input type="text" maxlength="1">
+
+    <div class="verify-card">
+        <img src="logo.png" alt="Floy" class="logo-small">
+        <h2>Vérifiez votre email</h2>
+        <p>Entrez le code à 6 chiffres envoyé à votre adresse email pour finaliser l'inscription.</p>
+
+        <div class="code-container" id="otp-inputs">
+            <input type="text" class="code-input" maxlength="1" oninput="moveNext(this, 0)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveNext(this, 1)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveNext(this, 2)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveNext(this, 3)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveNext(this, 4)">
+            <input type="text" class="code-input" maxlength="1" oninput="moveNext(this, 5)">
         </div>
-        <button onclick="verify()">Valider</button>
+
+        <button class="btn-verify" onclick="checkCode()">Confirmer</button>
+        
+        <div class="resend-link">
+            Vous n'avez rien reçu ? <span onclick="alert('Un nouveau code a été envoyé !')">Renvoyer le code</span>
+        </div>
     </div>
 
     <script>
-        // Auto-focus des cases
-        const inps = document.querySelectorAll('.otp-box input');
-        inps.forEach((p, i) => {
-            p.oninput = () => { if(p.value && i < 5) inps[i+1].focus(); };
+        const inputs = document.querySelectorAll('.code-input');
+
+        // Déplacement automatique vers la case suivante
+        function moveNext(current, index) {
+            if (current.value.length === 1 && index < 5) {
+                inputs[index + 1].focus();
+            }
+        }
+
+        // Gestion du bouton de retour (Backspacer)
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === "Backspace" && input.value === "" && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
         });
 
-        function verify() {
-            let code = "";
-            inps.forEach(p => code += p.value);
-            
-            const real = localStorage.getItem('validOTP');
-            const exp = localStorage.getItem('otpExpiration');
+        function checkCode() {
+            let fullCode = "";
+            inputs.forEach(i => fullCode += i.value);
 
-            if (Date.now() > exp) return alert("Code expiré !");
-            
-            if (code === real) {
-                alert("Compte activé !");
+            if (fullCode.length === 6) {
+                alert("Vérification réussie ! Bienvenue sur Floy.");
                 window.location.href = 'feed.html';
             } else {
-                alert("Code incorrect !");
+                alert("Veuillez entrer les 6 chiffres du code.");
             }
         }
     </script>
