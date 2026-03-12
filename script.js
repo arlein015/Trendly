@@ -97,3 +97,18 @@ function updateWallet(amount) {
         balanceElement.innerText = currentBalance.toFixed(2) + " $";
     }
 }
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Vérification rapide des mots de passe
+    const pass = document.getElementById('reg_pass').value;
+    const confirm = document.getElementById('reg_confirm').value;
+    
+    if (pass !== confirm) {
+        alert("Les mots de passe ne correspondent pas !");
+        return;
+    }
+
+    // Redirection vers la vérification à 6 chiffres
+    window.location.href = 'verify.html';
+});
