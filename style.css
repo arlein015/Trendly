@@ -60,3 +60,23 @@
     font-size: 20px;
     cursor: pointer;
 }
+/* --- PROFIL --- */
+.profile-header { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #1a1a1a; }
+.profile-info { text-align: center; padding: 20px; }
+.profile-avatar { width: 90px; height: 90px; background: linear-gradient(var(--violet), var(--bleu)); border-radius: 50%; margin: 0 auto 10px; }
+.stats-row { display: flex; justify-content: center; gap: 30px; margin: 15px 0; }
+.stat { display: flex; flex-direction: column; font-size: 14px; }
+.edit-profile-btn { background: #222; color: white; border: 1px solid #444; padding: 10px 40px; border-radius: 5px; }
+.video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.video-item { background: #111; aspect-ratio: 9/16; border: 0.5px solid #050505; }
+
+/* --- UPLOAD --- */
+.upload-container { padding: 20px; }
+.upload-box { border: 2px dashed var(--violet); border-radius: 15px; padding: 40px; text-align: center; background: #0a0a0a; margin-bottom: 20px; }
+.upload-icon { font-size: 40px; margin-bottom: 10px; }
+.upload-details textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid #222; color: white; height: 80px; font-size: 16px; margin-bottom: 20px; outline: none; }
+.post-btn { width: 100%; background: var(--violet); color: white; padding: 15px; border: none; border-radius: 30px; font-weight: bold; box-shadow: 0 0 15px var(--violet); }
+
+/* --- BOTTOM NAV --- */
+.bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #1a1a1a; font-size: 24px; }
+.upload-center { background: white; color: black !important; padding: 0 15px; border-radius: 10px; font-weight: bold; }
