@@ -2,20 +2,46 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Mon Profil - Floy</title>
+    <title>Profil - Floy</title>
 </head>
-<body>
-    <div style="text-align: center; padding: 40px 20px; border-bottom: 1px solid #333;">
-        <div style="width: 100px; height: 100px; background: linear-gradient(45deg, var(--violet), var(--bleu)); border-radius: 50%; margin: 0 auto 15px;"></div>
-        <h3>@ton_pseudo</h3>
-        <p style="color: gray;">0 Abonnés • 0 Abonnements</p>
-        <button style="background: #222; color: white; border: 1px solid #444; padding: 8px 20px; border-radius: 5px; margin-top: 10px;">Modifier le profil</button>
+<body class="profile-page">
+    <header class="profile-header">
+        <a href="feed.html" class="back-btn">←</a>
+        <span class="profile-username">Mon Profil</span>
+        <button class="settings-icon">⚙️</button>
+    </header>
+
+    <section class="profile-info">
+        <div class="profile-avatar"></div>
+        <h2 class="user-handle">@createur_floy</h2>
+        <div class="stats-row">
+            <div class="stat"><strong>128</strong><span>Abonnés</span></div>
+            <div class="stat"><strong>256</strong><span>Abonnements</span></div>
+            <div class="stat"><strong>1.2k</strong><span>Likes</span></div>
+        </div>
+        <button class="edit-profile-btn">Modifier le profil</button>
+    </section>
+
+    <nav class="profile-tabs">
+        <button class="active">Vidéos</button>
+        <button>❤️</button>
+    </nav>
+    <div class="video-grid">
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
+        <div class="video-item"></div>
     </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-top: 2px;">
-        <div style="aspect-ratio: 9/16; background: #111;"></div>
-        <div style="aspect-ratio: 9/16; background: #111;"></div>
-        <div style="aspect-ratio: 9/16; background: #111;"></div>
-    </div>
+
+    <footer class="bottom-nav">
+        <a href="feed.html">🏠</a>
+        <a href="upload.html" class="upload-center">+</a>
+        <a href="message.html">💬</a>
+        <a href="profile.html" class="active-tab">👤</a>
+    </footer>
 </body>
 </html>
