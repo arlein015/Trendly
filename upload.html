@@ -3,49 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threndly - Publier une vidéo</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Threndly - Publier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
-            --threndly-violet: #8a2be2;
-            --threndly-blue: #007bff;
+            --bg-violet: #1a0033; /* Violet de tes captures d'écran */
+            --floy-orange: #ff8c00; /* Orange vif pour l'action principale */
+            --floy-cyan: #00e5ff; /* Cyan pour la certification */
+            --glass-dark: rgba(0, 0, 0, 0.6);
         }
 
         body {
-            background-color: #000;
-            color: white;
-            font-family: 'Poppins', sans-serif;
             margin: 0;
+            background: linear-gradient(180deg, var(--bg-violet) 0%, #000000 100%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            color: white;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
         }
 
-        .upload-header {
-            padding: 20px;
+        /* Header sombre */
+        .header {
+            padding: 50px 20px 15px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 0.5px solid #111;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .upload-container {
+        /* Zone de sélection vidéo */
+        .upload-area {
             flex: 1;
-            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
         }
 
-        /* Zone de sélection de fichier */
-        .drop-zone {
+        .upload-box {
             width: 100%;
+            max-width: 300px;
             aspect-ratio: 9/12;
-            background: #050505;
-            border: 2px dashed #222;
-            border-radius: 20px;
+            background: var(--glass-dark);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -54,142 +63,101 @@
             transition: 0.3s;
         }
 
-        .drop-zone:active {
-            border-color: var(--threndly-violet);
-            background: rgba(138, 43, 226, 0.05);
+        .upload-box:active {
+            transform: scale(0.95);
+            border-color: var(--floy-orange);
         }
 
-        .drop-zone i {
+        .upload-icon {
             font-size: 50px;
-            color: var(--threndly-violet);
+            color: var(--floy-orange);
             margin-bottom: 15px;
-            text-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
         }
 
-        /* Champs d'infos */
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* Champs d'information */
+        .form-section {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 30px 30px 0 0;
+            backdrop-filter: blur(20px);
         }
 
-        .input-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #888;
-        }
-
-        .input-group textarea, .input-group input {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 12px;
+        .input-caption {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
             color: white;
             font-family: inherit;
-            outline: none;
             resize: none;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 15px;
         }
 
-        .input-group textarea:focus {
-            border-color: var(--threndly-blue);
-        }
-
-        /* Bouton Publier */
-        .publish-btn {
-            background: linear-gradient(90deg, var(--threndly-violet), var(--threndly-blue));
+        .btn-publish {
+            width: 100%;
+            background: var(--floy-orange);
             color: white;
             border: none;
-            padding: 16px;
+            padding: 18px;
             border-radius: 15px;
             font-weight: 700;
             font-size: 16px;
-            margin-top: auto;
-            margin-bottom: 80px;
             cursor: pointer;
-            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(255, 140, 0, 0.2);
         }
 
-        /* Prévisualisation (cachée par défaut) */
-        #videoPreview {
-            display: none;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 18px;
+        /* Navigation basse (Noire comme l'image) */
+        .nav-bar {
+            height: 75px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
+
+        .nav-item { color: white; font-size: 22px; opacity: 0.5; }
+        .nav-item.active { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="upload-header">
+    <div class="header">
         <i class="fas fa-times" onclick="window.history.back()"></i>
-        <h3 style="margin:0; font-size: 18px;">Nouvelle Publication</h3>
-        <div style="width: 20px;"></div> </div>
-
-    <div class="upload-container">
-        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-            <video id="videoPreview" autoplay muted loop></video>
-            <div id="uploadContent">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p style="margin:0; font-weight: 600;">Sélectionner une vidéo</p>
-                <span style="font-size: 11px; color: #555;">MP4 ou MOV recommandé</span>
-            </div>
-            <input type="file" id="fileInput" accept="video/*" hidden onchange="previewVideo(event)">
-        </div>
-
-        <div class="input-group">
-            <label>Légende</label>
-            <textarea id="caption" rows="3" placeholder="Écris une légende captivante... #Threndly #Fun"></textarea>
-        </div>
-
-        <div class="input-group">
-            <label>Lieu</label>
-            <input type="text" placeholder="Ajouter un lieu">
-        </div>
-
-        <button class="publish-btn" onclick="handlePublish()">Publier sur Threndly</button>
+        <span style="font-weight: 700;">Nouvelle Publication</span>
+        <span style="color: var(--floy-cyan); font-weight: 600; font-size: 14px;">Brouillons</span>
     </div>
 
-    <nav class="bottom-nav">
-        <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
-        <i class="fas fa-search nav-icon" onclick="window.location.href='explore.html'"></i>
-        <div style="background:white; color:black; padding:6px 15px; border-radius:10px;"><i class="fas fa-plus"></i></div>
-        <i class="fas fa-comment nav-icon" onclick="window.location.href='message.html'"></i>
-        <i class="fas fa-user nav-icon" onclick="window.location.href='profile.html'"></i>
+    <div class="upload-area">
+        <div class="upload-box" onclick="document.getElementById('file-input').click()">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <span style="font-weight: 600;">Sélectionner une vidéo</span>
+            <span style="font-size: 12px; opacity: 0.5; margin-top: 5px;">Format MP4 conseillé</span>
+            <input type="file" id="file-input" style="display: none;" accept="video/*">
+        </div>
+    </div>
+
+    <div class="form-section">
+        <textarea class="input-caption" rows="3" placeholder="Ajoutez une légende... #Style #Mode"></textarea>
+        
+        <div style="display: flex; justify-content: space-between; padding: 10px 0 20px; font-size: 14px;">
+            <span><i class="fas fa-map-marker-alt"></i> Ajouter un lieu</span>
+            <i class="fas fa-chevron-right" style="opacity: 0.5;"></i>
+        </div>
+
+        <button class="btn-publish" onclick="alert('Vidéo en cours de publication...')">Publier la vidéo</button>
+    </div>
+
+    <nav class="nav-bar">
+        <i class="fas fa-home nav-item" onclick="window.location.href='feed.html'"></i>
+        <i class="fas fa-compass nav-item"></i>
+        <div style="background: linear-gradient(to right, #00e5ff, #a456f0); padding: 5px 15px; border-radius: 10px;"><i class="fas fa-plus" style="color: black;"></i></div>
+        <i class="fas fa-envelope nav-item" onclick="window.location.href='messages.html'"></i>
+        <i class="fas fa-user nav-item" onclick="window.location.href='profile.html'"></i>
     </nav>
 
-    <script>
-        function previewVideo(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const videoPreview = document.getElementById('videoPreview');
-                const uploadContent = document.getElementById('uploadContent');
-                const url = URL.createObjectURL(file);
-                
-                videoPreview.src = url;
-                videoPreview.style.display = 'block';
-                uploadContent.style.display = 'none';
-                document.getElementById('dropZone').style.border = 'none';
-            }
-        }
-
-        function handlePublish() {
-            const caption = document.getElementById('caption').value;
-            if (!document.getElementById('fileInput').files[0]) {
-                alert("Veuillez d'abord sélectionner une vidéo !");
-                return;
-            }
-            
-            // Simuler le chargement
-            const btn = document.querySelector('.publish-btn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication en cours...';
-            btn.style.opacity = '0.7';
-
-            setTimeout(() => {
-                alert("Vidéo publiée avec succès sur Threndly !");
-                window.location.href = 'feed.html';
-            }, 2000);
-        }
-    </script>
 </body>
 </html>
