@@ -4,41 +4,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FLOY - Feed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --floy-blue: #007bff;
+            --floy-violet: #8a2be2;
+            --floy-gradient: linear-gradient(135deg, #007bff 0%, #8a2be2 100%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000; /* Fond noir pour les vidéos */
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            overflow: hidden; /* Empêche le scroll global pour le style mobile */
+        }
+
+        /* Container principal */
+        .feed-container {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header (Abonnements / Pour toi) */
+        .top-nav {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 10;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .nav-item { opacity: 0.6; cursor: pointer; }
+        .nav-item.active { opacity: 1; border-bottom: 2px solid white; }
+
+        /* Zone Vidéo */
+        .video-wrapper {
+            flex: 1;
+            background: #111; /* Simule une vidéo qui charge */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Barre d'actions à droite */
+        .action-bar {
+            position: absolute;
+            right: 15px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 5;
+        }
+
+        .action-item {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .action-item i {
+            font-size: 28px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .action-item span { font-size: 12px; font-weight: 600; }
+
+        /* Infos de la vidéo en bas à gauche */
+        .video-info {
+            position: absolute;
+            left: 15px;
+            bottom: 90px;
+            max-width: 70%;
+            z-index: 5;
+        }
+
+        .user-name { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        .description { font-size: 14px; margin: 8px 0; }
+        .music-info { font-size: 13px; display: flex; align-items: center; gap: 8px; }
+
+        /* Barre de navigation basse */
+        .bottom-nav {
+            height: 70px;
+            background: rgba(0,0,0,0.9);
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+
+        .nav-icon {
+            color: var(--floy-violet); /* Tes couleurs violettes */
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .plus-icon {
+            font-size: 30px;
+            background: white;
+            color: black;
+            width: 45px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .badge-verified { color: #1d75bd; font-size: 14px; }
+    </style>
 </head>
-<body class="feed-body">
-    <div class="video-wrapper">
+<body>
+
+    <div class="feed-container">
         <div class="top-nav">
-            <span>Abonnements</span>
-            <span class="active">Pour toi</span>
+            <span class="nav-item">Abonnements</span>
+            <span class="nav-item active">Pour toi</span>
         </div>
 
-        <video src="votre-video.mp4" class="full-video" loop autoplay muted></video>
+        <div class="video-wrapper">
+            <p style="color: #444;">[ Vidéo FLOY en cours de lecture ]</p>
 
-        <div class="video-ui">
-            <div class="right-sidebar">
-                <div class="action"><i class="fas fa-heart"></i><span>12.5k</span></div>
-                <div class="action"><i class="fas fa-comment-dots"></i><span>850</span></div>
-                <div class="action"><i class="fas fa-share"></i><span>Partager</span></div>
+            <div class="action-bar">
+                <div class="action-item">
+                    <i class="fas fa-heart"></i>
+                    <span>12.5k</span>
+                </div>
+                <div class="action-item">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>850</span>
+                </div>
+                <div class="action-item">
+                    <i class="fas fa-share"></i>
+                    <span>Partager</span>
+                </div>
             </div>
 
-            <div class="bottom-info">
-                <h3>@user_floy <i class="fas fa-check-circle badge-blue"></i></h3>
-                <p>Regardez ce nouveau challenge sur #FLOY ! 🚀 ✨</p>
-                <div class="music"><i class="fas fa-music"></i> Son original - FLOY Music</div>
+            <div class="video-info">
+                <div class="user-name">
+                    @user_floy <i class="fas fa-check-circle badge-verified"></i>
+                </div>
+                <div class="description">
+                    Regardez ce nouveau challenge sur #FLOY ! 🚀 ✨
+                </div>
+                <div class="music-info">
+                    <i class="fas fa-music"></i> <span>Son original - FLOY Music</span>
+                </div>
             </div>
         </div>
+
+        <nav class="bottom-nav">
+            <i class="fas fa-home nav-icon"></i>
+            <i class="fas fa-search nav-icon"></i>
+            <div class="plus-icon"><i class="fas fa-plus"></i></div>
+            <i class="fas fa-comment nav-icon"></i>
+            <i class="fas fa-user nav-icon"></i>
+        </nav>
     </div>
 
-    <nav class="main-nav">
-        <a href="feed.html"><i class="fas fa-house"></i></a>
-        <a href="explore.html"><i class="fas fa-magnifying-glass"></i></a>
-        <div class="add-button-container">
-            <a href="upload.html" class="add-btn-gradient"><i class="fas fa-plus"></i></a>
-        </div>
-        <a href="message.html"><i class="fas fa-envelope"></i></a>
-        <a href="profile.html"><i class="fas fa-user"></i></a>
-    </nav>
 </body>
 </html>
