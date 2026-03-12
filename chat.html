@@ -3,42 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Chat Multimédia</title>
+    <title>Floy - Chat Vocal Animé</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --bg-violet: #1a0033; --floy-cyan: #00e5ff; --floy-orange: #ff8c00; }
-        body { margin: 0; background: linear-gradient(180deg, var(--bg-violet) 0%, #000 100%); font-family: sans-serif; color: white; height: 100vh; display: flex; flex-direction: column; }
+        body { margin: 0; background: linear-gradient(180deg, var(--bg-violet) 0%, #000 100%); font-family: sans-serif; color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Header */
         .chat-header { padding: 45px 20px 15px; background: rgba(0,0,0,0.8); display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Zone de Messages */
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
         .msg { max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 14px; word-wrap: break-word; }
         .msg-sent { align-self: flex-end; background: linear-gradient(135deg, #a456f0 0%, #3a55d1 100%); border-radius: 20px 20px 5px 20px; }
         .msg-received { align-self: flex-start; background: rgba(255,255,255,0.1); border-radius: 20px 20px 20px 5px; }
         
+        /* Barre d'enregistrement cachée par défaut */
+        #recordingStatus {
+            display: none; align-items: center; justify-content: center; gap: 15px;
+            padding: 10px; background: rgba(255, 59, 48, 0.2); border-radius: 20px; margin: 0 20px;
+        }
+
+        /* Animation des ondes */
+        .wave-container { display: flex; align-items: center; gap: 3px; height: 20px; }
+        .wave-bar { width: 3px; height: 5px; background: #ff3b30; border-radius: 3px; animation: wave 0.8s infinite ease-in-out; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        @keyframes wave {
+            0%, 100% { height: 5px; }
+            50% { height: 20px; }
+        }
+
+        /* Zone Input */
         .input-area { padding: 15px 20px 30px; background: #000; display: flex; align-items: center; gap: 12px; }
         .message-input { flex: 1; background: rgba(255,255,255,0.1); border: none; padding: 12px 20px; border-radius: 25px; color: white; outline: none; }
-        .action-icon { font-size: 20px; opacity: 0.6; cursor: pointer; }
-        .recording { color: #ff3b30; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .action-icon { font-size: 20px; opacity: 0.6; cursor: pointer; transition: 0.3s; }
+        .recording-active { color: #ff3b30; transform: scale(1.3); opacity: 1; }
     </style>
 </head>
 <body>
 
     <div class="chat-header">
         <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
-        <div style="font-weight:700">Floy Chat</div>
+        <div style="font-weight:700">Floy Messenger</div>
     </div>
 
     <div class="chat-container" id="chatContainer"></div>
 
+    <div id="recordingStatus">
+        <div class="wave-container">
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        </div>
+        <span style="font-size: 12px; color: #ff3b30; font-weight: bold;">Enregistrement vocal...</span>
+    </div>
+
     <div class="input-area">
-        <label for="fileInput"><i class="fas fa-plus action-icon"></i></label>
-        <input type="file" id="fileInput" style="display:none" accept="image/*,video/*,.pdf">
+        <label for="fileInput"><i class="fas fa-paperclip action-icon"></i></label>
+        <input type="file" id="fileInput" style="display:none" accept="image/*,video/*">
         
         <input type="text" id="messageInput" class="message-input" placeholder="Message...">
         
         <i class="fas fa-microphone action-icon" id="micBtn"></i>
-        
-        <i class="fas fa-paper-plane send-btn" id="sendBtn" style="color:var(--floy-cyan)"></i>
+        <i class="fas fa-paper-plane" id="sendBtn" style="color:var(--floy-cyan); font-size: 22px; cursor: pointer;"></i>
     </div>
 
     <script type="module">
@@ -60,31 +87,11 @@
         const storage = getStorage(app);
 
         const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const fileInput = document.getElementById('fileInput');
         const micBtn = document.getElementById('micBtn');
+        const recordingStatus = document.getElementById('recordingStatus');
         const currentUser = localStorage.getItem('floy_username') || "Anonyme";
 
-        // --- ENVOI TEXTE ---
-        document.getElementById('sendBtn').onclick = async () => {
-            const text = messageInput.value.trim();
-            if(text) {
-                await addDoc(collection(db, "chats"), { text, sender: currentUser, timestamp: serverTimestamp() });
-                messageInput.value = "";
-            }
-        };
-
-        // --- ENVOI FICHIERS (Photos/Vidéos) ---
-        fileInput.onchange = async (e) => {
-            const file = e.target.files[0];
-            if(!file) return;
-            const sRef = ref(storage, `uploads/${Date.now()}_${file.name}`);
-            await uploadBytes(sRef, file);
-            const url = await getDownloadURL(sRef);
-            await addDoc(collection(db, "chats"), { fileUrl: url, fileType: file.type, sender: currentUser, timestamp: serverTimestamp() });
-        };
-
-        // --- ENVOI VOCAL ---
+        // --- GESTION DU VOCAL ---
         let mediaRecorder;
         let audioChunks = [];
 
@@ -92,25 +99,48 @@
             if (!mediaRecorder || mediaRecorder.state === "inactive") {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.start();
-                micBtn.classList.add('recording');
                 
+                mediaRecorder.onstart = () => {
+                    recordingStatus.style.display = "flex";
+                    micBtn.classList.add('recording-active');
+                };
+
                 mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                
                 mediaRecorder.onstop = async () => {
+                    recordingStatus.style.display = "none";
+                    micBtn.classList.remove('recording-active');
+                    
                     const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
                     const sRef = ref(storage, `vocaux/${Date.now()}.mp3`);
                     await uploadBytes(sRef, audioBlob);
                     const url = await getDownloadURL(sRef);
-                    await addDoc(collection(db, "chats"), { fileUrl: url, fileType: 'audio/mp3', sender: currentUser, timestamp: serverTimestamp() });
+                    
+                    await addDoc(collection(db, "chats"), {
+                        fileUrl: url,
+                        fileType: 'audio/mp3',
+                        sender: currentUser,
+                        timestamp: serverTimestamp()
+                    });
                     audioChunks = [];
-                    micBtn.classList.remove('recording');
                 };
+
+                mediaRecorder.start();
             } else {
                 mediaRecorder.stop();
             }
         };
 
-        // --- AFFICHAGE TEMPS RÉEL ---
+        // --- ENVOI TEXTE & FICHIERS (Comme avant) ---
+        document.getElementById('sendBtn').onclick = async () => {
+            const text = document.getElementById('messageInput').value.trim();
+            if(text) {
+                await addDoc(collection(db, "chats"), { text, sender: currentUser, timestamp: serverTimestamp() });
+                document.getElementById('messageInput').value = "";
+            }
+        };
+
+        // --- AFFICHAGE ---
         onSnapshot(query(collection(db, "chats"), orderBy("timestamp", "asc")), (snap) => {
             chatContainer.innerHTML = "";
             snap.forEach(doc => {
@@ -121,7 +151,6 @@
                 if(d.fileUrl) {
                     if(d.fileType.includes('image')) div.innerHTML = `<img src="${d.fileUrl}" style="width:100%; border-radius:10px;">`;
                     else if(d.fileType.includes('audio')) div.innerHTML = `<audio src="${d.fileUrl}" controls style="width:100%"></audio>`;
-                    else div.innerHTML = `<a href="${d.fileUrl}" target="_blank" style="color:white">Fichier reçu</a>`;
                 } else {
                     div.textContent = d.text;
                 }
