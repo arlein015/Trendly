@@ -46,3 +46,29 @@ function sendMessage() {
         chatBox.scrollTop = chatBox.scrollHeight; // Scrolle auto vers le bas
     }
 }
+// Gestion du lecteur vidéo automatique
+const videos = document.querySelectorAll('video');
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.play();
+        } else {
+            entry.target.pause();
+            entry.target.currentTime = 0; // Recommencer au début quand on revient
+        }
+    });
+}, { threshold: 0.7 }); // Se lance quand 70% de la vidéo est visible
+
+videos.forEach(video => observer.observe(video));
+
+// Système de Like Professionnel
+function toggleLike(button) {
+    button.classList.toggle('active');
+    
+    // Animation de pulsation
+    if (button.classList.contains('active')) {
+        button.style.transform = "scale(1.4)";
+        setTimeout(() => button.style.transform = "scale(1)", 200);
+    }
+}
