@@ -88,3 +88,12 @@ if(videoInput) {
         }
     };
 }
+// Exemple de mise à jour du solde (à lier avec ta base de données plus tard)
+function updateWallet(amount) {
+    const balanceElement = document.getElementById('userBalance');
+    if (balanceElement) {
+        let currentBalance = parseFloat(balanceElement.innerText);
+        currentBalance += amount;
+        balanceElement.innerText = currentBalance.toFixed(2) + " $";
+    }
+}
