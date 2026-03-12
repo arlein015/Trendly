@@ -6,20 +6,19 @@
     <title>Bienvenue sur Floy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="icon" type="image/png" href="logo.png">
 
     <style>
         :root {
-            --floy-orange: #ff8c00;      /* Orange du logo */
-            --floy-blue: #0000cd;       /* Bleu du logo */
-            --bg-black: #000000;
+            --floy-gradient: linear-gradient(135deg, #3a55d1 0%, #a456f0 100%);
+            --floy-orange: #ff5e3a;
+            --floy-cyan: #00e5ff;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-black);
+            margin: 0; padding: 0;
+            background: var(--floy-gradient);
+            background-attachment: fixed;
             color: white;
             font-family: 'Poppins', sans-serif;
             height: 100vh;
@@ -30,100 +29,51 @@
             text-align: center;
         }
 
-        /* Logo animé */
-        .logo-container {
-            margin-bottom: 30px;
-            animation: fadeIn 1.5s ease-in;
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px 20px;
+            border-radius: 30px;
+            width: 85%;
+            max-width: 350px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
 
         .logo-main {
-            width: 120px;
-            height: 120px;
-            border-radius: 30px;
-            box-shadow: 0 0 30px rgba(255, 140, 0, 0.2);
+            width: 100px; height: 100px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        h1 span {
-            color: var(--floy-orange);
-        }
-
-        .tagline {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 40px;
-            max-width: 250px;
-        }
-
-        /* Boutons fonctionnels */
-        .auth-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 80%;
-            max-width: 300px;
-        }
+        h1 { font-size: 28px; margin-bottom: 10px; }
+        .tagline { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 30px; }
+        .badge-mini { color: var(--floy-cyan); font-size: 12px; }
 
         .btn-primary {
-            background: var(--floy-orange);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 15px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
+            width: 100%; background: var(--floy-orange); color: white; border: none;
+            padding: 16px; border-radius: 15px; font-weight: 700; font-size: 16px;
+            cursor: pointer; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(255, 94, 58, 0.3);
         }
 
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid #222;
-            padding: 14px;
-            border-radius: 15px;
-            font-weight: 600;
-            cursor: pointer;
+        .btn-outline {
+            width: 100%; background: rgba(255,255,255,0.05); color: white;
+            border: 1px solid rgba(255,255,255,0.3); padding: 14px;
+            border-radius: 15px; font-weight: 600; cursor: pointer;
         }
-
-        .btn-primary:active { transform: scale(0.95); }
-
-        .footer-text {
-            position: absolute;
-            bottom: 30px;
-            font-size: 12px;
-            color: #444;
-        }
-
-        .badge-mini { color: var(--floy-blue); font-size: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="logo-container">
-        <img src="logo.png" alt="Floy Logo" class="logo-main">
-    </div>
+    <div class="glass-container">
+        <img src="logo.png" alt="Floy" class="logo-main">
+        <h1>Bienvenue sur Floy</h1>
+        <p class="tagline">Créez, partagez et gagnez <i class="fas fa-check-circle badge-mini"></i></p>
 
-    <h1>Bienvenue sur <span>Floy</span></h1>
-    <p class="tagline">Partagez vos moments, gagnez des récompenses <i class="fas fa-check-circle badge-mini"></i></p>
-
-    <div class="auth-buttons">
-        <button class="btn-primary" onclick="window.location.href='feed.html'">Commencer l'aventure</button>
-        <button class="btn-secondary" onclick="window.location.href='signup.html'">Créer un compte</button>
-    </div>
-
-    <div class="footer-text">
-        Propulsé par Threndly Tech
+        <button class="btn-primary" onclick="window.location.href='feed.html'">Explorer</button>
+        <button class="btn-outline" onclick="window.location.href='signup.html'">Créer un compte</button>
     </div>
 
 </body>
