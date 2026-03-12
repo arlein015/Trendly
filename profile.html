@@ -85,14 +85,18 @@
         .nav-icon { color: var(--floy-dark-gray); font-size: 22px; cursor: pointer; transition: 0.2s; }
         .nav-icon.active { color: var(--floy-orange); }
         .center-plus { background: white; color: black; padding: 6px 15px; border-radius: 10px; font-size: 20px; }
+    /* Intègre le CSS ci-dessus ici */
+    .profile-header { background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); }
+    .avatar-wrapper { border: 3px solid white; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+    .btn-wallet-link { background: var(--floy-orange); box-shadow: 0 4px 15px rgba(255, 94, 58, 0.4); }
     </style>
 </head>
 <body>
 
     <div class="profile-header">
-        <i class="fas fa-chart-line" onclick="window.location.href='analytics.html'" style="cursor: pointer;"></i>
+        <i class="fas fa-chart-line" onclick="window.location.href='analytics.html'"></i>
         <span style="font-weight: 700;">@createur_floy</span>
-        <i class="fas fa-bars" onclick="window.location.href='settings.html'" style="cursor: pointer;"></i>
+        <i class="fas fa-bars" onclick="window.location.href='settings.html'"></i>
     </div>
 
     <div class="profile-main-info">
