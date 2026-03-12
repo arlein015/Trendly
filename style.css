@@ -320,3 +320,74 @@ body.dark-theme {
     height: 100%;
     object-fit: cover;
 }
+/* Style Page Messages */
+.messages-container {
+    padding-bottom: 80px;
+}
+
+.messages-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 15px;
+    background: #000;
+}
+
+.messages-header h1 { font-size: 20px; margin: 0; }
+.messages-header i { font-size: 22px; color: var(--violet-brand); }
+
+/* Stories / Amis en ligne */
+.stories-row {
+    display: flex;
+    gap: 15px;
+    padding: 10px 15px;
+    overflow-x: auto;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.story-item {
+    text-align: center;
+    min-width: 65px;
+}
+
+.story-avatar, .story-plus {
+    width: 55px; height: 55px;
+    border-radius: 50%;
+    margin: 0 auto 5px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #333;
+}
+
+.story-avatar.online { border-color: #00ff00; }
+.story-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+.story-plus { background: #1a1a1a; color: #888; border-style: dashed; }
+.story-item span { font-size: 11px; color: #888; }
+
+/* Liste des chats */
+.chat-list { padding: 10px 0; }
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 15px;
+    transition: background 0.2s;
+}
+
+.chat-item:active { background: #0a0a0a; }
+
+.chat-avatar img { width: 55px; height: 55px; border-radius: 50%; }
+
+.chat-info { flex: 1; }
+.chat-name { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; }
+
+.badge-certifie { color: #2f81f7; font-size: 14px; }
+
+.chat-preview { 
+    margin: 0; font-size: 13px; color: #888; 
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+    max-width: 200px;
+}
+
+.chat-time { font-size: 11px; color: #555; }
