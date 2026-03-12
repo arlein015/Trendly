@@ -8,54 +8,41 @@
     <style>
         body {
             margin: 0;
-            background: #1a0033; /* Violet Profond de image_014a9f.png */
+            background: #1a0033; /* Violet sombre Floy */
             font-family: sans-serif;
             color: white;
         }
         .header {
             padding: 50px 20px 15px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .chat-list { padding: 20px; }
-        .chat-item {
+            background: #000; /* Noir pur de tes images */
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
         }
-        .nav-bar {
+        .nav-bottom {
             position: fixed; bottom: 0; width: 100%; height: 70px;
             background: #000; display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .plus-btn { background: linear-gradient(to right, #00e5ff, #a456f0); padding: 5px 15px; border-radius: 10px; color: black; }
     </style>
 </head>
 <body>
     <div class="header">
-        <i class="fas fa-arrow-left" onclick="window.location.href='feed.html'"></i>
-        <b>Floy Messenger</b>
+        <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
+        <span style="font-weight: bold;">Floy Messenger</span>
     </div>
 
-    <div class="chat-list">
-        <div class="chat-item" onclick="window.location.href='chat.html'">
-            <div style="width:50px; height:50px; background:#444; border-radius:50%"></div>
-            <div>
-                <div style="font-weight:bold">@bouta <i class="fas fa-check-circle" style="color:#00e5ff"></i></div>
-                <div style="font-size:12px; opacity:0.6">Test de connexion...</div>
-            </div>
-        </div>
+    <div style="padding: 20px;">
+        <p style="opacity: 0.5;">Tes discussions privées s'afficheront ici.</p>
     </div>
 
-    <nav class="nav-bar">
+    <nav class="nav-bottom">
         <i class="fas fa-home" onclick="window.location.href='feed.html'"></i>
         <i class="fas fa-compass"></i>
-        <div class="plus-btn"><i class="fas fa-plus"></i></div>
-        <i class="fas fa-comment-alt" style="opacity:1"></i>
+        <div style="background: linear-gradient(to right, #00e5ff, #a456f0); padding: 5px 15px; border-radius: 10px; color: black;">
+            <i class="fas fa-plus"></i>
+        </div>
+        <i class="fas fa-comment-alt" style="opacity: 1;"></i>
         <i class="fas fa-user" onclick="window.location.href='profile.html'"></i>
     </nav>
 </body>
