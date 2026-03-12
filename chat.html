@@ -86,22 +86,25 @@
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
 
-        // Envoyer un message vers Firestore
-        async function sendMessage() {
-            const text = messageInput.value.trim();
-            if (text !== "") {
-                try {
-                    await addDoc(collection(db, "chats"), {
-                        text: text,
-                        sender: "moi", // On pourra changer "moi" par l'ID utilisateur plus tard
-                        timestamp: serverTimestamp()
-                    });
-                    messageInput.value = "";
-                } catch (e) {
-                    console.error("Erreur d'envoi:", e);
-                }
-            }
+      // Remplace la fonction sendMessage existante par celle-ci :
+async function sendMessage() {
+    const text = messageInput.value.trim();
+    // On récupère le pseudo enregistré (ou "Anonyme" s'il n'y en a pas)
+    const currentUser = localStorage.getItem('floy_username') || "Anonyme";
+
+    if (text !== "") {
+        try {
+            await addDoc(collection(db, "chats"), {
+                text: text,
+                sender: currentUser, // Utilise maintenant le vrai pseudo !
+                timestamp: serverTimestamp()
+            });
+            messageInput.value = "";
+        } catch (e) {
+            console.error("Erreur d'envoi:", e);
         }
+    }
+}
 
         sendBtn.onclick = sendMessage;
         messageInput.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
