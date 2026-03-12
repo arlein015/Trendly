@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threndly - Bienvenue</title>
+    <title>Floy - Bienvenue</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-violet: #1a0033;
-            --floy-orange: #ff8c00;
-        }
+        :root { --bg-violet: #1a0033; --floy-orange: #ff8c00; }
         body {
             margin: 0; height: 100vh;
-            background: linear-gradient(180deg, var(--bg-violet) 0%, #000000 100%);
+            background: #000; /* Fond noir pur comme ton image */
             display: flex; align-items: center; justify-content: center;
             font-family: 'Poppins', sans-serif; color: white;
         }
-        .welcome-card {
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(20px);
-            padding: 40px; border-radius: 40px; text-align: center;
-            width: 85%; max-width: 350px; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .btn-main {
+        .welcome-card { text-align: center; width: 85%; max-width: 400px; }
+        .logo-text { font-size: 14px; opacity: 0.8; margin-bottom: 40px; }
+        .main-title { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+        .highlight { color: var(--floy-orange); }
+        .subtitle { font-size: 14px; opacity: 0.6; margin-bottom: 40px; }
+        .btn-orange {
             width: 100%; background: var(--floy-orange); border: none;
-            padding: 18px; border-radius: 20px; color: white;
-            font-weight: 700; font-size: 16px; margin-top: 25px; cursor: pointer;
+            padding: 18px; border-radius: 15px; color: white;
+            font-weight: 700; font-size: 16px; cursor: pointer; margin-bottom: 15px;
+        }
+        .btn-outline {
+            width: 100%; background: transparent; border: 1px solid #333;
+            padding: 18px; border-radius: 15px; color: white; font-weight: 700;
         }
     </style>
 </head>
 <body>
     <div class="welcome-card">
-        <h1>Bienvenue sur <span style="color:var(--floy-orange)">Threndly</span></h1>
-        <p style="opacity:0.7">Partagez vos moments, gagnez des récompenses</p>
-        <button class="btn-main" onclick="window.location.href='feed.html'">Commencer l'aventure</button>
+        <div class="logo-text">Floy Logo</div>
+        <h1 class="main-title">Bienvenue sur <span class="highlight">Floy</span></h1>
+        <p class="subtitle">Partagez vos moments, gagnez des récompenses <span style="color:#0033ff">●</span></p>
+        
+        <button class="btn-orange" onclick="window.location.href='feed.html'">Commencer l'aventure</button>
+        <button class="btn-outline">Créer un compte</button>
     </div>
 </body>
 </html>
