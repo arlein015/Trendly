@@ -63,19 +63,17 @@ body {
     cursor: pointer;
 }
 
-/* --- Boutons d'action principaux --- */
-.btn-main {
-    background: var(--floy-orange); /* Orange vif */
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);
+/* Remplace l'ancienne définition du bouton par celle-ci */
+.ton-bouton-classe { /* Remplace '.ton-bouton-classe' par le bon sélecteur CSS de ton bouton */
+  background: linear-gradient(135deg, #7F00FF 0%, #00FFFF 100%); /* Le cœur du changement : violet vers cyan/bleu */
+  border: none; /* Enlève la bordure par défaut si nécessaire */
+  color: white; /* Assure-toi que le texte reste lisible en blanc */
+  /* Ajoute un léger effet de lueur (glow) pour le thème néon (optionnel mais cool) */
+  box-shadow: 0 0 15px rgba(127, 0, 255, 0.5); 
+  transition: box-shadow 0.3s ease; /* Pour l'effet au survol */
 }
 
-.btn-main:active {
-    transform: scale(0.98);
-    opacity: 0.9;
+/* Effet au survol pour plus d'interactivité */
+.ton-bouton-classe:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.7); /* Lueur plus forte et bleutée au survol */
 }
