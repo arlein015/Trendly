@@ -3,145 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Feed</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Threndly - Feed</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <link rel="icon" type="image/png" href="logo.png">
-
     <style>
-        :root {
-            /* TON NOUVEAU THÈME (Inspiré de f2.jpg) */
-            --floy-gradient: linear-gradient(135deg, #3a55d1 0%, #a456f0 100%);
-            --floy-orange: #ff5e3a;      /* Orange vif du logo */
-            --floy-cyan: #00e5ff;        /* Bleu Cyan exact du badge */
-            --glass: rgba(255, 255, 255, 0.1);
-        }
-
-        .feed-header {
-        display: flex; justify-content: center; gap: 20px;
-        padding: 40px 10px 10px; font-weight: 600; font-size: 15px;
-    }
-    .header-tab { opacity: 0.6; cursor: pointer; border-bottom: 2px solid transparent; padding-bottom: 5px; }
-    .header-tab.active { opacity: 1; border-bottom: 2px solid white; }
-
-    .stories-row {
-        display: flex; gap: 15px; padding: 15px; overflow-x: auto;
-    }
-    .story-circle {
-        width: 60px; height: 60px; border-radius: 50%;
-        border: 2px solid #a456f0; padding: 2px;
-    }
-    .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-
-    .video-data { position: absolute; bottom: 100px; left: 15px; }
-    .badge-cyan { color: var(--floy-cyan); margin-left: 5px; }
-        body { 
-            margin: 0; padding: 0; 
-            background: var(--floy-gradient); 
-            background-attachment: fixed;
-            font-family: 'Poppins', sans-serif; color: white; 
-            overflow: hidden; height: 100vh; 
-        }
-
-        /* Container Principal */
-        .feed-container { position: relative; height: 100vh; width: 100%; }
-
-        /* Effet de flou sur le fond pour faire ressortir les éléments */
-        .video-overlay {
-            position: absolute; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            z-index: 1;
-        }
-
-        /* Badge de certification Bleu Cyan exact */
-        .badge-verified {
-            color: var(--floy-cyan) !important;
-            margin-left: 5px;
-            filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.5));
-        }
-
-        /* Barre d'actions latérale (Effet Brillant) */
-        .action-bar { 
-            position: absolute; right: 15px; bottom: 120px; 
-            display: flex; flex-direction: column; gap: 20px; z-index: 10; 
-        }
-        .action-item { 
-            text-align: center; cursor: pointer; 
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            padding: 10px; border-radius: 50%;
-            width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .action-item i { font-size: 22px; }
-        .action-item.liked i { color: #ff2d55; }
-
-        /* Infos Créateur */
-        .video-info { 
-            position: absolute; left: 15px; bottom: 100px; z-index: 10; 
-        }
-        .user-name { font-weight: 700; font-size: 17px; display: flex; align-items: center; margin-bottom: 5px; }
-
-        /* Barre de Navigation (Glassmorphism) */
-        .bottom-nav { 
-            position: fixed; bottom: 0; width: 100%; height: 75px; 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex; justify-content: space-around; align-items: center; z-index: 100; 
-        }
-        .nav-icon { color: rgba(255,255,255,0.5); font-size: 22px; cursor: pointer; }
-        .nav-icon.active { color: white; filter: drop-shadow(0 0 8px white); }
+        body { margin: 0; background: #1a0033; font-family: 'Poppins', sans-serif; color: white; }
+        .header-tabs { display: flex; justify-content: center; gap: 20px; padding: 45px 10px 10px; font-weight: 600; }
+        .tab.active { border-bottom: 2px solid white; }
+        .stories { display: flex; gap: 15px; padding: 15px; overflow-x: auto; }
+        .story { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #a456f0; padding: 2px; }
+        .story img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         
-        .plus-btn { 
-            background: white; color: black; padding: 6px 15px; border-radius: 12px; 
-            font-size: 20px; box-shadow: 0 4px 15px rgba(255,255,255,0.3);
-        }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; display: flex; justify-content: space-around; align-items: center; }
+        .plus-btn { background: linear-gradient(to right, #00e5ff, #a456f0); padding: 5px 15px; border-radius: 10px; color: black; }
+        .notif { position: relative; }
+        .badge { position: absolute; top: -5px; right: -8px; background: #ff3b30; font-size: 10px; padding: 2px 6px; border-radius: 10px; border: 2px solid #000; }
     </style>
 </head>
 <body>
-
-    <div class="feed-header">
-    <span class="header-tab">Suivi</span>
-    <span class="header-tab active">Pour toi</span>
-    <span class="header-tab">Live</span>
-</div>
-
-<div class="stories-row">
-    <div class="story-circle"><img src="user1.jpg"></div>
-    <div class="story-circle"><img src="user2.jpg"></div>
-    <div class="story-circle"><img src="user3.jpg"></div>
-</div>
-
-<div class="video-data">
-    <div style="font-weight: 700; font-size: 18px;">@bouta <i class="fas fa-check-circle badge-cyan"></i></div>
-    <p style="font-size: 14px; margin-top: 5px;">Découvrez la collection Luther's Fashion 2024 !</p>
-    <div style="font-size: 13px; opacity: 0.8;"><i class="fas fa-music"></i> Original 2024</div>
-</div>
-    <div class="feed-container">
-        <div class="video-overlay"></div>
-
-        <div class="video-info">
-            <div class="user-name">@bouta <i class="fas fa-check-circle badge-verified"></i></div>
-            <div class="description">Découvrez la collection ! #Style #Premium 🚀</div>
-        </div>
-
-        <div class="action-bar">
-            <div class="action-item" onclick="this.classList.toggle('liked')"><i class="fas fa-heart"></i></div>
-            <div class="action-item"><i class="fas fa-comment-dots"></i></div>
-            <div class="action-item"><i class="fas fa-share"></i></div>
-        </div>
-
-        <nav class="bottom-nav">
-            <i class="fas fa-home nav-icon active" onclick="window.location.href='feed.html'"></i>
-            <i class="fas fa-search nav-icon" onclick="window.location.href='explore.html'"></i>
-            <div class="plus-btn" onclick="window.location.href='upload.html'"><i class="fas fa-plus"></i></div>
-            <i class="fas fa-bell nav-icon" onclick="window.location.href='norifications.html'"></i>
-            <i class="fas fa-user nav-icon" onclick="window.location.href='profile.html'"></i>
-        </nav>
+    <div class="header-tabs">
+        <span class="tab">Suivi</span>
+        <span class="tab active">Pour toi</span>
+        <span class="tab">Live</span>
     </div>
-
+    <div class="stories">
+        <div class="story"><img src="user1.jpg"></div>
+        <div class="story"><img src="user2.jpg"></div>
+        <div class="story"><img src="user3.jpg"></div>
+    </div>
+    <nav class="nav-bar">
+        <i class="fas fa-home"></i>
+        <i class="fas fa-compass"></i>
+        <div class="plus-btn"><i class="fas fa-plus"></i></div>
+        <div class="notif" onclick="window.location.href='messages.html'"><i class="fas fa-comment-alt"></i><span class="badge">1</span></div>
+        <i class="fas fa-user" onclick="window.location.href='profile.html'"></i>
+    </nav>
 </body>
 </html>
