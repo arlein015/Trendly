@@ -3,50 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOY - Profil</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Profil - Threndly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --threndly-blue: #007bff;
+            --threndly-violet: #8a2be2;
+            --threndly-gradient: linear-gradient(135deg, #007bff 0%, #8a2be2 100%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+
+        /* Header du Profil */
+        .profile-header {
+            padding: 40px 20px 20px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--threndly-gradient);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 3px solid #111;
+        }
+
+        .username {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .stat-item span {
+            display: block;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .stat-item label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .edit-btn {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Onglets (Vidéos / Enregistrements) */
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid #222;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .tab.active {
+            color: white;
+            border-bottom: 2px solid white;
+        }
+
+        /* Grille de vidéos */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            padding: 2px;
+        }
+
+        .video-item {
+            aspect-ratio: 9 / 16;
+            background: #111;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .video-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .video-views {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background: #000;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-icon { color: var(--threndly-violet); font-size: 22px; }
+        .plus-icon { background: white; color: black; padding: 5px 15px; border-radius: 10px; }
+    </style>
 </head>
-<body class="dark-theme">
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-pic-container">
-                <img src="https://via.placeholder.com/100" alt="Photo de profil" class="profile-img">
-            </div>
-            <h2 class="username">@votre_username <span class="badge-certifie"> <i class="fas fa-check-circle"></i></span></h2>
-            <p class="bio">Créateur de contenu sur FLOY 🚀</p>
-            
-            <div class="profile-stats">
-                <div class="stat"><strong>0</strong><span>Abonnements</span></div>
-                <div class="stat"><strong>0</strong><span>Abonnés</span></div>
-                <div class="stat"><strong>0</strong><span>J'aime</span></div>
-            </div>
+<body>
 
-            <div class="profile-actions">
-                <button class="btn-edit">Modifier le profil</button>
-                <a href="wallet.html" class="btn-wallet-link"><i class="fas fa-wallet"></i></a>
-            </div>
+    <div class="profile-header">
+        <div class="profile-pic"><i class="fas fa-user"></i></div>
+        <div class="username">@utilisateur_threndly</div>
+        
+        <div class="stats">
+            <div class="stat-item"><span>128</span><label>Abonnements</label></div>
+            <div class="stat-item"><span>4.5k</span><label>Abonnés</label></div>
+            <div class="stat-item"><span>12k</span><label>Likes</label></div>
         </div>
 
-        <div class="video-grid-tabs">
-            <div class="tab active"><i class="fas fa-th"></i></div>
-            <div class="tab"><i class="fas fa-heart"></i></div>
-        </div>
+        <button class="edit-btn">Modifier le profil</button>
+    </div>
 
-        <div class="video-grid">
-            <div class="grid-item">
-                <img src="https://via.placeholder.com/150x200" alt="Video thumbnail">
-                <div class="view-count"><i class="fas fa-play"></i> 0</div>
-            </div>
-            </div>
+    <div class="profile-tabs">
+        <div class="tab active"><i class="fas fa-th"></i> Mes Vidéos</div>
+        <div class="tab"><i class="fas fa-bookmark"></i> Enregistrées</div>
+    </div>
+
+    <div class="video-grid">
+        <div class="video-item">
+            <div class="video-views"><i class="fas fa-play"></i> 1.2k</div>
+        </div>
+        <div class="video-item">
+            <div class="video-views"><i class="fas fa-play"></i> 850</div>
+        </div>
+        <div class="video-item">
+            <div class="video-views"><i class="fas fa-play"></i> 12k</div>
+        </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="feed.html"><i class="fas fa-home"></i></a>
-        <a href="explore.html"><i class="fas fa-search"></i></a>
-        <a href="upload.html" class="upload-icon"><i class="fas fa-plus"></i></a>
-        <a href="message.html"><i class="fas fa-envelope"></i></a>
-        <a href="profile.html" class="active-nav"><i class="fas fa-user"></i></a>
+        <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
+        <i class="fas fa-search nav-icon"></i>
+        <div class="plus-icon"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-comment nav-icon"></i>
+        <i class="fas fa-user nav-icon" style="color: white;"></i>
     </nav>
+
 </body>
 </html>
