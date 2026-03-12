@@ -4,27 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Floy - Messages</title>
+    <title>Floy - Chat</title>
 </head>
-<body class="chat-body">
-    <div class="chat-header">
-        <a href="feed.html" style="color: white; text-decoration: none;">←</a>
-        <h2>Messages</h2>
-        <span class="online-status">●</span>
-    </div>
+<body class="chat-page">
+    <div class="chat-container">
+        <header class="chat-header">
+            <div class="header-left">
+                <a href="feed.html" class="back-arrow">←</a>
+                <div class="user-info">
+                    <div class="avatar-small"></div>
+                    <div>
+                        <span class="username">Floy Support</span>
+                        <span class="status">En ligne</span>
+                    </div>
+                </div>
+            </div>
+            <button class="menu-dots">⋮</button>
+        </header>
 
-    <div class="messages-container" id="chatBox">
-        <div class="msg received">Bienvenue sur la messagerie Floy ! 🚀</div>
-        <div class="msg sent">Salut ! C'est stylé en violet.</div>
-        <div class="msg received">On peut envoyer des vidéos ici aussi ?</div>
-    </div>
+        <main class="chat-messages" id="chatBox">
+            <div class="msg-group received">
+                <div class="msg-content">Bienvenue dans ton espace de messagerie Floy. Pose tes questions ici !</div>
+                <span class="msg-time">14:02</span>
+            </div>
+            
+            <div class="msg-group sent">
+                <div class="msg-content">Merci ! J'adore le design noir et violet.</div>
+                <span class="msg-time">14:05</span>
+            </div>
+        </main>
 
-    <div class="chat-input-area">
-        <button class="attach-btn">+</button>
-        <input type="text" id="userInput" placeholder="Écris ton message...">
-        <button class="send-btn" onclick="sendMessage()">➤</button>
+        <footer class="chat-footer">
+            <div class="input-wrapper">
+                <button class="attach-icon">📎</button>
+                <input type="text" id="userInput" placeholder="Message..." onkeypress="handleKey(event)">
+                <button class="send-btn-pro" onclick="sendMessage()">➤</button>
+            </div>
+        </footer>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
