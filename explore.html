@@ -2,60 +2,55 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOY - Explorer</title>
+    <title>Threndly - Explorer</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .search-container { padding: 20px; }
+        .search-bar {
+            background: #111;
+            border-radius: 25px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-bar input {
+            background: none; border: none; color: white; width: 100%; outline: none;
+        }
+        .grid-explore {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-top: 10px;
+        }
+        .grid-item {
+            aspect-ratio: 9/16;
+            background: #222;
+            background-size: cover;
+        }
+    </style>
 </head>
-<body class="dark-theme">
-    <div class="explore-container">
-        <div class="search-header">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Rechercher sur FLOY...">
-            </div>
-            <i class="fas fa-qrcode"></i>
-        </div>
-
-        <div class="trending-banner">
-            <div class="banner-content">
-                <span>#ChallengeFloy2026</span>
-                <p>Participez au nouveau défi et gagnez des points !</p>
-            </div>
-        </div>
-
-        <div class="explore-section">
-            <div class="section-title">
-                <span><i class="fas fa-hashtag"></i> Musique</span>
-                <a href="#">Voir plus ></a>
-            </div>
-            <div class="horizontal-scroll">
-                <div class="scroll-item"><img src="https://via.placeholder.com/120x160" alt="Video"></div>
-                <div class="scroll-item"><img src="https://via.placeholder.com/120x160" alt="Video"></div>
-                <div class="scroll-item"><img src="https://via.placeholder.com/120x160" alt="Video"></div>
-                <div class="scroll-item"><img src="https://via.placeholder.com/120x160" alt="Video"></div>
-            </div>
-        </div>
-
-        <div class="explore-section">
-            <div class="section-title">
-                <span><i class="fas fa-hashtag"></i> Humour</span>
-                <a href="#">Voir plus ></a>
-            </div>
-            <div class="horizontal-scroll">
-                <div class="scroll-item"><img src="https://via.placeholder.com/120x160" alt="Video"></div>
-                <div class="scroll-item"><img src="https://via.placeholder.com/120x160" alt="Video"></div>
-                <div class="scroll-item"><img src="https://via.placeholder.com/120x160" alt="Video"></div>
-            </div>
+<body>
+    <div class="search-container">
+        <div class="search-bar">
+            <i class="fas fa-search" style="color: #888;"></i>
+            <input type="text" placeholder="Rechercher des créateurs...">
         </div>
     </div>
 
+    <div class="grid-explore">
+        <div class="grid-item" style="background-image: url('https://via.placeholder.com/200x350')"></div>
+        <div class="grid-item" style="background-image: url('https://via.placeholder.com/200x350')"></div>
+        <div class="grid-item" style="background-image: url('https://via.placeholder.com/200x350')"></div>
+    </div>
+
     <nav class="bottom-nav">
-        <a href="feed.html"><i class="fas fa-home"></i></a>
-        <a href="explore.html" class="active-nav"><i class="fas fa-search"></i></a>
-        <a href="upload.html" class="upload-icon"><i class="fas fa-plus"></i></a>
-        <a href="message.html"><i class="fas fa-envelope"></i></a>
-        <a href="profile.html"><i class="fas fa-user"></i></a>
+        <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
+        <i class="fas fa-search nav-icon active"></i>
+        <div style="background:white; color:black; padding:6px 15px; border-radius:10px;"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-comment nav-icon" onclick="window.location.href='message.html'"></i>
+        <i class="fas fa-user nav-icon" onclick="window.location.href='profile.html'"></i>
     </nav>
 </body>
 </html>
