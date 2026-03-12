@@ -2,31 +2,72 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Threndly - Modifier</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Modifier Profil</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .edit-container { padding: 20px; }
-        .preview-box { width: 100%; height: 200px; background: #111; border-radius: 15px; margin-bottom: 20px; overflow: hidden; }
-        .field { margin-bottom: 20px; }
-        .field label { display: block; color: #555; font-size: 12px; margin-bottom: 8px; }
-        .field input, .field textarea { width: 100%; background: #0a0a0a; border: 1px solid #222; padding: 12px; color: white; border-radius: 10px; box-sizing: border-box; }
-        .save-btn { width: 100%; background: var(--threndly-violet); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        :root { --floy-orange: #ff8c00; --bg-black: #000; }
+        body { margin: 0; background: var(--bg-black); color: white; font-family: 'Poppins', sans-serif; }
+        
+        .header { padding: 20px; display: flex; justify-content: space-between; border-bottom: 0.5px solid #222; }
+        .save-txt { color: var(--floy-orange); font-weight: 700; cursor: pointer; }
+
+        .edit-body { padding: 20px; text-align: center; }
+        
+        .change-photo { margin-bottom: 30px; }
+        .avatar-edit { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--floy-orange); margin-bottom: 10px; }
+        .change-txt { color: var(--floy-orange); font-size: 13px; font-weight: 600; display: block; }
+
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 12px; color: #555; margin-bottom: 8px; margin-left: 5px; }
+        .input-group input, .input-group textarea {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #222;
+            padding: 15px; border-radius: 12px; color: white; outline: none; box-sizing: border-box;
+            font-family: inherit;
+        }
+        .input-group input:focus { border-color: var(--floy-orange); }
     </style>
 </head>
 <body>
-    <div class="edit-container">
-        <h3 style="text-align: center;">Modifier la vidéo</h3>
-        <div class="preview-box"><img src="https://via.placeholder.com/400x200" style="width:100%; height:100%; object-fit:cover;"></div>
-        <div class="field">
-            <label>Légende</label>
-            <textarea rows="4">Super moment avec l'équipe ! #Threndly #Vibes</textarea>
-        </div>
-        <div class="field">
-            <label>Qui peut voir ?</label>
-            <input type="text" value="Tout le monde">
-        </div>
-        <button class="save-btn" onclick="alert('Modifications enregistrées !')">Mettre à jour</button>
+    <div class="header">
+        <i class="fas fa-times" onclick="window.history.back()"></i>
+        <span style="font-weight: 700;">Modifier le profil</span>
+        <span class="save-txt" onclick="saveProfile()">Enregistrer</span>
     </div>
+
+    <div class="edit-body">
+        <div class="change-photo" onclick="document.getElementById('fileInp').click()">
+            <img src="logo.png" class="avatar-edit">
+            <span class="change-txt">Modifier la photo</span>
+            <input type="file" id="fileInp" hidden>
+        </div>
+
+        <div class="input-group">
+            <label>Nom affiché</label>
+            <input type="text" id="displayName" value="Floy Creator">
+        </div>
+
+        <div class="input-group">
+            <label>Nom d'utilisateur (Username)</label>
+            <input type="text" id="username" value="createur_floy">
+        </div>
+
+        <div class="input-group">
+            <label>Bio</label>
+            <textarea id="bio" rows="3">Bienvenue sur mon profil Floy officiel ! 🚀</textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Lien (Site web / Réseaux)</label>
+            <input type="url" id="userLink" placeholder="https://votre-lien.com">
+        </div>
+    </div>
+
+    <script>
+        function saveProfile() {
+            alert("Profil Floy mis à jour avec succès !");
+            window.location.href = 'profile.html';
+        }
+    </script>
 </body>
 </html>
