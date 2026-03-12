@@ -2,39 +2,152 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Threndly - Profil</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Mon Profil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="logo.png">
+
     <style>
-        .profile-header { text-align: center; padding: 40px 20px; }
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; background: var(--threndly-violet); margin: 0 auto 15px; }
-        .stats { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
-        .stat-item b { display: block; font-size: 18px; }
-        .stat-item span { color: #888; font-size: 13px; }
-        .edit-btn {
-            background: #222; border: none; color: white;
-            padding: 10px 40px; border-radius: 5px; font-weight: 600;
+        :root {
+            --floy-orange: #ff8c00;      /* Orange vibrant du logo */
+            --floy-blue: #0000cd;       /* Bleu électrique du logo */
+            --floy-dark-gray: #2f4f4f;  /* Gris anthracite du logo */
+            --bg-black: #000000;
         }
+
+        body { 
+            margin: 0; background: var(--bg-black); color: white; 
+            font-family: 'Poppins', sans-serif; padding-bottom: 90px; 
+        }
+
+        /* Barre d'outils supérieure */
+        .profile-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px; position: sticky; top: 0; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px); z-index: 100;
+        }
+
+        /* En-tête du profil */
+        .profile-main-info { text-align: center; padding: 10px 0 20px; }
+        
+        .avatar-wrapper {
+            width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 15px;
+            background: linear-gradient(45deg, var(--floy-orange), var(--floy-blue));
+            padding: 3px; position: relative;
+        }
+        .avatar-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: black; }
+
+        .name-container { font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .badge-verified { color: var(--floy-blue); font-size: 16px; }
+
+        /* Stats Row */
+        .stats-container { display: flex; justify-content: center; gap: 35px; margin: 25px 0; }
+        .stat-box { text-align: center; cursor: pointer; }
+        .stat-value { display: block; font-weight: 700; font-size: 18px; color: white; }
+        .stat-title { font-size: 12px; color: var(--floy-dark-gray); font-weight: 600; }
+
+        /* Boutons d'action */
+        .action-buttons { display: flex; justify-content: center; gap: 12px; padding: 0 20px; }
+        
+        .btn-edit { 
+            flex: 2; background: #1a1a1a; border: 1px solid #333; color: white; 
+            padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-edit:active { background: #252525; transform: scale(0.98); }
+
+        .btn-wallet-link { 
+            flex: 1; background: var(--floy-orange); color: white; border: none; 
+            padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        /* Grille de contenu */
+        .content-tabs {
+            display: flex; border-top: 1px solid #111; margin-top: 30px;
+        }
+        .tab { flex: 1; text-align: center; padding: 15px; color: var(--floy-dark-gray); font-size: 20px; cursor: pointer; }
+        .tab.active { color: white; border-bottom: 2px solid white; }
+
+        .video-feed-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+        }
+        .video-item { aspect-ratio: 9/12; background: #0a0a0a; position: relative; overflow: hidden; cursor: pointer; }
+        .video-item i { position: absolute; bottom: 8px; left: 8px; font-size: 12px; opacity: 0.8; }
+
+        /* Barre de Navigation (TOUS LES LIENS MARCHENT) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; 
+            border-top: 0.5px solid #111; display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .nav-icon { color: var(--floy-dark-gray); font-size: 22px; cursor: pointer; transition: 0.2s; }
+        .nav-icon.active { color: var(--floy-orange); }
+        .center-plus { background: white; color: black; padding: 6px 15px; border-radius: 10px; font-size: 20px; }
     </style>
 </head>
 <body>
+
     <div class="profile-header">
-        <div class="profile-pic"></div>
-        <h3>@createur_floy <i class="fas fa-check-circle badge-verified"></i></h3>
-        <div class="stats">
-            <div class="stat-item"><b>1.2k</b><span>Abonnés</span></div>
-            <div class="stat-item"><b>450</b><span>Abonnements</span></div>
-            <div class="stat-item"><b>15k</b><span>Likes</span></div>
+        <i class="fas fa-chart-line" onclick="window.location.href='analytics.html'" style="cursor: pointer;"></i>
+        <span style="font-weight: 700;">@createur_floy</span>
+        <i class="fas fa-bars" onclick="window.location.href='settings.html'" style="cursor: pointer;"></i>
+    </div>
+
+    <div class="profile-main-info">
+        <div class="avatar-wrapper">
+            <img src="logo.png" alt="Floy Creator">
         </div>
-        <button class="edit-btn" onclick="window.location.href='edit-video.html'">Modifier le profil</button>
+        <div class="name-container">
+            Floy Creator <i class="fas fa-check-circle badge-verified"></i>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="stat-value">128</span>
+                <span class="stat-title">Abonnements</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">45.8k</span>
+                <span class="stat-title">Abonnés</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">2.4M</span>
+                <span class="stat-title">J'aime</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-edit" onclick="window.location.href='edit-video.html'">Modifier le profil</button>
+            <button class="btn-wallet-link" onclick="window.location.href='wallet.html'">
+                <i class="fas fa-wallet"></i> Portefeuille
+            </button>
+        </div>
+    </div>
+
+    <div class="content-tabs">
+        <div class="tab active"><i class="fas fa-th"></i></div>
+        <div class="tab"><i class="fas fa-heart"></i></div>
+        <div class="tab"><i class="fas fa-bookmark"></i></div>
+    </div>
+
+    <div class="video-feed-grid">
+        <div class="video-item" onclick="window.location.href='feed.html'"><i class="fas fa-play"></i> 12k</div>
+        <div class="video-item" onclick="window.location.href='feed.html'"><i class="fas fa-play"></i> 8k</div>
+        <div class="video-item" onclick="window.location.href='feed.html'"><i class="fas fa-play"></i> 45k</div>
+        <div class="video-item" onclick="window.location.href='feed.html'"></div>
+        <div class="video-item" onclick="window.location.href='feed.html'"></div>
+        <div class="video-item" onclick="window.location.href='feed.html'"></div>
     </div>
 
     <nav class="bottom-nav">
         <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
         <i class="fas fa-search nav-icon" onclick="window.location.href='explore.html'"></i>
-        <div style="background:white; color:black; padding:6px 15px; border-radius:10px;"><i class="fas fa-plus"></i></div>
-        <i class="fas fa-comment nav-icon" onclick="window.location.href='message.html'"></i>
+        <div class="center-plus" onclick="window.location.href='upload.html'"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-bell nav-icon" onclick="window.location.href='norifications.html'"></i>
         <i class="fas fa-user nav-icon active"></i>
     </nav>
+
 </body>
 </html>
