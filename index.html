@@ -140,15 +140,19 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Connexion Google
-        document.getElementById('google-btn').onclick = async () => {
-            try {
-                await signInWithPopup(auth, provider);
-                window.location.href = "chat.html";
-            } catch (error) {
-                console.error("Erreur Google:", error);
-            }
-        };
+        // Connexion Google avec redirection immédiate
+document.getElementById('google-btn').onclick = async () => {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        if (result.user) {
+            console.log("Connexion Google réussie !");
+            window.location.href = "chat.html"; // Redirection directe
+        }
+    } catch (error) {
+        console.error("Erreur Google:", error);
+        alert("La connexion Google a échoué.");
+    }
+};
     </script>
 </body>
 </html>
