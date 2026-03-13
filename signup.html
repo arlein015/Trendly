@@ -3,63 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Inscription</title>
+    <title>S'inscrire - Threndly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --bg: #000000;
+            --card: #0d0d0d;
+            --primary: linear-gradient(135deg, #FF8C00, #7F00FF);
+            --text: #ffffff;
+            --accent: #00FFFF;
+        }
+
         body {
-            margin: 0; height: 100vh;
-            background: linear-gradient(135deg, #ff8c00 0%, #3a01cc 100%) !important;
-            font-family: 'Poppins', sans-serif; color: white;
-            display: flex; align-items: center; justify-content: center;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
-        .signup-card {
-            background: rgba(0, 0, 0, 0.7); /* Mélange noir intense */
-            backdrop-filter: blur(25px); padding: 40px 30px;
-            border-radius: 40px; width: 85%; max-width: 360px;
-            border: 1px solid rgba(255, 255, 255, 0.1); text-align: center;
+        .auth-card {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 25px;
+            border: 1px solid #222;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
         }
 
-        .input-box {
-            width: 100%; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px;
-            border-radius: 15px; color: white; margin-bottom: 15px;
-            box-sizing: border-box; outline: none;
+        .logo-small { font-weight: 900; background: var(--primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.5rem; margin-bottom: 10px; }
+
+        h2 { margin-bottom: 20px; font-weight: 600; }
+
+        .input-group { margin-bottom: 15px; position: relative; }
+        
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
         }
 
-        .input-box:focus { border-color: #ff8c00; }
+        input:focus { border-color: #7F00FF; box-shadow: 0 0 10px rgba(127, 0, 255, 0.2); }
 
-        .btn-reg {
-            width: 100%; background: #ff8c00; color: white;
-            border: none; padding: 16px; border-radius: 15px;
-            font-weight: 700; cursor: pointer; margin-top: 10px;
+        .btn-signup {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
         }
-    .auth-container {
-        height: 100vh; display: flex; flex-direction: column;
-        align-items: center; justify-content: center; padding: 20px;
-    }
-    .input-field {
-        width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
-        padding: 18px; border-radius: 15px; color: white; margin-bottom: 15px;
-    }
-    .btn-orange {
-        width: 100%; background: var(--floy-orange); border: none;
-        padding: 18px; border-radius: 15px; color: white; font-weight: 700;
-    }
+
+        .btn-signup:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255, 140, 0, 0.4); }
+
+        /* Style pour le code de vérification */
+        .verify-box { display: none; } /* Caché par défaut */
+        
+        .code-inputs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        .code-inputs input { width: 45px; height: 50px; text-align: center; font-size: 1.5rem; padding: 0; }
+
+        .footer-text { margin-top: 20px; font-size: 0.9rem; color: #666; }
+        .footer-text a { color: #FF8C00; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
-     <div class="auth-container">
-    <h1 style="margin-bottom: 30px;">Bienvenue sur <span style="color: var(--floy-orange);">Floy</span></h1>
-    <input type="email" class="input-field" placeholder="Email">
-    <input type="password" class="input-field" placeholder="Mot de passe">
-    <button class="btn-orange">Créer un compte</button>
-</div>
-        
-        <button class="btn-reg" onclick="window.location.href='verify.html'">Continuer</button>
-        
-        <p style="font-size: 12px; margin-top: 20px; opacity: 0.6;">
-            Déjà un compte ? <span style="color: #ff8c00; cursor: pointer;" onclick="window.location.href='index.html'">Se connecter</span>
-        </p>
+
+<div class="auth-card" id="signup-step">
+    <div class="logo-small">THRENDLY</div>
+    <h2>Créer un compte</h2>
+    <div class="input-group">
+        <input type="email" id="email" placeholder="Adresse e-mail">
     </div>
+    <div class="input-group">
+        <input type="password" id="password" placeholder="Mot de passe">
+    </div>
+    <button class="btn-signup" id="signup-btn">S'inscrire</button>
+    <div class="footer-text">
+        Déjà un compte ? <a href="login.html">Se connecter</a>
+    </div>
+</div>
+
+<div class="auth-card verify-box" id="verify-step">
+    <div class="logo-small">VÉRIFICATION</div>
+    <p>Entrez le code à 6 chiffres envoyé à votre e-mail.</p>
+    <div class="code-inputs">
+        <input type="text" maxlength="1" class="otp">
+        <input type="text" maxlength="1" class="otp">
+        <input type="text" maxlength="1" class="otp">
+        <input type="text" maxlength="1" class="otp">
+        <input type="text" maxlength="1" class="otp">
+        <input type="text" maxlength="1" class="otp">
+    </div>
+    <button class="btn-signup" id="verify-btn">Vérifier</button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "TON_API_KEY",
+        authDomain: "floy-9f9a1.firebaseapp.com",
+        projectId: "floy-9f9a1",
+        storageBucket: "floy-9f9a1.firebasestorage.app",
+        messagingSenderId: "TON_ID",
+        appId: "TON_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Inscription
+    document.getElementById('signup-btn').onclick = async () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            // Envoyer l'email de vérification Firebase
+            await sendEmailVerification(userCredential.user);
+            
+            // Afficher l'étape du code
+            document.getElementById('signup-step').style.display = 'none';
+            document.getElementById('verify-step').style.display = 'block';
+        } catch (error) {
+            alert("Erreur: " + error.message);
+        }
+    };
+
+    // Simulation de la vérification du code
+    document.getElementById('verify-btn').onclick = () => {
+        alert("Inscription terminée ! Veuillez cliquer sur le lien envoyé par e-mail pour activer votre compte.");
+        window.location.href = "login.html";
+    };
+
+    // Auto-focus pour les cases du code
+    const inputs = document.querySelectorAll('.otp');
+    inputs.forEach((input, index) => {
+        input.oninput = () => {
+            if (input.value && inputs[index + 1]) inputs[index + 1].focus();
+        };
+    });
+</script>
 </body>
 </html>
