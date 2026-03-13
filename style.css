@@ -90,6 +90,19 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Ombre pour le relief */
 }
 
+/* Le conteneur (le petit cadre blanc arrondi) */
+.logo-frame {
+    width: 60px;  /* Ajustez la taille selon vos besoins */
+    height: 60px; /* Doit être carré pour une icône parfaite */
+    background-color: #ffffff; /* Le fond blanc */
+    border-radius: 15px; /* Les coins arrondis style APK */
+    overflow: hidden; /* IMPORTANT : Coupe tout ce qui dépasse des coins arrondis */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Ombre pour le relief */
+}
+
 /* L'image du logo à l'intérieur (image_5.png) */
 .logo-frame img {
     /* La solution magique pour le "plein cadre" */
@@ -97,6 +110,7 @@ body {
     height: 100%;
     object-fit: cover; /* Remplit tout l'espace, sans déformer */
     
-    /* Optionnel : Si votre logo original a des bords, vous pouvez zoomer légèrement */
+    /* Optionnel : Si votre logo a encore des bords invisibles */
+    /* Vous pouvez zoomer légèrement */
     /* transform: scale(1.1); */ 
 }
