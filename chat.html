@@ -13,9 +13,7 @@
             --card: #0a0a0a;
             --primary: linear-gradient(135deg, #7F00FF, #007BFF);
             --accent: #00FFFF;
-            --text: #ffffff;
         }
-
         body {
             background-color: var(--bg);
             color: var(--text);
@@ -40,21 +38,17 @@
 
         .header-title { font-weight: 800; font-size: 1.2rem; background: var(--primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-       .call-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(127, 0, 255, 0.3);
-    color: #fff;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px; /* Carré arrondi plus moderne */
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-       .call-btn:hover {
-    background: var(--primary);
-    border-color: transparent;
-    transform: translateY(-2px);
-}
+       /* Style des boutons du Header (Squircle) */
+        .call-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(127, 0, 255, 0.3);
+            color: #fff;
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+       .call-btn:hover { background: var(--primary); transform: translateY(-2px); }
         /* Zone messages */
         #messages-container {
             flex: 1; overflow-y: auto; padding: 20px;
@@ -79,23 +73,19 @@
             border-bottom-left-radius: 4px;
         }
 
-        /* Zone d'envoi */
+       /* Barre d'envoi "Glassmorphism" */
         .input-area {
-            padding: 15px 20px; background: var(--card);
-            display: flex; align-items: center; gap: 12px; border-top: 1px solid #1a1a1a;
+            padding: 15px 20px;
+            background: var(--card);
+            display: flex; align-items: center; gap: 15px;
+            border-top: 1px solid #1a1a1a;
         }
-
-        .btn-plus {
-    background: transparent;
-    border: none;
-    color: #888;
-    font-size: 22px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-       .btn-plus:hover {
-    color: var(--accent);
-}
+       .btn-plus {
+            background: transparent; border: none;
+            color: #888; font-size: 20px; cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-plus:hover { color: var(--accent); }
         .input-box {
             flex: 1; background: #111; border: 1px solid #333;
             color: #fff; padding: 12px 20px; border-radius: 30px;
@@ -104,18 +94,13 @@
         .input-box:focus { border-color: #7F00FF; }
 
        #send-btn {
-    background: var(--primary);
-    border: none;
-    color: #fff;
-    width: 50px;
-    height: 50px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(127, 0, 255, 0.4);
-    cursor: pointer;
-}
+            background: var(--primary);
+            border: none; color: #fff;
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(127, 0, 255, 0.4);
+        }
         #send-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); }
 
         .recording { background: #ff0000 !important; animation: pulse 1s infinite; }
