@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; img-src * data: blob:; media-src * data: blob:;">
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; img-src * data: blob:; media-src * data: blob:; connect-src *;">
+    
     <link rel="icon" href="data:,">
-    <title>Discussion - Floy</title>
+
+    <title>Chat - Floy</title>
+    
     <style>
         :root {
-            --bg-color: #000000;
-            --card-bg: #111111;
-            --primary-gradient: linear-gradient(135deg, #7F00FF, #007BFF);
-            --accent-blue: #00FFFF;
-            --text-color: #ffffff;
-            --received-msg: #222222;
+            --bg: #000000;
+            --card: #111111;
+            --primary: linear-gradient(135deg, #7F00FF, #00FFFF);
+            --text: #ffffff;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -28,74 +30,85 @@
 
         header {
             padding: 15px;
-            background: var(--card-bg);
+            background: var(--card);
             border-bottom: 1px solid #333;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
 
-        .back-btn { background: none; border: 1px solid var(--accent-blue); color: var(--accent-blue); padding: 5px 10px; border-radius: 8px; cursor: pointer; }
+        #messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-        #messages-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-
-        /* Bulles de messages */
-        .message-wrapper { display: flex; flex-direction: column; position: relative; max-width: 80%; }
-        .sent { align-self: flex-end; align-items: flex-end; }
-        .received { align-self: flex-start; align-items: flex-start; }
-
-        .message-content {
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 15px;
-            cursor: pointer;
+        .msg {
+            max-width: 70%;
+            padding: 12px;
+            border-radius: 15px;
             position: relative;
         }
 
-        .sent .message-content { background: var(--primary-gradient); color: white; border-bottom-right-radius: 2px; }
-        .received .message-content { background-color: var(--received-msg); color: #ddd; border-bottom-left-radius: 2px; border: 1px solid #333; }
-
-        .media-msg { max-width: 100%; border-radius: 10px; margin-bottom: 5px; }
-
-        /* Menu contextuel (Copier/Partager) */
-        .msg-options {
-            display: none;
-            gap: 10px;
-            margin-top: 5px;
+        .sent {
+            align-self: flex-end;
+            background: var(--primary);
+            color: #000;
+            font-weight: 500;
         }
-        .message-wrapper:active .msg-options, .message-wrapper:hover .msg-options { display: flex; }
-        .opt-btn { font-size: 12px; color: var(--accent-blue); background: none; border: none; cursor: pointer; text-decoration: underline; }
 
-        /* Barre d'envoi */
-        .input-area { padding: 15px; background: var(--card-bg); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
-        .controls { display: flex; gap: 10px; align-items: center; }
-        input[type="text"] { flex: 1; background: #222; border: 1px solid #444; padding: 12px; border-radius: 25px; color: white; outline: none; }
-        
-        .file-label { cursor: pointer; color: var(--accent-blue); font-size: 20px; }
-        #file-input { display: none; }
+        .received {
+            align-self: flex-start;
+            background: #222;
+            border: 1px solid #333;
+        }
 
-        #send-btn { background: var(--primary-gradient); border: none; color: white; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; }
+        .input-area {
+            padding: 15px;
+            background: var(--card);
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            padding: 12px;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        button {
+            background: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .media { max-width: 100%; border-radius: 10px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="back-btn" onclick="history.back()">←</button>
-    <div id="chat-title">Discussion Floy</div>
+    <div style="font-weight: bold; color: #7F00FF;">FLOY CHAT</div>
+    <button onclick="window.location.href='index.html'" style="padding: 5px 10px; font-size: 12px;">Retour</button>
 </header>
 
 <div id="messages-container"></div>
 
 <div class="input-area">
-    <div class="controls">
-        <label for="file-input" class="file-label">📷</label>
-        <input type="file" id="file-input" accept="image/*,video/*">
-        <input type="text" id="message-input" placeholder="Message...">
-        <button id="send-btn">Envoyer</button>
-    </div>
+    <input type="file" id="file-input" style="display:none" accept="image/*,video/*">
+    <button onclick="document.getElementById('file-input').click()">📷</button>
+    <input type="text" id="msg-input" placeholder="Message...">
+    <button id="send-btn">Envoyer</button>
 </div>
 
 <script type="module">
@@ -104,6 +117,7 @@
     import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+    // --- REMPLACE PAR TES INFOS FIREBASE ---
     const firebaseConfig = {
         apiKey: "TON_API_KEY",
         authDomain: "floy-9f9a1.firebaseapp.com",
@@ -119,95 +133,57 @@
     const storage = getStorage(app);
 
     const urlParams = new URLSearchParams(window.location.search);
-    const chatId = urlParams.get('id');
-    const messagesContainer = document.getElementById('messages-container');
-    const messageInput = document.getElementById('message-input');
-    const fileInput = document.getElementById('file-input');
+    const chatId = urlParams.get('id') || "test_chat"; // ID de secours
 
-    // --- CHARGER MESSAGES ---
+    // Chargement des messages
     onAuthStateChanged(auth, (user) => {
-        if (!user) window.location.href = "login.html";
-        
-        const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
-        onSnapshot(q, (snapshot) => {
-            messagesContainer.innerHTML = "";
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                renderMessage(data, user.uid);
+        if (!user) {
+            console.log("Utilisateur non connecté");
+            // Pas de redirection automatique ici pour éviter l'erreur 404 pendant tes tests
+        } else {
+            const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
+            onSnapshot(q, (snapshot) => {
+                const container = document.getElementById('messages-container');
+                container.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const d = doc.data();
+                    const div = document.createElement('div');
+                    div.className = `msg ${d.senderId === user.uid ? 'sent' : 'received'}`;
+                    
+                    if(d.type === "image") div.innerHTML += `<img src="${d.url}" class="media">`;
+                    if(d.type === "video") div.innerHTML += `<video src="${d.url}" controls class="media"></video>`;
+                    if(d.text) div.innerHTML += `<div>${d.text}</div>`;
+                    
+                    container.appendChild(div);
+                });
+                container.scrollTop = container.scrollHeight;
             });
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        });
+        }
     });
 
-    function renderMessage(data, currentUid) {
-        const isMe = data.senderId === currentUid;
-        const wrapper = document.createElement('div');
-        wrapper.className = `message-wrapper ${isMe ? 'sent' : 'received'}`;
-
-        let contentHtml = "";
-        if (data.type === "image") {
-            contentHtml = `<img src="${data.url}" class="media-msg">`;
-        } else if (data.type === "video") {
-            contentHtml = `<video src="${data.url}" controls class="media-msg"></video>`;
-        }
-        
-        if (data.text) contentHtml += `<div>${data.text}</div>`;
-
-        wrapper.innerHTML = `
-            <div class="message-content">${contentHtml}</div>
-            <div class="msg-options">
-                <button class="opt-btn" onclick="copyText('${data.text || ''}')">Copier</button>
-                <button class="opt-btn" onclick="shareMsg('${data.text || data.url}')">Partager</button>
-            </div>
-        `;
-        messagesContainer.appendChild(wrapper);
-    }
-
-    // --- ENVOYER ---
-    async function handleSend() {
+    // Envoi
+    document.getElementById('send-btn').onclick = async () => {
+        const text = document.getElementById('msg-input').value;
+        const file = document.getElementById('file-input').files[0];
         const user = auth.currentUser;
-        const text = messageInput.value.trim();
-        const file = fileInput.files[0];
 
+        if (!user) return alert("Connecte-toi d'abord !");
         if (!text && !file) return;
 
-        messageInput.value = "";
-        fileInput.value = "";
-
-        let fileUrl = null;
-        let fileType = "text";
+        document.getElementById('msg-input').value = "";
+        let url = null;
+        let type = "text";
 
         if (file) {
-            const fileRef = ref(storage, `chats/${chatId}/${Date.now()}_${file.name}`);
-            const upload = await uploadBytes(fileRef, file);
-            fileUrl = await getDownloadURL(upload.ref);
-            fileType = file.type.includes("image") ? "image" : "video";
+            const fRef = ref(storage, `chats/${chatId}/${Date.now()}_${file.name}`);
+            await uploadBytes(fRef, file);
+            url = await getDownloadURL(fRef);
+            type = file.type.includes("image") ? "image" : "video";
         }
 
         await addDoc(collection(db, "chats", chatId, "messages"), {
-            text: text,
-            url: fileUrl,
-            type: fileType,
-            senderId: user.uid,
-            timestamp: serverTimestamp()
+            text, url, type, senderId: user.uid, timestamp: serverTimestamp()
         });
-    }
-
-    document.getElementById('send-btn').onclick = handleSend;
-
-    // --- FONCTIONS GLOBALES ---
-    window.copyText = (text) => {
-        if (!text) return;
-        navigator.clipboard.writeText(text);
-        alert("Message copié !");
-    };
-
-    window.shareMsg = (content) => {
-        if (navigator.share) {
-            navigator.share({ title: 'Floy Message', text: content, url: content });
-        } else {
-            alert("Partage non supporté sur ce navigateur");
-        }
     };
 </script>
 </body>
