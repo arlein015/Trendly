@@ -10,28 +10,152 @@
 
     <title>Floy Chat - Ultra</title>
     
-    <style>
-        :root { --bg: #000; --card: #111; --primary: linear-gradient(135deg, #7F00FF, #00FFFF); --text: #fff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        
-        header { padding: 15px; background: var(--card); border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        .call-btns button { background: none; border: 1px solid #7F00FF; color: #7F00FF; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; margin-left: 5px; }
-        
-        #messages-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { max-width: 75%; padding: 12px; border-radius: 18px; line-height: 1.4; }
-        .sent { align-self: flex-end; background: var(--primary); color: #000; font-weight: 500; border-bottom-right-radius: 2px; }
-        .received { align-self: flex-start; background: #222; border: 1px solid #333; border-bottom-left-radius: 2px; }
-        
-        .input-area { padding: 15px; background: var(--card); display: flex; align-items: center; gap: 10px; border-top: 1px solid #333; }
-        input[type="text"] { flex: 1; background: #222; border: 1px solid #444; color: white; padding: 12px; border-radius: 25px; outline: none; }
-        
-        .btn-action { background: var(--primary); border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .recording { background: #ff0000 !important; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        
-        .media { max-width: 100%; border-radius: 12px; margin-top: 5px; }
-        audio { height: 35px; margin-top: 5px; }
-    </style>
+  <style>
+    :root {
+        --bg-color: #000000;
+        --card-bg: #111111; /* Un noir légèrement plus gris pour le contraste */
+        /* Le dégradé signature de Threndly */
+        --primary-gradient: linear-gradient(135deg, #7F00FF, #007BFF); 
+        --accent-blue: #00FFFF; /* Cyan pour les accents */
+        --text-color: #ffffff;
+        --received-msg: #222222; /* Gris foncé pour les messages reçus */
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    /* --- Header (En-tête) Stylé --- */
+    header {
+        padding: 20px;
+        background: var(--card-bg);
+        border-bottom: 1px solid #333; /* Séparation fine */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        /* Ajoute de la profondeur */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
+    }
+
+    header div[style] { /* Titre 'FLOY CHAT' */
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* --- Boutons d'Appel (Rond avec Halo) --- */
+    .call-btns button {
+        background: #1a1a1a;
+        border: 1px solid var(--accent-blue);
+        color: var(--accent-blue);
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        transition: 0.3s;
+        margin-left: 10px;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); /* Halo subtil */
+    }
+
+    .call-btns button:hover {
+        background: var(--accent-blue);
+        color: #000;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    /* --- Bulles de Message Relookées --- */
+    .msg {
+        max-width: 70%;
+        padding: 14px 18px;
+        border-radius: 20px;
+        font-size: 15px;
+        position: relative;
+    }
+
+    /* Bulles envoyées : Ton dégradé de signature */
+    .sent {
+        align-self: flex-end;
+        background: var(--primary-gradient);
+        color: white;
+        font-weight: 500;
+        border-bottom-right-radius: 5px; /* Angle vif pour le style */
+        box-shadow: 0 4px 15px rgba(127, 0, 255, 0.3); /* Ombre colorée */
+    }
+
+    /* Bulles reçues : Style minimaliste */
+    .received {
+        align-self: flex-start;
+        background: var(--received-msg);
+        color: #ddd;
+        border-bottom-left-radius: 5px;
+        border: 1px solid #333;
+    }
+
+    /* --- Barre d'Envoi Design --- */
+    .input-area {
+        padding: 20px;
+        background: var(--card-bg);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-top: 1px solid #333;
+    }
+
+    /* Champ texte stylé */
+    input[type="text"] {
+        flex: 1;
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: white;
+        padding: 15px;
+        border-radius: 30px; /* Plus arrondi */
+        outline: none;
+        transition: 0.3s;
+    }
+
+    input[type="text"]:focus {
+        border-color: var(--accent-blue);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    }
+
+    /* Boutons d'action (Ronds, Effet "Verre") */
+    .btn-action {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        color: #ddd;
+        transition: 0.3s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .btn-action:hover {
+        border-color: #7F00FF;
+        color: white;
+        background: #222;
+    }
+
+    /* Bouton d'envoi principal (Dégradé + Halo) */
+    #send-btn {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+    }
+
+    #send-btn:hover {
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6);
+        transform: scale(1.05); /* Effet d'agrandissement */
+    }
+</style>
 </head>
 <body>
 
