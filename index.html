@@ -6,23 +6,67 @@
     <title>Floy - Bienvenue</title>
     <link rel="icon" type="image/png" href="F4.png">
     <style>
-        :root { --orange-floy: #FF7A1A; --fond: #000000; }
+        :root { 
+            --orange-floy: #FF7A1A; 
+            --fond: #000000; 
+            --gris-icon: #111;
+        }
+        
         body { 
             background: var(--fond); color: white; font-family: 'Inter', sans-serif; 
             margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
-        }
-        
-        .logo-main {
-            width: 130px; height: 130px;
-            background: url('F4.png') no-repeat center;
-            background-size: contain;
-            margin-bottom: 10px;
+            text-align: center; overflow: hidden;
         }
 
-        h1 { font-size: 45px; font-weight: 900; margin: 0; letter-spacing: 2px; }
-        p { color: #888; margin-bottom: 50px; font-size: 16px; }
+        /* --- LE LOGO ICÔNE 3D --- */
+        .floy-icon-3d {
+            width: 140px;
+            height: 140px;
+            background-color: var(--gris-icon);
+            border-radius: 35px; /* Angles arrondis comme ton logo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+            
+            /* Ombre portée pour le relief 3D */
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.8), /* Ombre portée douce */
+                inset 0 2px 5px rgba(255,255,255,0.05), /* Lumière intérieure douce en haut */
+                inset 0 -2px 5px rgba(0,0,0,0.3); /* Ombre intérieure douce en bas */
+            
+            /* Animation de flottement doux */
+            animation: float 4s infinite ease-in-out;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
+        /* Effet au survol/toucher */
+        .floy-icon-3d:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(255, 122, 26, 0.3), /* Halo orange externe */
+                inset 0 2px 5px rgba(255,255,255,0.1);
+        }
+
+        /* Le texte "Floy" à l'intérieur */
+        .floy-icon-3d h1 {
+            font-size: 55px;
+            font-weight: 900;
+            margin: 0;
+            color: var(--orange-floy);
+            
+            /* Effet Néon Orange */
+            text-shadow: 
+                0 0 10px rgba(255, 122, 26, 0.7), 
+                0 0 20px rgba(255, 122, 26, 0.5), 
+                0 0 30px rgba(255, 122, 26, 0.3);
+            
+            letter-spacing: -2px;
+        }
+
+        /* Barre d'actions */
         .auth-buttons {
             display: flex;
             flex-direction: column;
@@ -45,6 +89,7 @@
         .btn-signup {
             background: var(--orange-floy);
             color: black;
+            box-shadow: 0 4px 15px rgba(255, 122, 26, 0.3);
         }
 
         .btn-login {
@@ -55,6 +100,12 @@
 
         .btn:hover { transform: scale(1.03); }
         
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
         /* Masquer le contenu pendant la vérification de connexion */
         #main-content { display: none; }
     </style>
@@ -62,9 +113,11 @@
 <body>
 
     <div id="main-content">
-        <div class="logo-main"></div>
-        <h1>FLOY</h1>
-        <p>L'instant en orange.</p>
+        <div class="floy-icon-3d">
+            <h1>Floy</h1>
+        </div>
+
+        <p style="color: #888; font-size: 16px; margin-bottom: 50px;">L'instant en orange.</p>
 
         <div class="auth-buttons">
             <a href="signup.html" class="btn btn-signup">S'INSCRIRE</a>
@@ -75,7 +128,7 @@
     <script>
         // SCRIPT DE CONNEXION AUTOMATIQUE
         window.onload = function() {
-            // On vérifie si "userLoggedIn" existe dans la mémoire du téléphone
+            // On vérifie si "floy_isLoggedIn" existe dans la mémoire du téléphone
             const isLoggedIn = localStorage.getItem('floy_isLoggedIn');
 
             if (isLoggedIn === 'true') {
