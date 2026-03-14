@@ -4,100 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Floy - Feed</title>
-    <link rel="icon" type="image/png" href="F4.png">
     <style>
-        :root { --orange-floy: #FF7A1A; --noir: #000; }
+        :root { --orange-floy: #FF7A1A; --bleu-floy: #00BFFF; --noir: #000; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); color: white; font-family: sans-serif; overflow: hidden; }
 
-        .video-container { width: 100%; height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
-        .video-container::-webkit-scrollbar { display: none; }
-
-        .video-slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; background: #111; display: flex; align-items: center; justify-content: center; }
+        /* Container Vidéo */
+        .video-slide { width: 100%; height: 100vh; position: relative; background: #111; display: flex; align-items: center; justify-content: center; }
 
         /* Logo Floy 3D */
-        .top-header { position: fixed; top: 15px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100; pointer-events: none; }
-        .logo-3d-mini { 
-            width: 70px; height: 35px; background: var(--orange-floy); border-radius: 10px; 
-            display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 5px 15px rgba(255, 122, 26, 0.5); 
-        }
-        .logo-3d-mini span { color: black; font-weight: 900; font-size: 14px; }
+        .top-header { position: fixed; top: 15px; width: 100%; display: flex; justify-content: center; z-index: 100; }
+        .logo-3d { width: 80px; height: 40px; background: var(--orange-floy); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 122, 26, 0.4); }
+        .logo-3d b { color: black; font-size: 16px; }
 
-        .side-bar { position: absolute; right: 10px; bottom: 100px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .action-btn { background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .action-btn i { font-size: 30px; margin-bottom: 5px; }
-        .action-btn span { font-size: 12px; }
-
-        .video-info { position: absolute; bottom: 90px; left: 15px; width: 75%; }
-        .video-info h3 { margin: 0; font-size: 16px; }
-
-        /* Navigation basse */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(0,0,0,0.9); border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 100; }
-        .nav-item { color: #888; text-decoration: none; font-size: 24px; }
-        .upload-btn { background: white; color: black; padding: 5px 18px; border-radius: 10px; font-weight: bold; }
+        /* Barre Latérale */
+        .side-bar { position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 25px; align-items: center; z-index: 10; }
         
-        /* Fenêtre surgissante (Modal) pour connexion forcée */
-        #auth-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center;
+        .action-container { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+        /* BOUTON POUCE */
+        .like-btn { 
+            background: rgba(255,255,255,0.1); border: none; width: 55px; height: 55px; 
+            border-radius: 50%; color: white; font-size: 24px; cursor: pointer; 
+            transition: 0.3s; display: flex; align-items: center; justify-content: center;
+            -webkit-tap-highlight-color: transparent;
         }
+        .like-btn.active { color: var(--bleu-floy); background: rgba(0, 191, 255, 0.2); box-shadow: 0 0 15px var(--bleu-floy); }
+
+        /* BARRE DE RÉACTIONS (Cachée par défaut) */
+        .reaction-bar {
+            position: absolute; right: 70px; top: 0; background: white; 
+            padding: 8px 15px; border-radius: 30px; display: none; gap: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); animation: popIn 0.3s forwards;
+        }
+        .reaction-bar span { font-size: 25px; cursor: pointer; transition: 0.2s; }
+        .reaction-bar span:hover { transform: scale(1.3); }
+
+        @keyframes popIn { from { opacity: 0; transform: scale(0.5) translateX(20px); } to { opacity: 1; transform: scale(1) translateX(0); } }
+
+        /* Nav Bar */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(0,0,0,0.9); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
 
-    <div id="auth-modal">
-        <div style="width: 100px; height: 100px; background: var(--orange-floy); border-radius: 25px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 0 30px var(--orange-floy);">
-            <span style="color: black; font-weight: 900; font-size: 25px;">Floy</span>
-        </div>
-        <h2 style="margin-bottom: 10px;">Rejoignez Floy !</h2>
-        <p style="color: #888; margin-bottom: 30px;">Inscrivez-vous pour liker et commenter.</p>
-        <button onclick="location.href='index.html'" style="background: var(--orange-floy); border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer;">CRÉER MON COMPTE</button>
-        <button onclick="closeModal()" style="background: transparent; color: #555; border: none; margin-top: 15px;">Plus tard</button>
-    </div>
-
     <div class="top-header">
-        <div class="logo-3d-mini"><span>Floy</span></div>
+        <div class="logo-3d"><b>Floy</b></div>
     </div>
 
-    <div class="video-container">
-        <div class="video-slide">
-            <video src="votre-video.mp4" loop muted autoplay style="width: 100%; height: 100%; object-fit: cover;"></video>
-            <div class="video-info">
-                <h3>@floy_trend</h3>
-                <p>Nouveau challenge #FloyOrange 🚀</p>
+    <div class="video-slide">
+        <div style="color: #444;">[ Vidéo Viral Floy ]</div>
+
+        <div class="side-bar">
+            <div class="action-container">
+                <div class="reaction-bar" id="reactionBar">
+                    <span>😂</span><span>❤️</span><span>🔥</span><span>😮</span><span>😢</span>
+                </div>
+                <button class="like-btn" id="likeBtn" 
+                        onmousedown="startPress()" 
+                        onmouseup="endPress()" 
+                        ontouchstart="startPress()" 
+                        ontouchend="endPress()" 
+                        onclick="toggleLike()">
+                    👍
+                </button>
+                <span style="font-size: 12px; margin-top: 5px;">1.4k</span>
             </div>
-            <div class="side-bar">
-                <button class="action-btn" onclick="checkAuth()"><i>❤️</i><span>15k</span></button>
-                <button class="action-btn" onclick="checkAuth()"><i>💬</i><span>230</span></button>
-                <button class="action-btn" onclick="checkAuth()"><i>↪️</i><span>Partager</span></button>
-            </div>
+
+            <button class="like-btn">💬</button>
+            <button class="like-btn">↪️</button>
         </div>
     </div>
 
     <nav class="nav-bar">
-        <a href="feed.html" style="color: var(--orange-floy)">🏠</a>
-        <a href="#" onclick="checkAuth()">🔍</a>
-        <a href="#" class="upload-btn" onclick="checkAuth()">+</a>
-        <a href="#" onclick="checkAuth()">💬</a>
-        <a href="#" onclick="checkAuth()">👤</a>
+        <span style="color: var(--orange-floy); font-size: 24px;">🏠</span>
+        <span style="color: #555; font-size: 24px;">🔍</span>
+        <div style="background: white; color: black; padding: 5px 15px; border-radius: 8px; font-weight: bold;">+</div>
+        <span style="color: #555; font-size: 24px;">💬</span>
+        <span style="color: #555; font-size: 24px;">👤</span>
     </nav>
 
     <script>
-        function checkAuth() {
+        let timer;
+        const likeBtn = document.getElementById('likeBtn');
+        const reactionBar = document.getElementById('reactionBar');
+
+        // 1. Simple Clic : Pouce Bleu
+        function toggleLike() {
             const isLoggedIn = localStorage.getItem('floy_isLoggedIn');
-            
-            if (isLoggedIn === 'true') {
-                // Si connecté, on peut effectuer l'action (ex: changer la couleur du coeur)
-                alert("Action réussie !");
-            } else {
-                // Sinon, on affiche la fenêtre de blocage
-                document.getElementById('auth-modal').style.display = 'flex';
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'index.html'; // Demande de compte
+                return;
             }
+            likeBtn.classList.toggle('active');
         }
 
-        function closeModal() {
-            document.getElementById('auth-modal').style.display = 'none';
+        // 2. Appui Long : Afficher les réactions
+        function startPress() {
+            timer = setTimeout(() => {
+                reactionBar.style.display = 'flex';
+            }, 600); // 600ms pour déclencher
         }
+
+        function endPress() {
+            clearTimeout(timer);
+            // Fermer les réactions après 3 secondes si aucune sélection
+            setTimeout(() => {
+                reactionBar.style.display = 'none';
+            }, 3000);
+        }
+
+        // Fermer les réactions si on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!likeBtn.contains(e.target) && !reactionBar.contains(e.target)) {
+                reactionBar.style.display = 'none';
+            }
+        });
     </script>
 
 </body>
