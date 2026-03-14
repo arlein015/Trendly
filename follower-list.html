@@ -1,15 +1,26 @@
 <style>
-    body { background: #000; color: #fff; font-family: sans-serif; padding: 10px; }
-    .user { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-    .info { display: flex; align-items: center; gap: 10px; }
-    img { width: 45px; height: 45px; border-radius: 50%; }
-    button { background: #FF7A1A; border: none; padding: 7px 12px; border-radius: 5px; font-weight: bold; }
+    body { background: #000; color: #fff; font-family: sans-serif; padding: 15px; }
+    .user { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    img { width: 50px; height: 50px; border-radius: 50%; }
+    button { background: #FF7A1A; border: none; color: black; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+    .followed { background: #333; color: white; }
 </style>
+
 <div class="user">
-    <div class="info"><img src="https://i.pravatar.cc/50?u=1"><span>Huarache</span></div>
-    <button onclick="this.innerText='Amis'; this.style.background='#333'">Suivre en retour</button>
+    <div style="display:flex; align-items:center; gap:10px;"><img src="https://i.pravatar.cc/150?u=1"><span>Huarache</span></div>
+    <button onclick="updateCount(this)">Suivre en retour</button>
 </div>
-<div class="user">
-    <div class="info"><img src="https://i.pravatar.cc/50?u=a"><span>Jean Tech</span></div>
-    <button>Suivre en retour</button>
-</div>
+
+<script>
+    function updateCount(btn) {
+        let count = parseInt(localStorage.getItem('floy_following_count')) || 0;
+        if (btn.innerText === "Suivre en retour") {
+            btn.innerText = "Amis"; btn.classList.add('followed');
+            count++;
+        } else {
+            btn.innerText = "Suivre en retour"; btn.classList.remove('followed');
+            count--;
+        }
+        localStorage.setItem('floy_following_count', count);
+    }
+</script>
