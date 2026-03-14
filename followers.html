@@ -4,28 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --blanc: #fff; }
-        body { margin: 0; background: var(--noir); color: var(--blanc); font-family: sans-serif; }
-        .header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #222; }
-        .tabs { display: flex; width: 100%; border-bottom: 1px solid #222; }
+        :root { --orange: #FF7A1A; --noir: #000; }
+        body { margin: 0; background: var(--noir); color: white; font-family: sans-serif; }
+        .tabs { display: flex; border-bottom: 1px solid #222; }
         .tab { flex: 1; text-align: center; padding: 15px; color: #888; cursor: pointer; }
-        .tab.active { color: #fff; border-bottom: 2px solid var(--orange); }
-        iframe { width: 100%; height: calc(100vh - 110px); border: none; }
+        .tab.active { color: white; border-bottom: 2px solid var(--orange); }
+        iframe { width: 100%; height: calc(100vh - 60px); border: none; }
     </style>
 </head>
 <body>
-    <div class="header"><span onclick="history.back()">‹ Retour</span></div>
     <div class="tabs">
-        <div class="tab active" onclick="loadList('follower-list.html', this)">Abonnés</div>
-        <div class="tab" onclick="loadList('following-list.html', this)">Abonnements</div>
+        <div class="tab active" onclick="changeTab('follower-list.html', this)">Abonnés</div>
+        <div class="tab" onclick="changeTab('following-list.html', this)">Abonnements</div>
     </div>
-    <iframe id="contentFrame" src="follower-list.html"></iframe>
+    <iframe id="frame" src="follower-list.html"></iframe>
 
     <script>
-        function loadList(url, el) {
+        function changeTab(url, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            document.getElementById('contentFrame').src = url;
+            document.getElementById('frame').src = url;
         }
     </script>
 </body>
