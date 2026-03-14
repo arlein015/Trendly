@@ -21,10 +21,16 @@
         .profile-header { padding: 40px 20px 20px; text-align: center; }
         .profile-pic-container { position: relative; width: 100px; height: 100px; margin: 0 auto 12px; cursor: pointer; }
         .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--orange-floy); object-fit: cover; }
-        .verified-badge { position: absolute; bottom: 5px; right: 5px; width: 22px; height: 22px; }
+        
+        /* Badge sur la photo (Optionnel, je le laisse car c'est stylé) */
+        .verified-badge-photo { position: absolute; bottom: 5px; right: 5px; width: 22px; height: 22px; }
 
-        .display-name { font-size: 22px; font-weight: bold; margin-bottom: 2px; }
-        .user-handle { font-size: 16px; color: #888; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        /* NOM AVEC BADGE */
+        .display-name-container { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 2px; }
+        .display-name { font-size: 22px; font-weight: bold; }
+        .verified-badge-name { width: 20px; height: 20px; }
+
+        .user-handle { font-size: 16px; color: #888; margin-bottom: 5px; }
         .user-link { color: var(--orange-floy); text-decoration: none; font-size: 14px; font-weight: 500; margin-top: 8px; display: block; }
 
         .stats-row { display: flex; justify-content: center; gap: 25px; margin: 20px 0; }
@@ -37,7 +43,7 @@
         .btn-row { display: flex; gap: 10px; width: 90%; margin: 0 auto; }
         .btn-sec { flex: 1; background: var(--gris); border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
-        /* --- MODALS (Modification & Stats) --- */
+        /* --- MODALS --- */
         .modal { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: var(--noir); z-index: 500; transition: 0.4s cubic-bezier(0.17, 0.84, 0.44, 1); padding: 20px; box-sizing: border-box; }
         .modal.open { top: 0; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 15px; }
@@ -48,11 +54,6 @@
         .input-group input { background: transparent; border: none; color: white; width: 100%; font-size: 16px; outline: none; }
 
         .stat-card { background: var(--gris); padding: 20px; border-radius: 15px; margin-bottom: 15px; border-left: 4px solid var(--orange-floy); }
-
-        /* --- GRILLE --- */
-        .tabs-profile { display: flex; border-top: 1px solid #1a1a1a; margin-top: 20px; }
-        .tab-p { flex: 1; text-align: center; padding: 15px; cursor: pointer; fill: #666; }
-        .tab-p.active { border-bottom: 2px solid var(--orange-floy); fill: white; }
 
         /* --- NAV BAR --- */
         .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a; z-index: 100; }
@@ -70,11 +71,16 @@
     <div class="profile-header">
         <div class="profile-pic-container" onclick="openModal('editModal')">
             <img src="https://i.pravatar.cc/150?u=Arlein" class="profile-pic" id="profImg">
-            <svg class="verified-badge" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FF7A1A"/><path d="M17 9L11 15L7 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            <svg class="verified-badge-photo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FF7A1A"/><path d="M17 9L11 15L7 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
         </div>
 
-        <div class="display-name" id="profName">Arlein</div>
+        <div class="display-name-container">
+            <div class="display-name" id="profName">Arlein</div>
+            <svg class="verified-badge-name" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FF7A1A"/><path d="M17 9L11 15L7 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </div>
+
         <div class="user-handle" id="profUser">@arlein_off</div>
+        
         <a href="#" class="user-link" id="profLinkDisplay" target="_blank"></a>
 
         <div class="stats-row">
@@ -89,12 +95,6 @@
             <button class="btn-sec" onclick="openModal('statsModal')">Tableau de bord</button>
         </div>
     </div>
-
-    <div class="tabs-profile">
-        <div class="tab-p active"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8 6h8v-8h-8v8zm2-6h4v4h-4v-4z"/></svg></div>
-        <div class="tab-p"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
-    </div>
-    <div style="background:#111; height:200px; display:flex; align-items:center; justify-content:center; color:#444;">Aucune vidéo pour le moment</div>
 
     <div class="modal" id="editModal">
         <div class="modal-header">
@@ -113,7 +113,7 @@
 
         <div class="input-group"><label>Nom</label><input type="text" id="inName" value="Arlein"></div>
         <div class="input-group"><label>Nom d'utilisateur</label><input type="text" id="inUser" value="@arlein_off"></div>
-        <div class="input-group"><label>Lien / Website</label><input type="text" id="inLink" placeholder="google.com"></div>
+        <div class="input-group"><label>Lien / Website</label><input type="text" id="inLink" placeholder="Ex: floy.app"></div>
     </div>
 
     <div class="modal" id="statsModal">
@@ -122,9 +122,8 @@
             <span style="font-weight:bold">Analyse Floy</span>
             <span style="opacity:0">.</span>
         </div>
-        <div class="stat-card"><h3>Vues des vidéos</h3><p style="font-size:26px; color:var(--orange-floy); margin:0;">1,245,600</p></div>
+        <div class="stat-card"><h3>Vues totales</h3><p style="font-size:26px; color:var(--orange-floy); margin:0;">1,245,600</p></div>
         <div class="stat-card"><h3>Nouveaux abonnés</h3><p style="font-size:26px; margin:0;">+12,400</p></div>
-        <div class="stat-card"><h3>Partages</h3><p style="font-size:26px; margin:0;">5,800</p></div>
     </div>
 
     <nav class="nav-bar">
@@ -139,7 +138,6 @@
         function openModal(id) { document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-        // Prévisualiser l'image de la galerie
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -150,7 +148,6 @@
             }
         }
 
-        // Sauvegarder les changements
         function saveProfile() {
             document.getElementById('profName').innerText = document.getElementById('inName').value;
             document.getElementById('profUser').innerText = document.getElementById('inUser').value;
