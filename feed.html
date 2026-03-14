@@ -4,31 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Floy - Feed</title>
+    <link rel="icon" type="image/png" href="F4.png">
     <style>
         :root { 
             --orange-floy: #FF7A1A; 
             --noir: #000; 
             --gris-fonce: #121212;
+            --blanc: #ffffff;
         }
         
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); color: white; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); color: var(--blanc); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
-        /* --- HEADER : RECHERCHE & ONGLETS --- */
+        /* --- HEADER : RECHERCHE & ONGLETS (Simplifié pour le feed) --- */
         .header-top { 
             position: fixed; top: 0; width: 100%; z-index: 100; 
             background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            padding: 10px 0;
+            padding: 15px 0; display: flex; justify-content: center; gap: 20px; font-weight: bold; font-size: 16px;
         }
-        .search-bar-container { display: flex; justify-content: center; margin-bottom: 10px; }
-        .search-input { 
-            background: rgba(255,255,255,0.1); border: 1px solid var(--orange-floy); 
-            border-radius: 20px; padding: 8px 15px; width: 80%; color: white; outline: none;
-        }
-        .tabs { display: flex; justify-content: center; gap: 20px; font-weight: bold; font-size: 15px; }
-        .tab { opacity: 0.6; cursor: pointer; }
-        .tab.active { opacity: 1; border-bottom: 2px solid var(--orange-floy); padding-bottom: 2px; }
+        .tab { opacity: 0.6; cursor: pointer; transition: 0.3s; }
+        .tab.active { opacity: 1; border-bottom: 2px solid var(--orange-floy); padding-bottom: 3px; }
 
-        /* --- CONTENEUR SCROLL VIDÉO --- */
+        /* --- CONTENEUR SCROLL VIDÉO (Snap Scrolling) --- */
         .video-container { 
             width: 100%; height: 100vh; overflow-y: scroll; 
             scroll-snap-type: y mandatory; scrollbar-width: none; 
@@ -37,100 +33,123 @@
         
         .video-slide { 
             width: 100%; height: 100vh; scroll-snap-align: start; 
-            position: relative; display: flex; align-items: center; justify-content: center;
+            position: relative; display: flex; align-items: center; justify-content: center; background: #050505;
         }
 
-        /* --- INTERFACE LATÉRALE --- */
-        .side-bar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        /* --- INTERFACE LATÉRALE D'ACTION --- */
+        .side-bar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 18px; align-items: center; z-index: 10; }
         
-        .avatar-box { position: relative; margin-bottom: 5px; }
-        .user-pic { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; }
+        .avatar-box { position: relative; margin-bottom: 5px; cursor: pointer; }
+        .user-pic { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--blanc); box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .btn-follow { 
             position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-            background: var(--orange-floy); border: none; width: 20px; height: 20px; 
-            border-radius: 50%; color: white; font-weight: bold; cursor: pointer; font-size: 14px;
+            background: var(--orange-floy); border: none; width: 22px; height: 22px; 
+            border-radius: 50%; color: var(--blanc); font-weight: bold; cursor: pointer; font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 10px rgba(255,122,26,0.5); transition: 0.3s;
+        }
+        .btn-follow:hover { transform: translateX(-50%) scale(1.1); }
+
+        .action-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        
+        /* Style des Icônes d'Action */
+        .icon-btn { font-size: 38px; transition: 0.2s; filter: drop-shadow(0 0 5px rgba(0,0,0,0.7)); }
+        .count { font-size: 12px; font-weight: bold; margin-top: 2px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+
+        /* --- LES BOUTONS SVG (Commentaire & Partage) --- */
+        .svg-action-icon {
+            width: 36px; height: 36px;
+            fill: var(--blanc); /* Blanc par défaut */
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.7));
+            transition: all 0.3s ease;
         }
 
-        .action-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .icon-btn { font-size: 35px; transition: 0.2s; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
-        .count { font-size: 12px; font-weight: bold; margin-top: 2px; }
+        /* Effet au survol (Glow Orange) */
+        .action-item:hover .svg-action-icon {
+            fill: var(--orange-floy);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px rgba(255,122,26,0.8));
+        }
 
-        /* BARRE DE RÉACTIONS */
+        /* BARRE DE RÉACTIONS (Appui long) */
         .reaction-bar {
-            position: absolute; right: 70px; background: rgba(0,0,0,0.9); 
-            padding: 10px; border-radius: 30px; display: none; gap: 12px; border: 1px solid var(--orange-floy);
+            position: absolute; right: 70px; background: rgba(0,0,0,0.95); 
+            padding: 12px 15px; border-radius: 30px; display: none; gap: 12px; border: 1px solid var(--orange-floy);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); animation: popIn 0.3s ease-out; z-index: 100;
         }
-        .reaction-bar span { font-size: 28px; transition: 0.2s; }
-        .reaction-bar span:hover { transform: scale(1.4); }
+        .reaction-bar span { font-size: 30px; transition: 0.2s; }
+        .reaction-bar span:hover { transform: scale(1.4) translateY(-5px); }
+
+        @keyframes popIn { from { opacity: 0; transform: scale(0.5) translateX(30px); } to { opacity: 1; transform: scale(1) translateX(0); } }
 
         /* --- INFOS VIDÉO (BAS GAUCHE) --- */
-        .video-info { position: absolute; bottom: 90px; left: 15px; width: 75%; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); }
-        .user-name { font-weight: bold; font-size: 17px; display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
-        .badge-orange { background: var(--orange-floy); color: black; font-size: 10px; padding: 2px 4px; border-radius: 4px; }
-        .desc { font-size: 14px; margin-bottom: 8px; }
-        .music-info { font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .video-info { position: absolute; bottom: 90px; left: 15px; width: 75%; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); pointer-events: none; }
+        .user-name { font-weight: bold; font-size: 18px; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .desc { font-size: 14px; line-height: 1.4; margin-bottom: 10px; color: #eee; }
+        .music-info { font-size: 13px; display: flex; align-items: center; gap: 6px; color: #ccc; }
 
         /* DISQUE TOURNANT */
         .disc { 
-            width: 45px; height: 45px; border-radius: 50%; background: radial-gradient(circle, #444 20%, #000 100%);
-            border: 8px solid #222; animation: spin 3s linear infinite; display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; border-radius: 50%; background: radial-gradient(circle, #444 20%, #000 100%);
+            border: 9px solid #1a1a1a; animation: spin 3s linear infinite; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
-        .disc-center { width: 12px; height: 12px; background: var(--orange-floy); border-radius: 50%; }
+        .disc-center { width: 14px; height: 14px; background: var(--orange-floy); border-radius: 50%; box-shadow: 0 0 5px var(--orange-floy); }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* --- ANIMATIONS DES RÉACTIONS --- */
         @keyframes shake-haha { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3) rotate(15deg); } }
         @keyframes shake-angry { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-        .anim-haha { animation: shake-haha 0.4s 3; }
-        .anim-angry { animation: shake-angry 0.1s infinite; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        
+        .anim-haha { animation: shake-haha 0.4s 3 ease-out; }
+        .anim-angry { animation: shake-angry 0.1s infinite linear; }
+        .anim-heart { animation: heartbeat 0.3s ease-out; }
 
-        /* --- NAVIGATION BASSE --- */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: var(--noir); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; }
-        .nav-item { font-size: 24px; color: #777; cursor: pointer; }
-        .nav-item.active { color: white; }
+        /* --- NAVIGATION BASSE (Style TikTok Orange) --- */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--noir); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a; z-index: 100; }
+        .nav-item { font-size: 26px; color: #666; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--blanc); filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+        
         .btn-add { 
-            background: var(--orange-floy); width: 50px; height: 35px; border-radius: 10px; 
-            display: flex; align-items: center; justify-content: center; color: black; font-weight: 900; 
-            box-shadow: 0 0 10px var(--orange-floy);
+            background: var(--orange-floy); width: 55px; height: 40px; border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 24px;
+            box-shadow: 0 0 15px var(--orange-floy); transition: 0.3s;
         }
+        .btn-add:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--orange-floy); }
     </style>
 </head>
 <body>
 
     <header class="header-top">
-        <div class="search-bar-container">
-            <input type="text" class="search-input" placeholder="Rechercher sur Floy...">
-        </div>
-        <div class="tabs">
-            <span class="tab">Suivi</span>
-            <span class="tab active">Pour toi</span>
-            <span class="tab">Live</span>
-        </div>
+        <span class="tab">Suivi</span>
+        <span class="tab active">Pour toi</span>
+        <span class="tab">Live</span>
     </header>
 
     <div class="video-container">
         <div class="video-slide">
-            <div style="color:#333">Vidéo en cours...</div>
+            <div style="color:#222; font-size: 20px; font-weight: bold;">[ Lecture Vidéo Floy... ]</div>
             
             <div class="video-info">
-                <div class="user-name">@Arlein <span class="badge-orange">FLOY PRO</span></div>
-                <div class="desc">Nouvelle mise à jour de l'interface ! Qu'en pensez-vous ? #Floy #Dev #2026 🚀</div>
+                <div class="user-name">@Arlein</div>
+                <div class="desc">Voici les nouveaux boutons SVG pour les commentaires et le partage ! Design épuré et réactif. Qu'en pensez-vous ? #Floy #UI #Design #Orange 🚀</div>
                 <div class="music-info">🎵 Son original - Floy Music Team</div>
             </div>
 
             <div class="side-bar">
                 <div class="avatar-box">
                     <img src="https://i.pravatar.cc/100?u=1" class="user-pic">
-                    <button class="btn-follow" onclick="this.innerHTML='✓'; this.style.background='#444'">+</button>
+                    <button class="btn-follow">+</button>
                 </div>
 
                 <div class="action-item" style="position: relative;">
                     <div class="reaction-bar" id="reactBar">
-                        <span onclick="react('😂', 'anim-haha')">😂</span>
-                        <span onclick="react('❤️', '')">❤️</span>
-                        <span onclick="react('🔥', '')">🔥</span>
-                        <span onclick="react('😠', 'anim-angry')">😠</span>
-                        <span onclick="react('🤮', '')">🤮</span>
+                        <span onclick="react('😂', 'anim-haha', '#ffd700')">😂</span>
+                        <span onclick="react('❤️', 'anim-heart', '#ff0000')">❤️</span>
+                        <span onclick="react('🔥', '', '#ff4500')">🔥</span>
+                        <span onclick="react('😠', 'anim-angry', '#ff0000')">😠</span>
+                        <span onclick="react('🤮', '', '#32cd32')">🤮</span>
                     </div>
                     <div class="icon-btn" id="mainIcon" 
                          onclick="fastLike()" 
@@ -140,12 +159,16 @@
                 </div>
 
                 <div class="action-item">
-                    <span class="svg.action-icon"</span>
+                    <svg class="svg-action-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12c0 1.93.57 3.73 1.55 5.24L2 22l4.76-.92C8.27 21.63 10.07 22.2 12 22.2c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.47 0-2.88-.4-4.08-1.12l-2.43.47.47-2.43C5.4 15.88 5 14.47 5 13c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7z"/>
+                    </svg>
                     <span class="count">45k</span>
                 </div>
 
                 <div class="action-item">
-                    <span class="svg.action-icon"</span>
+                    <svg class="svg-action-icon" viewBox="0 0 24 24">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                    </svg>
                     <span class="count">Partager</span>
                 </div>
 
@@ -170,20 +193,23 @@
 
         function fastLike() {
             if(!liked) {
-                react('❤️', '');
+                react('❤️', 'anim-heart', '#ff0000');
             } else {
                 mainIcon.innerText = '🤍';
+                mainIcon.style.color = 'var(--blanc)';
                 mainIcon.className = 'icon-btn';
                 liked = false;
             }
         }
 
-        function react(emoji, animation) {
+        function react(emoji, animation, color) {
             mainIcon.innerText = emoji;
             mainIcon.className = 'icon-btn ' + animation;
+            mainIcon.style.color = color;
             reactBar.style.display = 'none';
             liked = true;
             if(animation === 'anim-haha') setTimeout(() => mainIcon.classList.remove('anim-haha'), 1500);
+            if(animation === 'anim-heart') setTimeout(() => mainIcon.classList.remove('anim-heart'), 300);
         }
 
         function longPress() { timer = setTimeout(() => { reactBar.style.display = 'flex'; }, 500); }
