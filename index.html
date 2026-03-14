@@ -3,144 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="F4/f3.png">
-    <link rel="apple-touch-icon" href="F4/f3.png">
-    <title>Threndly - Bienvenue</title>
-    
-    <link rel="icon" type="image/png" href="F4.png">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <title>Floy - Bienvenue</title>
+    <link rel="icon" type="image/png" href="F4">
     <style>
-        :root {
-            --bg: #000000;
-            --orange: #ff8c00;
-            --text: #ffffff;
+        :root { --fond: #000; --violet: #8A2BE2; --bleu: #00BFFF; }
+        body { 
+            background: var(--fond); color: white; font-family: 'Segoe UI', sans-serif; 
+            margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden;
         }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden; /* Empêche le scroll sur mobile */
-        }
-
-        /* Grand Logo Central style APK Launch Screen */
-        .logo-img {
-            width: 150px; /* Plus grand pour l'effet APK */
-            height: auto;
-            margin-bottom: 30px;
-            /* Ajoute une ombre pour le relief */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
-            border-radius: 30px; /* Coins arrondis comme une icône d'app */
-        }
-
-        h1 { font-size: 2.2rem; margin: 10px 0; font-weight: 800; }
-        h1 span { color: var(--orange); }
-
-        .subtitle { color: #888; margin-bottom: 50px; font-size: 0.95rem; }
-
-        .auth-container {
-            width: 90%;
-            max-width: 320px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* Bouton Google Style Officiel (Centré et Pro) */
-        .btn-google {
-            background: white;
-            color: #000;
-            border: none;
-            padding: 14px;
-            border-radius: 30px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.3s ease;
-        }
-
-        .btn-google img { width: 22px; }
-        .btn-google:hover { background: #f1f1f1; transform: translateY(-2px); }
-
-        /* Divider "ou" épuré */
-        .divider {
-            display: flex;
-            align-items: center;
-            color: #444;
-            font-size: 14px;
-            margin: 15px 0;
-        }
-        .divider::before, .divider::after {
-            content: ""; flex: 1; height: 1px; background: #222; margin: 0 15px;
-        }
-
-        /* Bouton Mail Orange minimaliste */
-        .btn-mail {
-            background: transparent;
-            color: white;
-            border: 1px solid #333;
-            padding: 14px;
-            border-radius: 30px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
+        .logo-container { animation: pulse 2s infinite; }
+        h1 { font-size: 60px; letter-spacing: 10px; margin: 0; text-shadow: 0 0 20px var(--violet); }
+        p { color: #888; font-size: 18px; margin-bottom: 50px; }
+        
+        .btn-main {
+            background: linear-gradient(45deg, var(--violet), var(--bleu));
+            color: white; text-decoration: none; padding: 18px 60px;
+            border-radius: 40px; font-weight: bold; font-size: 20px;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
             transition: 0.3s;
         }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--violet); }
 
-        .btn-mail:hover { border-color: var(--orange); color: var(--orange); }
-
-        /* Liens Footer bien placés */
-        .footer-links { margin-top: 40px; font-size: 14px; color: #aaa; }
-        .footer-links a { color: var(--orange); text-decoration: none; font-weight: 700; margin-left: 5px; }
-        .footer-links div { margin-top: 15px; }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
     </style>
 </head>
 <body>
-
-   <div class="logo-frame">
-    <img src="F4/image_5.png" alt="Logo Threndly Plein Cadre">
-</div>
-
-    <h1>Bienvenue sur <span>Threndly</span></h1>
-    <p class="subtitle">Partagez vos moments, gagnez des récompenses</p>
-
-    <div class="auth-container">
-        <button class="btn-google" id="google-login">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="G">
-            Continuer avec Google
-        </button>
-
-        <div class="divider">ou</div>
-
-        <button class="btn-mail" onclick="window.location.href='login.html'">
-            <i class="fa-regular fa-envelope"></i>
-            Utiliser mon adresse e-mail
-        </button>
-
-        <div class="footer-links">
-            Vous n'avez pas de compte ? <a href="signup.html">S'inscrire</a>
-            <div>Déjà inscrit ? <a href="login.html">Se connecter</a></div>
-        </div>
+    <div class="logo-container">
+        <img src="logo.png" alt="Floy" style="width: 120px; margin-bottom: 20px;">
     </div>
-
-    <script type="module">
-        // Importation Firebase ici...
-        // Ajoute ta logique de redirection automatique après signInWithPopup
-    </script>
+    <h1>FLOY</h1>
+    <p>Explorez. Créez. Partagez.</p>
+    
+    <a href="signup.html" class="btn-main">Commencer</a>
 </body>
 </html>
