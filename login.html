@@ -4,84 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - Floy</title>
-    <link rel="icon" type="image/png" href="F4.png">
     <style>
-        :root { --orange-floy: #FF7A1A; --fond: #000; }
-        body { 
-            background: var(--fond); color: white; font-family: 'Inter', sans-serif; 
-            margin: 0; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; 
-        }
+        body { background: #000; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+        .logo-3d-mini { width: 60px; height: 60px; background: #FF7A1A; border-radius: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 122, 26, 0.3); margin-bottom: 20px; }
+        .logo-3d-mini span { color: black; font-weight: 900; font-size: 20px; }
 
-        .header-login { text-align: center; margin-bottom: 40px; }
-        .logo-small { width: 80px; margin-bottom: 15px; }
-        
-        .login-form { width: 100%; max-width: 350px; }
-        
-        .input-group { margin-bottom: 20px; }
-        label { display: block; color: var(--orange-floy); font-size: 12px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
-        
-        input {
-            width: 100%; background: #111; border: 1px solid #222; padding: 15px;
-            border-radius: 12px; color: white; font-size: 16px; outline: none; box-sizing: border-box;
-            transition: 0.3s;
-        }
-        input:focus { border-color: var(--orange-floy); box-shadow: 0 0 10px rgba(255, 122, 26, 0.2); }
-
-        .btn-submit {
-            width: 100%; background: var(--orange-floy); color: black; border: none;
-            padding: 16px; border-radius: 12px; font-weight: 800; font-size: 16px;
-            cursor: pointer; margin-top: 10px; transition: 0.3s;
-        }
-        .btn-submit:hover { transform: translateY(-2px); opacity: 0.9; }
-
-        .footer-links { margin-top: 30px; font-size: 14px; color: #666; }
-        .footer-links a { color: var(--orange-floy); text-decoration: none; font-weight: bold; }
+        input { width: 100%; max-width: 320px; background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; color: white; margin-bottom: 15px; outline: none; box-sizing: border-box; }
+        .btn-login { width: 100%; max-width: 320px; background: #FF7A1A; color: black; border: none; padding: 16px; border-radius: 12px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <div class="header-login">
-        <img src="F4.png" class="logo-small" alt="Floy">
-        <h2 style="margin:0;">Bon retour !</h2>
-        <p style="color:#666; margin-top:5px;">Connecte-toi à ton compte Floy</p>
-    </div>
-
-    <div class="login-form">
-        <div class="input-group">
-            <label>Email ou Pseudo</label>
-            <input type="text" id="user" placeholder="Ton identifiant">
-        </div>
-
-        <div class="input-group">
-            <label>Mot de passe</label>
-            <input type="password" id="pass" placeholder="••••••••">
-        </div>
-
-        <button class="btn-submit" onclick="handleLogin()">SE CONNECTER</button>
-    </div>
-
-    <div class="footer-links">
-        Pas encore membre ? <a href="signup.html">Créer un compte</a>
-    </div>
+    <div class="logo-3d-mini"><span>F</span></div>
+    <h2>Connexion</h2>
+    <input type="text" placeholder="Email ou Pseudo">
+    <input type="password" placeholder="Mot de passe">
+    <button class="btn-login" onclick="login()">SE CONNECTER</button>
 
     <script>
-        function handleLogin() {
-            const user = document.getElementById('user').value;
-            const pass = document.getElementById('pass').value;
-
-            // On simule une vérification (tu pourras lier ça à une base de données plus tard)
-            if(user !== "" && pass !== "") {
-                // --- ACTION CRUCIALE ---
-                // On enregistre dans le téléphone que l'utilisateur est connecté
-                localStorage.setItem('floy_isLoggedIn', 'true');
-                
-                // On redirige vers le Feed (le flux vidéo)
-                window.location.href = 'feed.html';
-            } else {
-                alert("Veuillez remplir tous les champs.");
-            }
+        function login() {
+            localStorage.setItem('floy_isLoggedIn', 'true');
+            window.location.href = 'feed.html';
         }
     </script>
-
 </body>
 </html>
