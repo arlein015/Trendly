@@ -16,25 +16,33 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); color: var(--blanc); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
         /* --- HEADER : RECHERCHE & ONGLETS (Simplifié pour le feed) --- */
-        .header-top { 
+       .header-top { 
             position: fixed; top: 0; width: 100%; z-index: 100; 
             background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            padding: 15px 0; display: flex; justify-content: center; gap: 20px; font-weight: bold; font-size: 16px;
+            padding: 20px 0; display: flex; align-items: center; justify-content: center;
         }
+        .tabs { display: flex; gap: 20px; font-weight: bold; font-size: 16px; margin-left: 40px; }
         .tab { opacity: 0.6; cursor: pointer; transition: 0.3s; }
         .tab.active { opacity: 1; border-bottom: 2px solid var(--orange-floy); padding-bottom: 3px; }
-
-        /* --- CONTENEUR SCROLL VIDÉO (Snap Scrolling) --- */
-        .video-container { 
-            width: 100%; height: 100vh; overflow-y: scroll; 
-            scroll-snap-type: y mandatory; scrollbar-width: none; 
+        /* Icône Recherche en haut à droite */
+        .search-icon-container {
+            position: absolute; right: 20px; cursor: pointer;
+            transition: transform 0.2s ease;
         }
+        .search-icon-svg {
+            width: 24px; height: 24px; fill: var(--blanc);
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+            transition: fill 0.3s ease;
+        }
+        .search-icon-container:hover .search-icon-svg {
+            fill: var(--orange-floy);
+            filter: drop-shadow(0 0 8px var(--orange-floy));
+        }
+        .search-icon-container:active { transform: scale(0.9); }
+        /* --- CONTENEUR SCROLL (Reste du code identique) --- */
+        .video-container { width: 100%; height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
         .video-container::-webkit-scrollbar { display: none; }
-        
-        .video-slide { 
-            width: 100%; height: 100vh; scroll-snap-align: start; 
-            position: relative; display: flex; align-items: center; justify-content: center; background: #050505;
-        }
+        .video-slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; background: #050505; }
 
         /* --- INTERFACE LATÉRALE D'ACTION --- */
         .side-bar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 18px; align-items: center; z-index: 10; }
@@ -122,15 +130,22 @@
 <body>
 
     <header class="header-top">
-        <span class="tab">Suivi</span>
-        <span class="tab active">Pour toi</span>
-        <span class="tab">Live</span>
+        <div class="tabs">
+            <span class="tab">Suivi</span>
+            <span class="tab active">Pour toi</span>
+            <span class="tab">Live</span>
+        </div>
+        <div class="search-icon-container" onclick="openSearch()">
+            <svg class="search-icon-svg" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+        </div>
     </header>
-
-    <div class="video-container">
-        <div class="video-slide">
-            <div style="color:#222; font-size: 20px; font-weight: bold;">[ Lecture Vidéo Floy... ]</div>
-            
+    
+   <div class="video-container">
+        <div class="video-slide" style="display: flex; align-items: center; justify-content: center;">
+            <p style="color: #333;">Contenu Vidéo Floy</p>
+        </div>
             <div class="video-info">
                 <div class="user-name">@Arlein</div>
                 <div class="desc">Voici les nouveaux boutons SVG pour les commentaires et le partage ! Design épuré et réactif. Qu'en pensez-vous ? #Floy #UI #Design #Orange 🚀</div>
@@ -216,6 +231,10 @@
         function endPress() { clearTimeout(timer); }
 
         window.onclick = function(e) { if(!e.target.closest('.action-item')) reactBar.style.display='none'; }
+        function openSearch() {
+            // Ici tu pourras lier ton fichier explore.html ou ouvrir une barre d'input
+            alert("Ouverture de la recherche Floy...");
+        }
     </script>
 </body>
 </html>
