@@ -4,41 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Floy - Bienvenue</title>
-    <link rel="icon" type="image/png" href="F4">
+    <link rel="icon" type="image/png" href="F4.png">
     <style>
-        :root { --fond: #000; --violet: #8A2BE2; --bleu: #00BFFF; }
+        :root { --orange-floy: #FF7A1A; --fond: #000000; }
         body { 
-            background: var(--fond); color: white; font-family: 'Segoe UI', sans-serif; 
+            background: var(--fond); color: white; font-family: 'Inter', sans-serif; 
             margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow: hidden;
         }
-        .logo-container { animation: pulse 2s infinite; }
-        h1 { font-size: 60px; letter-spacing: 10px; margin: 0; text-shadow: 0 0 20px var(--violet); }
-        p { color: #888; font-size: 18px; margin-bottom: 50px; }
+        .logo-main {
+            width: 150px; height: 150px;
+            background: url('F4.png') no-repeat center;
+            background-size: contain;
+            animation: bounce 2s infinite ease-in-out;
+        }
+        h1 { font-size: 50px; font-weight: 900; margin: 10px 0; color: white; letter-spacing: 2px; }
+        p { color: #888; margin-bottom: 40px; font-size: 16px; }
         
-        .btn-main {
-            background: linear-gradient(45deg, var(--violet), var(--bleu));
-            color: white; text-decoration: none; padding: 18px 60px;
-            border-radius: 40px; font-weight: bold; font-size: 20px;
-            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        .btn-start {
+            background: var(--orange-floy);
+            color: black; text-decoration: none; padding: 18px 50px;
+            border-radius: 15px; font-weight: 800; font-size: 18px;
             transition: 0.3s;
         }
-        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--violet); }
+        .btn-start:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255, 122, 26, 0.4); }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
     </style>
 </head>
 <body>
-    <div class="logo-container">
-        <img src="logo.png" alt="Floy" style="width: 120px; margin-bottom: 20px;">
-    </div>
+    <div class="logo-main"></div>
     <h1>FLOY</h1>
-    <p>Explorez. Créez. Partagez.</p>
-    
-    <a href="signup.html" class="btn-main">Commencer</a>
+    <p>L'instant en orange.</p>
+    <a href="signup.html" class="btn-start">C'EST PARTI</a>
 </body>
 </html>
