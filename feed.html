@@ -3,116 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Profil</title>
+    <title>Floy - Feed Ultime</title>
     <style>
         :root { 
             --orange-floy: #FF7A1A; 
             --noir: #000; 
-            --gris-sombre: #121212;
             --blanc: #fff;
+            --gris-icon: #666;
         }
         
-        body, html { margin: 0; padding: 0; background: var(--noir); color: var(--blanc); font-family: 'Segoe UI', sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); color: var(--blanc); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
-        /* --- HEADER PROFIL --- */
-        .profile-header { padding: 60px 20px 20px; text-align: center; border-bottom: 1px solid #222; }
-        
-        .profile-pic-container { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; }
-        .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--orange-floy); object-fit: cover; }
-        
-        /* Badge sur la photo */
-        .verified-badge-mini { position: absolute; bottom: 5px; right: 5px; width: 25px; height: 25px; }
-
-        .user-handle { font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; }
-
-        /* Stats (Abonnés, Vues, etc) */
-        .stats-container { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
-        .stat-item { text-align: center; }
-        .stat-value { font-weight: bold; font-size: 18px; display: block; }
-        .stat-label { color: #888; font-size: 13px; }
-
-        /* Boutons d'action */
-        .profile-actions { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .btn-edit { 
-            background: var(--gris-sombre); border: 1px solid #333; color: white; 
-            padding: 10px 30px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        /* --- HEADER : TABS & RECHERCHE --- */
+        .header-top { 
+            position: fixed; top: 0; width: 100%; z-index: 100; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            padding: 20px 0; display: flex; align-items: center; justify-content: center;
         }
-        .btn-orange-action { 
-            background: var(--orange-floy); border: none; color: black; 
-            padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        .tabs { display: flex; gap: 20px; font-weight: bold; }
+        .tab { opacity: 0.6; cursor: pointer; font-size: 16px; }
+        .tab.active { opacity: 1; border-bottom: 2px solid var(--orange-floy); padding-bottom: 4px; }
+        .search-icon { position: absolute; right: 20px; cursor: pointer; fill: var(--blanc); }
+
+        /* --- CONTENEUR VIDÉO --- */
+        .video-container { width: 100%; height: 100vh; position: relative; background: #050505; display: flex; align-items: center; justify-content: center; }
+
+        /* --- INTERFACE LATÉRALE --- */
+        .side-bar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 10; }
+        
+        /* Bouton Suivre + */
+        .avatar-box { position: relative; }
+        .user-pic { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--blanc); }
+        .btn-follow { 
+            position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            background: var(--orange-floy); border: none; width: 22px; height: 22px; 
+            border-radius: 50%; color: white; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
+        .btn-follow.active { transform: translateX(-50%) scale(0); opacity: 0; }
 
-        /* --- GRILLE DE VIDÉOS --- */
-        .tabs-profile { display: flex; border-top: 1px solid #222; }
-        .tab-p { flex: 1; text-align: center; padding: 12px; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
-        .tab-p.active { color: var(--blanc); border-bottom: 2px solid var(--orange-floy); }
+        /* Actions SVG */
+        .action-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
+        .svg-action { width: 35px; height: 35px; fill: white; transition: 0.3s; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
+        .action-item:hover .svg-action { fill: var(--orange-floy); }
+        .count { font-size: 12px; font-weight: bold; margin-top: 2px; }
 
-        .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
-        .grid-item { position: relative; aspect-ratio: 3/4; background: #1a1a1a; overflow: hidden; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .view-count { position: absolute; bottom: 5px; left: 5px; font-size: 12px; display: flex; align-items: center; gap: 3px; }
+        /* --- RÉACTIONS & ANIMATIONS --- */
+        .reaction-bar {
+            position: absolute; right: 65px; background: rgba(15,15,15,0.95); 
+            padding: 10px; border-radius: 30px; display: none; gap: 15px; border: 1px solid var(--orange-floy);
+        }
+        .reaction-bar span { font-size: 30px; transition: 0.3s; }
+        .reaction-bar span:hover { transform: scale(1.4); }
 
-        /* --- NAV BAR (Identique au Feed) --- */
+        @keyframes anim-haha { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px) rotate(10deg); } }
+        @keyframes anim-angry { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes anim-fire { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.2) brightness(1.5); } }
+        
+        .react-haha { animation: anim-haha 0.5s ease-in-out 3; }
+        .react-angry { animation: anim-angry 0.1s infinite; }
+        .react-fire { animation: anim-fire 0.6s infinite; }
+
+        /* --- INFOS VIDÉO & BADGE --- */
+        .video-info { position: absolute; bottom: 90px; left: 15px; width: 70%; }
+        .user-name { font-weight: bold; font-size: 18px; display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+        .badge-orange { fill: var(--orange-floy); width: 18px; height: 18px; }
+
+        /* --- BARRE NAVIGATION BASSE --- */
         .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: var(--noir); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a; }
-        .nav-icon { width: 28px; height: 28px; fill: #666; }
+        .nav-icon { width: 28px; height: 28px; fill: var(--gris-icon); cursor: pointer; }
         .nav-icon.active { fill: var(--blanc); }
+        .btn-add { background: var(--orange-floy); width: 50px; height: 35px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: black; font-weight: bold; font-size: 24px; box-shadow: 0 0 10px var(--orange-floy); }
     </style>
 </head>
 <body>
 
-    <div class="profile-header">
-        <div class="profile-pic-container">
-            <img src="https://i.pravatar.cc/150?u=Arlein" class="profile-pic">
-            <svg class="verified-badge-mini" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FF7A1A"/><path d="M17 9L11 15L7 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    <header class="header-top">
+        <div class="tabs">
+            <span class="tab">Live</span>
+            <span class="tab">Suivi</span>
+            <span class="tab active">Pour toi</span>
+        </div>
+        <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    </header>
+
+    <div class="video-container">
+        <div class="video-info">
+            <div class="user-name">
+                @Arlein 
+                <svg class="badge-orange" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M17 9L11 15L7 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            </div>
+            <div style="font-size:14px">Interface Floy : Animations et SVG activés ! 🔥 #Floy #Dev</div>
         </div>
 
-        <div class="user-handle">
-            @Arlein 
-            <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FF7A1A"/><path d="M17 9L11 15L7 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
-        </div>
-        
-        <p style="font-size: 14px; color: #ccc; margin: 10px 40px;">Fondateur de Floy App. 🚀 Le futur des réseaux sociaux est ici.</p>
+        <div class="side-bar">
+            <div class="avatar-box">
+                <img src="https://i.pravatar.cc/100?u=5" class="user-pic">
+                <button class="btn-follow" id="fBtn" onclick="this.classList.add('active')">+</button>
+            </div>
 
-        <div class="stats-container">
-            <div class="stat-item"><span class="stat-value">124</span><span class="stat-label">Abonnements</span></div>
-            <div class="stat-item"><span class="stat-value">850K</span><span class="stat-label">Abonnés</span></div>
-            <div class="stat-item"><span class="stat-value">12.5M</span><span class="stat-label">J'aime</span></div>
-        </div>
+            <div class="action-item">
+                <div class="reaction-bar" id="reactBar">
+                    <span onclick="setReact('😂', 'react-haha')">😂</span>
+                    <span onclick="setReact('🔥', 'react-fire')">🔥</span>
+                    <span onclick="setReact('😠', 'react-angry')">😠</span>
+                    <span onclick="setReact('❤️', '')">❤️</span>
+                </div>
+                <div id="mainEmoji" style="font-size:35px" onclick="fastLike()" onmousedown="holdStart()" onmouseup="holdEnd()" ontouchstart="holdStart()" ontouchend="holdEnd()">🤍</div>
+                <span class="count">150K</span>
+            </div>
 
-        <div class="profile-actions">
-            <button class="btn-edit">Modifier le profil</button>
-            <button class="btn-orange-action">⚙️</button>
+            <div class="action-item">
+                <svg class="svg-action" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span class="count">856</span>
+            </div>
+
+            <div class="action-item">
+                <svg class="svg-action" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                <span class="count">Share</span>
+            </div>
         </div>
     </div>
 
-    <div class="tabs-profile">
-        <div class="tab-p active">Vidéos</div>
-        <div class="tab-p">Favoris</div>
-        <div class="tab-p">Cadenas</div>
-    </div>
-
-    <div class="video-grid">
-        <div class="grid-item">
-            <img src="https://picsum.photos/200/300?random=1">
-            <div class="view-count">▶ 1.2M</div>
-        </div>
-        <div class="grid-item">
-            <img src="https://picsum.photos/200/300?random=2">
-            <div class="view-count">▶ 856K</div>
-        </div>
-        <div class="grid-item">
-            <img src="https://picsum.photos/200/300?random=3">
-            <div class="view-count">▶ 2.4M</div>
-        </div>
-        </div>
-
-    <div style="height: 80px;"></div> <nav class="nav-bar">
-        <svg class="nav-icon" onclick="window.location.href='feed.html'" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    <nav class="nav-bar">
+        <svg class="nav-icon active" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
         <svg class="nav-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        <div style="background:var(--orange-floy); width:45px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:black; font-weight:bold;">+</div>
+        <div class="btn-add">+</div>
         <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
-        <svg class="nav-icon active" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
     </nav>
 
+    <script>
+        let holdTimer;
+        function holdStart() { holdTimer = setTimeout(() => { document.getElementById('reactBar').style.display = 'flex'; }, 500); }
+        function holdEnd() { clearTimeout(holdTimer); }
+        
+        function setReact(emoji, anim) {
+            const main = document.getElementById('mainEmoji');
+            main.innerText = emoji;
+            main.className = anim;
+            document.getElementById('reactBar').style.display = 'none';
+        }
+
+        function fastLike() {
+            const main = document.getElementById('mainEmoji');
+            if(main.innerText === '🤍') { main.innerText = '❤️'; main.style.color = 'red'; }
+            else { main.innerText = '🤍'; main.style.color = 'white'; main.className = ''; }
+        }
+    </script>
 </body>
 </html>
