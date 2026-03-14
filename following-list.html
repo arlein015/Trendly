@@ -1,11 +1,28 @@
 <style>
-    body { background: #000; color: #fff; font-family: sans-serif; padding: 10px; }
-    .user { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-    .info { display: flex; align-items: center; gap: 10px; }
-    img { width: 45px; height: 45px; border-radius: 50%; }
-    .btn-out { background: #222; color: #fff; border: 1px solid #444; padding: 7px 12px; border-radius: 5px; }
+    body { background: #000; color: #fff; font-family: sans-serif; padding: 15px; }
+    .user { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    img { width: 50px; height: 50px; border-radius: 50%; }
+    button { background: #222; border: 1px solid #444; color: #fff; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
 </style>
+
 <div class="user">
-    <div class="info"><img src="https://i.pravatar.cc/50?u=9"><span>Floy Official</span></div>
-    <button class="btn-out">Abonné</button>
+    <div style="display:flex; align-items:center; gap:10px;"><img src="https://i.pravatar.cc/150?u=9"><span>Floy Official</span></div>
+    <button onclick="unfollow(this)">Abonné</button>
 </div>
+
+<script>
+    // Par défaut, on imagine que tu suis 1 personne au début
+    if(!localStorage.getItem('floy_following_count')) localStorage.setItem('floy_following_count', 1);
+
+    function unfollow(btn) {
+        let count = parseInt(localStorage.getItem('floy_following_count')) || 0;
+        if(btn.innerText === "Abonné") {
+            btn.innerText = "Suivre"; btn.style.background = "#FF7A1A"; btn.style.color = "black";
+            count--;
+        } else {
+            btn.innerText = "Abonné"; btn.style.background = "#222"; btn.style.color = "white";
+            count++;
+        }
+        localStorage.setItem('floy_following_count', count);
+    }
+</script>
