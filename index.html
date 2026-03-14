@@ -6,145 +6,32 @@
     <title>Floy - Bienvenue</title>
     <link rel="icon" type="image/png" href="F4.png">
     <style>
-        /* Variables de couleur officielles de Floy */
-        :root { 
-            --orange-floy: #FF7A1A; 
-            --noir-profond: #000000;
-            --gris-icon: #111;
+        :root { --orange-floy: #FF7A1A; --noir: #000; }
+        body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        /* LOGO 3D SIGNATURE FLOY */
+        .floy-logo-3d {
+            width: 120px; height: 120px; background: var(--orange-floy);
+            border-radius: 30px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(255, 122, 26, 0.4), inset 0 2px 5px rgba(255,255,255,0.2);
+            animation: float 3s infinite ease-in-out; margin-bottom: 20px;
         }
+        .floy-logo-3d span { color: black; font-size: 45px; font-weight: 900; letter-spacing: -2px; }
+
+        .btn-box { width: 85%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
+        .btn { padding: 16px; border-radius: 15px; font-weight: bold; text-decoration: none; text-align: center; transition: 0.3s; }
+        .btn-signup { background: var(--orange-floy); color: black; }
+        .btn-login { background: transparent; color: white; border: 1px solid #333; }
         
-        body { 
-            background: var(--noir-profond); color: white; font-family: 'Inter', sans-serif; 
-            margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; overflow: hidden;
-        }
-
-        /* --- L'ICÔNE 3D (STYLE LOGO F4) --- */
-        .floy-icon-3d {
-            width: 150px;
-            height: 150px;
-            /* FOND ORANGE COMME TON LOGO */
-            background-color: var(--orange-floy);
-            border-radius: 35px; /* Angles arrondis doux */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin-bottom: 30px;
-            
-            /* Ombre portée pour le relief 3D */
-            box-shadow: 
-                0 15px 40px rgba(255, 122, 26, 0.5), /* Halo orange externe intense */
-                inset 0 2px 5px rgba(255,255,255,0.1), /* Lumière intérieure douce en haut */
-                inset 0 -2px 5px rgba(0,0,0,0.4); /* Ombre intérieure douce en bas */
-            
-            /* Animation de flottement doux */
-            animation: float 4s infinite ease-in-out;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        /* Effet au survol/toucher */
-        .floy-icon-3d:hover {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 
-                0 20px 50px rgba(255, 122, 26, 0.7), /* Halo orange externe encore plus intense */
-                inset 0 2px 5px rgba(255,255,255,0.15);
-        }
-
-        /* Le texte "Floy" à l'intérieur */
-        .floy-icon-3d h1 {
-            font-size: 60px;
-            font-weight: 900;
-            margin: 0;
-            /* TEXTE NOIR COMME TON LOGO */
-            color: var(--noir-profond);
-            
-            /* Ombre douce pour le relief du texte */
-            text-shadow: 
-                0 1px 3px rgba(0,0,0,0.5);
-            
-            letter-spacing: -2px;
-        }
-
-        /* Texte descriptif */
-        p { color: #888; font-size: 16px; margin-bottom: 50px; }
-
-        /* Barre d'actions */
-        .auth-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 80%;
-            max-width: 300px;
-        }
-
-        .btn {
-            padding: 16px;
-            border-radius: 15px;
-            font-weight: 800;
-            text-decoration: none;
-            font-size: 16px;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* BOUTON S'INSCRIRE - ORANGE AVEC TEXTE NOIR */
-        .btn-signup {
-            background: var(--orange-floy);
-            color: var(--noir-profond);
-            box-shadow: 0 4px 15px rgba(255, 122, 26, 0.3);
-        }
-
-        /* BOUTON SE CONNECTER - TRANSPARENT AVEC TEXTE BLANC */
-        .btn-login {
-            background: transparent;
-            color: white;
-            border: 1px solid #333;
-        }
-
-        .btn:hover { transform: scale(1.03); }
-        
-        /* Animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* Masquer le contenu pendant la vérification de connexion */
-        #main-content { display: none; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
-
-    <div id="main-content">
-        <div class="floy-icon-3d">
-            <h1>Floy</h1>
-        </div>
-
-        <div class="auth-buttons">
-            <a href="signup.html" class="btn btn-signup">S'INSCRIRE</a>
-            <a href="login.html" class="btn btn-login">SE CONNECTER</a>
-        </div>
+    <div class="floy-logo-3d"><span>Floy</span></div>
+    <p style="color:#888; margin-bottom:40px;">L'instant en orange.</p>
+    <div class="btn-box">
+        <a href="signup.html" class="btn btn-signup">S'INSCRIRE</a>
+        <a href="login.html" class="btn btn-login">SE CONNECTER</a>
     </div>
-
-    <script>
-        // SCRIPT DE CONNEXION AUTOMATIQUE
-        window.onload = function() {
-            // On vérifie si "floy_isLoggedIn" existe dans la mémoire du téléphone
-            const isLoggedIn = localStorage.getItem('floy_isLoggedIn');
-
-            if (isLoggedIn === 'true') {
-                // Si l'utilisateur est déjà connecté, on l'envoie direct au Feed
-                window.location.href = 'feed.html';
-            } else {
-                // Sinon, on affiche les boutons de bienvenue
-                document.getElementById('main-content').style.display = 'flex';
-                document.getElementById('main-content').style.flexDirection = 'column';
-                document.getElementById('main-content').style.alignItems = 'center';
-            }
-        };
-    </script>
 </body>
 </html>
