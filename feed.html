@@ -4,182 +4,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Floy - Feed</title>
-    <link rel="icon" type="image/png" href="F4.png">
     <style>
-        :root { 
-            --orange-floy: #FF7A1A; 
-            --bleu-floy: #00BFFF; 
-            --noir: #000; 
-            --rouge-colere: #FF0000;
-            --vert-vomi: #32CD32;
-        }
-        
+        :root { --orange-floy: #FF7A1A; --noir: #000; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); color: white; font-family: 'Inter', sans-serif; overflow: hidden; }
 
-        /* Logo Floy 3D en haut */
-        .top-header { position: fixed; top: 15px; width: 100%; display: flex; justify-content: center; z-index: 100; pointer-events: none; }
-        .logo-3d { 
-            width: 100px; height: 45px; background: var(--orange-floy); border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 5px 15px rgba(255, 122, 26, 0.5); 
+        /* Header avec Onglets (Suivi, Pour toi, Live) */
+        .feed-tabs { 
+            position: fixed; top: 15px; width: 100%; display: flex; justify-content: center; 
+            gap: 20px; z-index: 100; font-weight: bold; font-size: 16px;
         }
-        .logo-3d b { color: black; font-size: 18px; letter-spacing: -1px; }
+        .tab { color: rgba(255,255,255,0.6); cursor: pointer; }
+        .tab.active { color: white; border-bottom: 2px solid white; padding-bottom: 5px; }
 
-        /* Container Vidéo */
+        /* Barre des Stories (en haut) */
+        .stories-container {
+            position: fixed; top: 60px; left: 0; width: 100%; display: flex; 
+            gap: 15px; padding: 10px 15px; overflow-x: auto; z-index: 90;
+            scrollbar-width: none;
+        }
+        .story-circle { 
+            min-width: 65px; height: 65px; border-radius: 50%; 
+            border: 2px solid var(--orange-floy); padding: 2px;
+        }
+        .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+        /* Container Vidéo (Snap Scrolling) */
         .video-container { width: 100%; height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
-        .video-container::-webkit-scrollbar { display: none; }
-        .video-slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; background: #050505; display: flex; align-items: center; justify-content: center; }
+        .video-slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
 
-        /* Barre Latérale d'actions */
-        .side-bar { position: absolute; right: 15px; bottom: 100px; display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 10; }
+        /* Interface d'interaction à droite */
+        .side-bar { position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .user-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; margin-bottom: 10px; }
         
-        .action-container { position: relative; display: flex; flex-direction: column; align-items: center; }
-
-        /* LE BOUTON POUCE / RÉACTION */
-        .like-btn { 
-            background: rgba(255,255,255,0.1); border: none; width: 60px; height: 60px; 
-            border-radius: 50%; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent;
-        }
-
-        /* SVG du pouce par défaut */
-        .thumb-icon { width: 30px; height: 30px; fill: none; stroke: white; stroke-width: 2; transition: 0.3s; }
-
-        /* --- ÉTATS DES RÉACTIONS --- */
-        .active-like { background: rgba(0, 191, 255, 0.2); box-shadow: 0 0 20px var(--bleu-floy); }
-        .active-love { background: rgba(255, 0, 0, 0.2); box-shadow: 0 0 20px #ff0000; }
-        .active-fire { background: rgba(255, 69, 0, 0.3); box-shadow: 0 0 20px #FF4500; }
-        .active-angry { background: rgba(255, 0, 0, 0.3); box-shadow: 0 0 20px var(--rouge-colere); }
-        .active-vomit { background: rgba(50, 205, 50, 0.3); box-shadow: 0 0 20px var(--vert-vomi); }
-
-        /* BARRE DE RÉACTIONS SURGISSANTE */
+        .action-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .heart-btn { font-size: 35px; cursor: pointer; transition: 0.3s; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
+        
+        /* Barre de réactions (Appui long sur le cœur) */
         .reaction-bar {
-            position: absolute; right: 75px; top: -10px; background: #1a1a1a; 
-            padding: 12px 20px; border-radius: 40px; display: none; gap: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.9); border: 1px solid #333;
-            animation: popIn 0.3s forwards; z-index: 1000;
+            position: absolute; right: 70px; background: #1a1a1a; padding: 10px; 
+            border-radius: 30px; display: none; gap: 10px; border: 1px solid #333; animation: pop 0.3s;
         }
-        .reaction-bar span { font-size: 32px; cursor: pointer; transition: 0.2s; }
-        .reaction-bar span:hover { transform: scale(1.4) translateY(-8px); }
+        .reaction-bar span { font-size: 28px; cursor: pointer; }
 
-        @keyframes popIn { from { opacity: 0; transform: scale(0.5) translateX(30px); } to { opacity: 1; transform: scale(1) translateX(0); } }
+        /* Infos vidéo (bas gauche) */
+        .video-meta { position: absolute; bottom: 100px; left: 15px; width: 70%; }
+        .username { font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .description { font-size: 14px; line-height: 1.4; color: #eee; }
 
-        /* Navigation Basse */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(0,0,0,0.9); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; }
-        .nav-item { color: #666; font-size: 24px; text-decoration: none; }
-        .active-nav { color: var(--orange-floy); }
+        /* Navigation Basse (Style TikTok/Messenger) */
+        .nav-bar { 
+            position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; 
+            display: flex; justify-content: space-around; align-items: center; border-top: 0.5px solid #222;
+        }
+        .nav-icon { width: 28px; opacity: 0.6; }
+        .nav-icon.active { opacity: 1; }
+        .btn-plus { 
+            background: linear-gradient(to right, #00f2ea, #ff0050); /* Petit clin d'oeil design */
+            padding: 5px 15px; border-radius: 10px; color: black; font-weight: 900; 
+        }
+
+        @keyframes pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="top-header">
-        <div class="logo-3d"><b>Floy</b></div>
+    <div class="feed-tabs">
+        <span class="tab">Suivi</span>
+        <span class="tab active">Pour toi</span>
+        <span class="tab">Live</span>
+    </div>
+
+    <div class="stories-container">
+        <div class="story-circle"><img src="https://i.pravatar.cc/150?u=1"></div>
+        <div class="story-circle"><img src="https://i.pravatar.cc/150?u=2"></div>
+        <div class="story-circle"><img src="https://i.pravatar.cc/150?u=3"></div>
+        <div class="story-circle"><img src="https://i.pravatar.cc/150?u=4"></div>
     </div>
 
     <div class="video-container">
         <div class="video-slide">
-            <div style="color:#222">Lecture Vidéo...</div>
-            
-            <div class="side-bar">
-                <div class="action-container">
-                    <div class="reaction-bar" id="reactionBar">
-                        <span onclick="setReaction('👍', 'like')">👍</span>
-                        <span onclick="setReaction('❤️', 'love')">❤️</span>
-                        <span onclick="setReaction('😂', 'haha')">😂</span>
-                        <span onclick="setReaction('🔥', 'fire')">🔥</span>
-                        <span onclick="setReaction('😮', 'wow')">😮</span>
-                        <span onclick="setReaction('😢', 'sad')">😢</span>
-                        <span onclick="setReaction('😠', 'angry')">😠</span>
-                        <span onclick="setReaction('🤮', 'vomit')">🤮</span>
-                    </div>
+            <div class="video-meta">
+                <div class="username">@bouta <span style="color:#00BFFF; font-size:12px;">✔️</span></div>
+                <div class="description">Découvrez la nouvelle collection Floy 2026 ! #Style #Orange #Floy 🚀</div>
+                <div style="font-size:12px; margin-top:10px;">🎵 Original Sound - Floy Music</div>
+            </div>
 
-                    <button class="like-btn" id="likeBtn" 
-                            onclick="handleSimpleClick()" 
-                            onmousedown="startPress()" onmouseup="endPress()" 
-                            ontouchstart="startPress()" ontouchend="endPress()">
-                        <svg class="thumb-icon" id="thumbSvg" viewBox="0 0 24 24">
-                            <path d="M23.5 10c0-1.1-.9-2-2-2h-6.1l.9-4.3c.1-.4 0-.8-.2-1.1-.2-.3-.5-.6-.9-.6H13c-.4 0-.8.2-1.1.5L7.4 8H2c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h17.1c.9 0 1.7-.6 1.9-1.5l2.5-9c.1-.1.1-.3.1-.5z"/>
-                        </svg>
-                    </button>
-                    <span style="font-size: 12px; margin-top:5px; font-weight:bold;">1.4k</span>
+            <div class="side-bar">
+                <img src="https://i.pravatar.cc/150?u=1" class="user-avatar">
+                
+                <div class="action-item">
+                    <div class="reaction-bar" id="reactBar">
+                        <span onclick="setHeart('😂', '#ffd700')">😂</span>
+                        <span onclick="setHeart('🔥', '#ff4500')">🔥</span>
+                        <span onclick="setHeart('😠', '#ff0000')">😠</span>
+                        <span onclick="setHeart('🤮', '#32cd32')">🤮</span>
+                    </div>
+                    <div class="heart-btn" id="mainHeart" 
+                         onclick="toggleHeart()" 
+                         onmousedown="startPress()" onmouseup="endPress()"
+                         ontouchstart="startPress()" ontouchend="endPress()">🤍</div>
+                    <span style="font-size:12px;">150K</span>
                 </div>
 
-                <button class="like-btn">💬</button>
-                <button class="like-btn">↪️</button>
+                <div class="action-item">
+                    <span style="font-size:30px;">💬</span>
+                    <span style="font-size:12px;">856</span>
+                </div>
+
+                <div class="action-item">
+                    <span style="font-size:30px;">➡️</span>
+                    <span style="font-size:12px;">Partager</span>
+                </div>
             </div>
         </div>
     </div>
 
     <nav class="nav-bar">
-        <a href="#" class="nav-item active-nav">🏠</a>
-        <a href="#" class="nav-item">🔍</a>
-        <div style="background:white; color:black; padding:5px 15px; border-radius:10px; font-weight:bold;">+</div>
-        <a href="#" class="nav-item">💬</a>
-        <a href="#" class="nav-item">👤</a>
+        <span class="nav-icon active">🏠</span>
+        <span class="nav-icon">🔍</span>
+        <div class="btn-plus">+</div>
+        <span class="nav-icon">✉️</span>
+        <span class="nav-icon">👤</span>
     </nav>
 
     <script>
-        let timer;
-        let currentReaction = 'none';
-        const likeBtn = document.getElementById('likeBtn');
-        const thumbSvg = document.getElementById('thumbSvg');
-        const reactionBar = document.getElementById('reactionBar');
+        let pressTimer;
+        let isLiked = false;
+        const mainHeart = document.getElementById('mainHeart');
+        const reactBar = document.getElementById('reactBar');
 
-        // Vérification de connexion
-        function isConnected() {
-            if (localStorage.getItem('floy_isLoggedIn') !== 'true') {
-                window.location.href = 'index.html';
-                return false;
-            }
-            return true;
-        }
-
-        // Simple Clic : Pouce Bleu
-        function handleSimpleClick() {
-            if (!isConnected()) return;
-
-            if (currentReaction === 'like') {
-                resetButton();
+        function toggleHeart() {
+            if(!isLiked) {
+                setHeart('❤️', '#ff0000');
+                isLiked = true;
             } else {
-                setReaction('👍', 'like');
+                mainHeart.innerText = '🤍';
+                mainHeart.style.color = 'white';
+                isLiked = false;
             }
         }
 
-        // Sélection d'une réaction (Emoji ou Pouce)
-        function setReaction(emoji, type) {
-            if (!isConnected()) return;
-
-            // Reset visuel
-            likeBtn.className = 'like-btn active-' + type;
-            
-            if (type === 'like') {
-                likeBtn.innerHTML = `<svg class="thumb-icon" style="fill:var(--bleu-floy); stroke:var(--bleu-floy)" viewBox="0 0 24 24"><path d="M23.5 10c0-1.1-.9-2-2-2h-6.1l.9-4.3c.1-.4 0-.8-.2-1.1-.2-.3-.5-.6-.9-.6H13c-.4 0-.8.2-1.1.5L7.4 8H2c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h17.1c.9 0 1.7-.6 1.9-1.5l2.5-9c.1-.1.1-.3.1-.5z"/></svg>`;
-            } else {
-                likeBtn.innerHTML = `<span style="font-size:30px">${emoji}</span>`;
-            }
-
-            currentReaction = type;
-            reactionBar.style.display = 'none';
-            
-            // Animation rebond
-            likeBtn.style.transform = "scale(1.3)";
-            setTimeout(() => { likeBtn.style.transform = "scale(1)"; }, 200);
+        function setHeart(emoji, color) {
+            mainHeart.innerText = emoji;
+            mainHeart.style.color = color;
+            reactBar.style.display = 'none';
+            isLiked = true;
         }
 
-        function resetButton() {
-            likeBtn.className = 'like-btn';
-            likeBtn.innerHTML = `<svg class="thumb-icon" viewBox="0 0 24 24"><path d="M23.5 10c0-1.1-.9-2-2-2h-6.1l.9-4.3c.1-.4 0-.8-.2-1.1-.2-.3-.5-.6-.9-.6H13c-.4 0-.8.2-1.1.5L7.4 8H2c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h17.1c.9 0 1.7-.6 1.9-1.5l2.5-9c.1-.1.1-.3.1-.5z"/></svg>`;
-            currentReaction = 'none';
-        }
+        function startPress() { pressTimer = setTimeout(() => { reactBar.style.display = 'flex'; }, 600); }
+        function endPress() { clearTimeout(pressTimer); }
 
-        // Gestion Appui Long
-        function startPress() { timer = setTimeout(() => { reactionBar.style.display = 'flex'; }, 600); }
-        function endPress() { clearTimeout(timer); }
-
-        // Fermer la barre si clic ailleurs
-        window.onclick = function(event) {
-            if (!event.target.closest('.action-container')) { reactionBar.style.display = 'none'; }
-        }
+        // Fermer les réactions si clic ailleurs
+        window.onclick = function(e) { if(!e.target.closest('.action-item')) reactBar.style.display='none'; }
     </script>
 </body>
 </html>
