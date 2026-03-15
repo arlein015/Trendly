@@ -1,1 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Configuration 2FA</title>
+    <style>
+        :root { 
+            --orange-floy: #FF7A1A; 
+            --noir: #000; 
+            --gris-menu: #161616;
+            --blanc: #fff; 
+        }
 
+        body { 
+            margin: 0; 
+            background: var(--noir); 
+            color: var(--blanc); 
+            font-family: 'Segoe UI', sans-serif; 
+        }
+
+        /* --- HEADER --- */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            background: var(--noir);
+            z-index: 100;
+        }
+
+        .back-btn { font-size: 24px; cursor: pointer; color: var(--blanc); text-decoration: none; margin-right: 20px; }
+
+        /* --- CONTENU --- */
+        .setup-container {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .shield-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--orange-floy);
+        }
+
+        h2 { font-size: 22px; margin-bottom: 10px; }
+        p { color: #888; font-size: 14px; line-height: 1.5; margin-bottom: 30px; }
+
+        /* --- ÉTAPES --- */
+        .qr-placeholder {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 25px;
+        }
+
+        .code-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .code-input {
+            width: 45px;
+            height: 55px;
+            background: var(--gris-menu);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .code-input:focus {
+            border-color: var(--orange-floy);
+            outline: none;
+        }
+
+        /* --- BOUTON --- */
+        .btn-activate {
+            background: var(--orange-floy);
+            color: black;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-activate:active { transform: scale(0.98); }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="security.html" class="back-btn">‹</a>
+        <span style="font-weight:bold">Activer la 2FA</span>
+    </div>
+
+    <div class="setup-container">
+        <div class="shield-icon">🛡️</div>
+        <h2>Protégez votre compte</h2>
+        <p>Scannez ce QR Code avec une application d'authentification (Google Authenticator ou Authy) pour générer vos codes de sécurité.</p>
+
+        <div class="qr-placeholder">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FloySecretKey123" alt="QR Code 2FA">
+        </div>
+
+        <p style="margin-bottom: 10px; color: #fff;">Entrez le code à 6 chiffres</p>
+        
+        <div class="code-input-group">
+            <input type="text" maxlength="1" class="code-input" oninput="moveNext(this)">
+            <input type="text" maxlength="1" class="code-input" oninput="moveNext(this)">
+            <input type="text" maxlength="1" class="code-input" oninput="moveNext(this)">
+            <input type="text" maxlength="1" class="code-input" oninput="moveNext(this)">
+            <input type="text" maxlength="1" class="code-input" oninput="moveNext(this)">
+            <input type="text" maxlength="1" class="code-input" oninput="moveNext(this)">
+        </div>
+
+        <button class="btn-activate" onclick="verifyAndActivate()">Activer maintenant</button>
+    </div>
+
+    <script>
+        // Gestion auto du passage d'un input à l'autre
+        function moveNext(current) {
+            if (current.value.length >= 1) {
+                let next = current.nextElementSibling;
+                if (next) next.focus();
+            }
+        }
+
+        function verifyAndActivate() {
+            // Simulation de vérification
+            alert("Sécurité 2FA activée avec succès sur votre compte Floy !");
+            localStorage.setItem('floy_2fa_enabled', 'true');
+            window.location.href = 'security.html';
+        }
+    </script>
+
+</body>
+</html>
