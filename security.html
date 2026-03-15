@@ -3,195 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threndly - Sécurité</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Floy - Sécurité</title>
     <style>
-        :root {
-            --threndly-violet: #8a2be2;
-            --threndly-blue: #007bff;
-            --neon-glow: rgba(138, 43, 226, 0.5);
+        :root { 
+            --orange-floy: #FF7A1A; 
+            --noir: #000; 
+            --gris-menu: #161616;
+            --blanc: #fff; 
+            --rouge: #ff4444;
         }
 
-        body {
-            background-color: #000;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
+        body { 
+            margin: 0; 
+            background: var(--noir); 
+            color: var(--blanc); 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
         }
 
-        /* Header avec effet de flou */
-        .security-header {
-            padding: 25px 20px;
+        /* --- HEADER --- */
+        .header {
             display: flex;
             align-items: center;
-            gap: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-bottom: 1px solid #222;
             position: sticky;
             top: 0;
+            background: var(--noir);
             z-index: 100;
-            border-bottom: 1px solid #111;
         }
 
-        .security-container {
-            padding: 20px;
+        .back-btn { font-size: 24px; cursor: pointer; color: var(--blanc); text-decoration: none; margin-right: 20px; }
+
+        /* --- CONTENU --- */
+        .section-title {
+            padding: 20px 15px 10px;
+            font-size: 13px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Carte de protection principale */
-        .status-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%);
-            border: 1px solid #222;
-            border-radius: 25px;
-            padding: 25px;
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
+        .menu-group { background: var(--gris-menu); margin-bottom: 15px; }
 
-        .status-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, var(--neon-glow) 0%, transparent 70%);
-            opacity: 0.2;
-        }
-
-        .shield-icon {
-            font-size: 50px;
-            color: var(--threndly-blue);
-            text-shadow: 0 0 20px var(--threndly-blue);
-            margin-bottom: 15px;
-        }
-
-        /* Options de sécurité */
-        .security-option {
-            background: #0a0a0a;
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 15px;
+        .menu-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #111;
-            transition: 0.3s ease;
+            padding: 18px 15px;
+            border-bottom: 1px solid #222;
+            cursor: pointer;
         }
 
-        .security-option:active {
-            transform: scale(0.98);
-            border-color: var(--threndly-violet);
+        .menu-item:active { background: #222; }
+        .menu-item:last-child { border-bottom: none; }
+
+        .item-label { font-size: 16px; flex: 1; }
+        .item-value { color: #888; font-size: 14px; margin-right: 10px; }
+        .arrow { color: #444; }
+
+        /* --- STATUS BADGE --- */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            background: rgba(255, 122, 26, 0.1);
+            color: var(--orange-floy);
         }
 
-        .option-detail {
+        /* --- DEVICE LIST --- */
+        .device {
             display: flex;
             align-items: center;
+            padding: 15px;
             gap: 15px;
         }
+        .device-icon { font-size: 24px; }
+        .device-info { flex: 1; }
+        .device-name { font-size: 14px; font-weight: bold; }
+        .device-meta { font-size: 12px; color: #555; }
 
-        .icon-box {
-            width: 40px;
-            height: 40px;
-            background: #111;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--threndly-violet);
-        }
-
-        .option-text b {
-            display: block;
-            font-size: 14px;
-        }
-
-        .option-text span {
-            font-size: 11px;
-            color: #666;
-        }
-
-        /* Badge bleu certifié */
-        .verified-badge {
-            color: var(--threndly-blue);
-            font-size: 12px;
-        }
-
-        /* Bouton de sauvegarde */
-        .save-btn {
-            background: linear-gradient(90deg, var(--threndly-violet), var(--threndly-blue));
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 15px;
-            font-weight: 700;
-            margin-top: 20px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-        }
     </style>
 </head>
 <body>
 
-    <div class="security-header">
-        <i class="fas fa-chevron-left" onclick="window.history.back()"></i>
-        <h2 style="margin:0; font-size: 20px;">Centre de Sécurité</h2>
+    <div class="header">
+        <a href="edit-profile.html" class="back-btn">‹</a>
+        <span style="font-weight:bold">Sécurité</span>
     </div>
 
-    <div class="security-container">
-        <div class="status-card">
-            <i class="fas fa-shield-halved shield-icon"></i>
-            <h3 style="margin:0;">Compte Protégé</h3>
-            <p style="font-size: 12px; color: #888;">Votre badge <i class="fas fa-check-circle verified-badge"></i> est actif et sécurisé.</p>
+    <div class="section-title">Sécurité du compte</div>
+    <div class="menu-group">
+        <div class="menu-item" onclick="alert('Redirection vers changement de mot de passe')">
+            <span class="item-label">Mot de passe</span>
+            <span class="arrow">›</span>
         </div>
-
-        <div style="color: #555; font-size: 12px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; padding-left: 10px;">Accès au compte</div>
-
-        <div class="security-option">
-            <div class="option-detail">
-                <div class="icon-box"><i class="fas fa-mobile-alt"></i></div>
-                <div class="option-text">
-                    <b>Double Authentification (2FA)</b>
-                    <span>Code envoyé par email ou SMS</span>
-                </div>
-            </div>
-            <i class="fas fa-toggle-on" style="color: var(--threndly-blue); font-size: 24px;"></i>
+        <div class="menu-item" onclick="alert('Configuration 2FA')">
+            <span class="item-label">Authentification à deux facteurs</span>
+            <span class="badge">Désactivé</span>
+            <span class="arrow">›</span>
         </div>
-
-        <div class="security-option" onclick="alert('Redirection vers changement de mot de passe...')">
-            <div class="option-detail">
-                <div class="icon-box"><i class="fas fa-key"></i></div>
-                <div class="option-text">
-                    <b>Mot de passe</b>
-                    <span>Modifié il y a 2 mois</span>
-                </div>
-            </div>
-            <i class="fas fa-chevron-right" style="color: #333;"></i>
-        </div>
-
-        <div class="security-option">
-            <div class="option-detail">
-                <div class="icon-box"><i class="fas fa-laptop-code"></i></div>
-                <div class="option-text">
-                    <b>Appareils connectés</b>
-                    <span>1 appareil actif</span>
-                </div>
-            </div>
-            <i class="fas fa-chevron-right" style="color: #333;"></i>
-        </div>
-
-        <button class="save-btn">Vérifier la sécurité</button>
     </div>
 
-    <nav class="bottom-nav">
-        <i class="fas fa-home nav-icon" onclick="window.location.href='feed.html'"></i>
-        <i class="fas fa-search nav-icon" onclick="window.location.href='explore.html'"></i>
-        <div style="background:white; color:black; padding:6px 15px; border-radius:10px;"><i class="fas fa-plus"></i></div>
-        <i class="fas fa-comment nav-icon" onclick="window.location.href='message.html'"></i>
-        <i class="fas fa-user nav-icon active" onclick="window.location.href='profile.html'"></i>
-    </nav>
+    <div class="section-title">Où vous êtes connecté</div>
+    <div class="menu-group">
+        <div class="device">
+            <div class="device-icon">📱</div>
+            <div class="device-info">
+                <div class="device-name">iPhone 15 Pro (Cet appareil)</div>
+                <div class="device-meta">Paris, France • En ligne maintenant</div>
+            </div>
+        </div>
+        <div class="device" style="border-top: 1px solid #222;">
+            <div class="device-icon">💻</div>
+            <div class="device-info">
+                <div class="device-name">MacBook Pro</div>
+                <div class="device-meta">Dernière connexion : hier à 14:20</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Alertes de sécurité</div>
+    <div class="menu-group">
+        <div class="menu-item">
+            <span class="item-label">Emails de sécurité de Floy</span>
+            <span class="arrow">›</span>
+        </div>
+    </div>
+
+    <div style="padding: 15px; text-align: center; margin-top: 30px;">
+        <p style="color: #444; font-size: 12px;">Si vous remarquez une activité suspecte, nous vous conseillons de changer votre mot de passe immédiatement.</p>
+    </div>
 
 </body>
 </html>
