@@ -116,20 +116,20 @@
         <button id="bConnect" onclick="linkBinance()" style="background:var(--binance-yellow); border:none; padding:6px 12px; border-radius:6px; font-size:10px; font-weight:bold; cursor:pointer;">CONNECTER</button>
     </div>
 
-    <div class="action-grid">
-        <div class="btn-action">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>DÉPÔT</span>
-        </div>
-        <div class="btn-action" onclick="openWithdrawModal()" style="border-color: var(--orange-floy);">
-            <svg viewBox="0 0 24 24" style="fill:var(--orange-floy)"><path d="M5 13h14v-2H5v2zM19 13l-4 4 1.41 1.41L21.82 13l-5.41-5.41L15 9l4 4z"/></svg>
-            <span>RETRAIT</span>
-        </div>
-        <div class="btn-action">
-            <svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
-            <span>LOGOUT</span>
-        </div>
+   <div class="action-grid">
+    <div class="btn-action" onclick="goToDeposit()">
+        <svg viewBox="0 0 24 24"><path d="M11 9V5H13V9H16L12 13L8 9H11ZM5 18V16H19V18H5Z"/></svg>
+        <span>DÉPÔT</span>
     </div>
+    <div class="btn-action" onclick="goToWithdrawBinance()" style="border-color: var(--orange-floy);">
+        <svg viewBox="0 0 24 24" style="fill:var(--orange-floy)"><path d="M13 15V19H11V15H8L12 11L16 15H13ZM19 6V8H5V6H19Z"/></svg>
+        <span>RETIRER</span>
+    </div>
+        <div class="btn-action" onclick="window.history.back()">
+        <svg viewBox="0 0 24 24"><path d="M21 11H6.83l3.58-3.59L9 6l-6 6 6 6 1.41-1.41L6.83 13H21v-2z"/></svg>
+        <span>RETOUR</span>
+    </div>
+</div>
 
     <div class="converter-box">
         <label style="font-size: 10px; color:#555; display:block; margin-bottom:8px; font-weight:bold;">CONVERTIR MES GAINS</label>
@@ -200,6 +200,15 @@
             alert("Transfert réussi ! Vos fonds seront sur votre compte Binance d'ici quelques minutes.");
             closeWithdrawModal();
         }
+        // Fonction pour aller à la page de Dépôt
+    function goToDeposit() {
+        window.location.href = 'deposit-funds.html';
+    }
+
+    // Fonction pour aller à la page de Retrait Binance
+    function goToWithdrawBinance() {
+        window.location.href = 'withdraw-to-binance.html';
+    }
     </script>
 </body>
 </html>
