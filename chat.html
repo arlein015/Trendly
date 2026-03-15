@@ -7,7 +7,10 @@
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --nav-h: 75px; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 110px; }
-
+        body { background: #000; color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        .chat-header { padding: 20px; background: #111; display: flex; align-items: center; gap: 15px; }
+        .back-btn { color: #FF7A1A; text-decoration: none; font-size: 20px; }
+        .messages-area { flex: 1; display: flex; align-items: center; justify-content: center; color: #444; }
         /* HEADER & PARTAGE */
         .top-nav { display: flex; justify-content: flex-end; padding: 20px; gap: 20px; }
         .icon-btn { background: none; border: none; color: white; cursor: pointer; }
@@ -49,6 +52,13 @@
         <div class="profile-pic-container">
             <img id="myAvatar" src="ma_photo.jpg" class="profile-pic" onerror="this.src='https://ui-avatars.com/api/?name=User&background=FF7A1A&color=000'">
         </div>
+        <div class="chat-header">
+        <a href="messages.html" class="back-btn">←</a>
+        <h3 id="chatTitle">Discussion</h3>
+    </div>
+    <div class="messages-area">
+        <p>Début de la conversation...</p>
+    </div>
         <div class="user-info">
             <h2>
                 <span id="displayUsername">Utilisateur</span>
@@ -106,6 +116,11 @@
             btn.style.background = (btn.textContent === "Abonné") ? "#1a1a1a" : "var(--orange)";
             btn.style.color = (btn.textContent === "Abonné") ? "white" : "black";
         }
+    const params = new URLSearchParams(window.location.search);
+        const chatId = params.get('id');
+        const contacts = JSON.parse(localStorage.getItem('floy_contacts') || "[]");
+        const user = contacts.find(c => c.id === chatId);
+        if(user) document.getElementById('chatTitle').textContent = user.name;
     </script>
 </body>
 </html>
