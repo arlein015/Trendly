@@ -78,12 +78,16 @@
             }
         }
 
-        function finish() {
-            const v = document.getElementById('uAmt').value;
-            if(!v || v <= 0.8) return alert("Le montant minimum est de 1 USDT.");
-            alert("Demande de retrait confirmée ! Les fonds arriveront sous peu.");
-            window.location.href = 'withdraw-funds.html';
-        }
+       function finish() {
+    const v = document.getElementById('uAmt').value;
+    if(!v || v <= 0.8) return alert("Le montant minimum est de 1 USDT.");
+    
+    // DÉCLENCHE LA NOTIFICATION
+    sendNotification("Retrait en cours", "Votre transfert de " + v + " USDT vers Binance a été initié.");
+    
+    alert("Demande de retrait confirmée !");
+    window.location.href = 'withdraw-funds.html';
+}
     </script>
 </body>
 </html>
