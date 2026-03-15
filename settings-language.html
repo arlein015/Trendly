@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Langues</title>
+    <style>
+        :root { --orange-floy: #FF7A1A; --noir: #000; --gris: #121212; }
+        body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; }
+        
+        .header { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #222; }
+        .back-btn { font-size: 24px; cursor: pointer; margin-right: 20px; text-decoration: none; color: white; }
+
+        .lang-list { padding: 10px; }
+        .lang-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px; border-bottom: 1px solid #111; cursor: pointer;
+        }
+        .lang-item.active { color: var(--orange-floy); }
+        .check-icon { display: none; }
+        .active .check-icon { display: block; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="profile.html" class="back-btn">‹</a>
+        <span style="font-weight:bold">Langue de l'application</span>
+    </div>
+
+    <div class="lang-list">
+        <div class="lang-item active" onclick="selectLang(this, 'fr')">
+            <span>Français (France)</span>
+            <span class="check-icon">✓</span>
+        </div>
+        <div class="lang-item" onclick="selectLang(this, 'en')">
+            <span>English</span>
+            <span class="check-icon">✓</span>
+        </div>
+        <div class="lang-item" onclick="selectLang(this, 'ar')">
+            <span>العربية</span>
+            <span class="check-icon">✓</span>
+        </div>
+        <div class="lang-item" onclick="selectLang(this, 'es')">
+            <span>Español</span>
+            <span class="check-icon">✓</span>
+        </div>
+    </div>
+
+    <script>
+        function selectLang(el, code) {
+            // Retirer la classe active de tous les items
+            document.querySelectorAll('.lang-item').forEach(item => item.classList.remove('active'));
+            // Ajouter à l'item cliqué
+            el.classList.add('active');
+            // Sauvegarder le choix
+            localStorage.setItem('floy_lang', code);
+            alert("Langue modifiée avec succès !");
+        }
+    </script>
+
+</body>
+</html>
