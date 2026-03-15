@@ -1,1 +1,83 @@
+<style>
+    /* Conteneur principal de l'indicateur */
+    #typingContainer {
+        display: none; /* Caché par défaut, activé par le JS */
+        margin: 10px 0;
+        padding-left: 15px;
+        flex-shrink: 0;
+        animation: fadeIn 0.3s ease;
+    }
 
+    /* La bulle de texte style "Commentaire" */
+    .typing-bubble {
+        background: #1a1a1a;
+        padding: 12px 16px;
+        border-radius: 18px;
+        border-bottom-left-radius: 2px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Animation des 3 points */
+    .typing-dots {
+        display: flex;
+        gap: 4px;
+    }
+
+    .typing-dots span {
+        width: 6px;
+        height: 6px;
+        background: #888;
+        border-radius: 50%;
+        display: inline-block;
+        animation: typingBounce 1.3s infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-5px); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div id="typingContainer">
+    <div class="typing-bubble">
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const TypingModule = {
+        el: document.getElementById('typingContainer'),
+
+        // Fonction pour afficher l'indicateur
+        show: function() {
+            if (this.el) {
+                this.el.style.display = 'block';
+                // On force le scroll vers le bas pour voir l'indicateur
+                const chatBox = document.getElementById('chatBox');
+                if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        },
+
+        // Fonction pour cacher l'indicateur
+        hide: function() {
+            if (this.el) {
+                this.el.style.display = 'none';
+            }
+        }
+    };
+</script>
