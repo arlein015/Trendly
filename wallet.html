@@ -3,62 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Wallet</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>Floy - Portefeuille</title>
     <style>
-        body {
-            margin: 0; padding: 20px;
-            background: linear-gradient(135deg, #ff8c00 0%, #3a01cc 100%) !important;
-            background-attachment: fixed;
-            font-family: 'Poppins', sans-serif;
-            color: white;
+        :root { 
+            --orange-floy: #FF7A1A; 
+            --noir: #000; 
+            --gris: #121212; 
+            --blanc: #fff; 
         }
-
-        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
-
-        .wallet-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            padding: 35px 20px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-
-        .balance { font-size: 48px; font-weight: 700; margin: 10px 0; }
         
-        .btn-cashout {
-            width: 100%; background: white; color: #3a01cc;
-            border: none; padding: 18px; border-radius: 20px;
-            font-weight: 700; font-size: 16px; margin-top: 25px; cursor: pointer;
+        body { 
+            background: var(--noir); color: var(--blanc); 
+            font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px;
         }
 
-        .transaction-item {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px; border-radius: 15px; margin-top: 10px;
-            display: flex; justify-content: space-between; align-items: center;
+        /* Header */
+        .header { 
+            display: flex; align-items: center; padding: 20px; 
+            border-bottom: 1px solid #222; position: sticky; top: 0; background: var(--noir);
         }
+        .back-btn { font-size: 24px; cursor: pointer; text-decoration: none; color: white; margin-right: 20px; }
+
+        /* Carte de solde */
+        .balance-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+            margin: 20px; padding: 30px; border-radius: 25px;
+            border: 1px solid #333; text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 122, 26, 0.1);
+        }
+        .balance-label { color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-amount { font-size: 42px; font-weight: bold; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .currency-icon { color: var(--orange-floy); }
+
+        /* Actions rapides */
+        .action-row { display: flex; justify-content: space-around; margin: 20px; gap: 15px; }
+        .action-btn { 
+            flex: 1; background: var(--gris); border: 1px solid #333; 
+            padding: 15px; border-radius: 15px; text-align: center; cursor: pointer;
+            transition: 0.3s;
+        }
+        .action-btn:active { transform: scale(0.95); background: #1a1a1a; }
+        .action-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+
+        /* Section Transactions */
+        .section-title { padding: 0 20px; font-size: 18px; font-weight: bold; margin-top: 30px; }
+        .transaction-list { padding: 10px 20px; }
+        .transaction-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 0; border-bottom: 1px solid #111;
+        }
+        .trans-info { display: flex; align-items: center; gap: 12px; }
+        .trans-icon { width: 40px; height: 40px; background: #1a1a1a; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .trans-name { font-weight: 500; font-size: 14px; }
+        .trans-date { color: #555; font-size: 12px; }
+        .trans-amount { font-weight: bold; color: #44ff44; }
+        .trans-amount.minus { color: #ff4444; }
+
+        /* Badge Floy (Le même que ton image) */
+        .floy-badge-small { width: 14px; height: 14px; vertical-align: middle; margin-left: 4px; }
     </style>
 </head>
 <body>
+
     <div class="header">
-        <i class="fas fa-chevron-left" onclick="window.history.back()"></i>
-        <h2 style="margin:0;">Portefeuille</h2>
+        <a href="profile.html" class="back-btn">‹</a>
+        <span style="font-weight:bold">MON PORTEFEUILLE</span>
     </div>
 
-    <div class="wallet-card">
-        <p style="opacity: 0.9; margin: 0;">Solde actuel</p>
-        <div class="balance">842,50 €</div>
-        <button class="btn-cashout">Retirer l'argent</button>
+    <div class="balance-card">
+        <div class="balance-label">Solde actuel</div>
+        <div class="balance-amount">
+            <span class="currency-icon">◈</span>
+            <span id="solde">1,250.00</span>
+        </div>
+        <div style="color: #888; font-size: 12px;">Environ 12.50 €</div>
     </div>
 
-    <h3 style="margin-top: 30px; font-size: 16px;">Historique</h3>
-    <div class="transaction-item">
-        <span>Récompense Vidéo</span>
-        <span style="font-weight: 700;">+ 12.00 €</span>
+    <div class="action-row">
+        <div class="action-btn">
+            <span class="action-icon">📥</span>
+            <span style="font-size: 12px; font-weight: bold;">Recharger</span>
+        </div>
+        <div class="action-btn" style="border-color: var(--orange-floy);">
+            <span class="action-icon">📤</span>
+            <span style="font-size: 12px; font-weight: bold; color: var(--orange-floy);">Retirer</span>
+        </div>
     </div>
+
+    <div class="section-title">Historique des gains</div>
+    <div class="transaction-list">
+        
+        <div class="transaction-item">
+            <div class="trans-info">
+                <div class="trans-icon">✨</div>
+                <div>
+                    <div class="trans-name">Récompense Créateur 
+                        <svg class="floy-badge-small" viewBox="0 0 512 512">
+                            <path d="M512 256c0 .9-16.1 11.8-19.1 20.5l-20.7 61.2c-2.3 6.7-1 14.1 3.4 19.6l39.9 50.1c5.8 7.2 5.3 17.6-1.1 24l-45.7 45.7c-6.4 6.4-16.8 6.9-24 1.1l-50.1-39.9c-5.5-4.4-12.9-5.7-19.6-3.4l-61.2 20.7c-8.7 3-19.6 19.1-20.5 19.1s-11.8-16.1-20.5-19.1l-61.2-20.7c-6.7-2.3-14.1-1-19.6 3.4l-50.1 39.9c-7.2 5.8-17.6 5.3-24-1.1l-45.7-45.7c-6.4-6.4-6.9-16.8-1.1-24l39.9-50.1c4.4-5.5 5.7-12.9 3.4-19.6L20.7 276.5C17.7 267.8 1.6 256.9 1.6 256s16.1-11.8 19.1-20.5l20.7-61.2c2.3-6.7 1-14.1-3.4-19.6L18.1 104.6c-5.8-7.2-5.3-17.6 1.1-24l45.7-45.7c6.4-6.4 16.8-6.9 24-1.1L139 73.7c5.5 4.4 12.9 5.7 19.6 3.4l61.2-20.7c8.7-3 19.6-19.1 20.5-19.1s11.8 16.1 20.5 19.1l61.2 20.7c6.7 2.3 14.1 1 19.6-3.4l50.1-39.9c7.2-5.8 17.6-5.3 24 1.1l45.7 45.7c6.4 6.4 6.9 16.8 1.1 24l-39.9 50.1c-4.4 5.5-5.7 12.9-3.4 19.6l20.7 61.2c3 8.7 19.1 19.6 19.1 20.5z" fill="#FF7A1A"/>
+                            <path d="M369.4 174.6c-12.5-12.5-32.8-12.5-45.3 0L224 274.7l-44.1-44.1c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l66.7 66.7c12.5 12.5 32.8 12.5 45.3 0l122.7-122.7c12.6-12.5 12.6-32.8.1-45.3z" fill="black"/>
+                        </svg>
+                    </div>
+                    <div class="trans-date">Aujourd'hui, 14:20</div>
+                </div>
+            </div>
+            <div class="trans-amount">+ 150.00</div>
+        </div>
+
+        <div class="transaction-item">
+            <div class="trans-info">
+                <div class="trans-icon">🎁</div>
+                <div>
+                    <div class="trans-name">Cadeau de Live</div>
+                    <div class="trans-date">Hier, 21:05</div>
+                </div>
+            </div>
+            <div class="trans-amount">+ 45.00</div>
+        </div>
+
+        <div class="transaction-item">
+            <div class="trans-info">
+                <div class="trans-icon" style="background: rgba(255,68,68,0.1);">💳</div>
+                <div>
+                    <div class="trans-name">Retrait vers Banque</div>
+                    <div class="trans-date">12 Mars 2026</div>
+                </div>
+            </div>
+            <div class="trans-amount minus">- 500.00</div>
+        </div>
+
+    </div>
+
+    <script>
+        // Tu pourras ajouter ici la logique pour récupérer le solde réel depuis ta base de données
+        console.log("Wallet Floy prêt");
+    </script>
 </body>
 </html>
