@@ -120,6 +120,33 @@
                 toggleButtons();
             }
         }
+        // --- FONCTION VIBRATION ---
+function triggerVibe(type) {
+    if ("vibrate" in navigator) {
+        if (type === 'send') {
+            // Une petite vibration courte (50ms) pour l'envoi
+            navigator.vibrate(50);
+        } else if (type === 'error') {
+            // Deux vibrations saccadées pour une erreur
+            navigator.vibrate([100, 50, 100]);
+        }
+    }
+}
+
+// --- MISE À JOUR DE LA FONCTION SAVE ---
+async function save(obj) {
+    try {
+        await DBModule.saveMessage(CONVO_ID, obj);
+        
+        // On déclenche la vibration à chaque message envoyé
+        triggerVibe('send'); 
+        
+        load(); 
+    } catch (err) {
+        triggerVibe('error');
+        console.error("Erreur :", err);
+    }
+}
 
         // --- SAUVEGARDE DANS INDEXEDDB (VIA DB.JS) ---
         async function save(obj) {
