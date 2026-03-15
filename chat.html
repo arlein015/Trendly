@@ -3,68 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Floy - Chat Pro</title>
+    <title>Floy - Chat Interactif</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; }
         body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
         /* HEADER */
-        .chat-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #1a1a1a; background: var(--noir); z-index: 10; }
+        .chat-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #1a1a1a; background: var(--noir); }
         .back-btn { cursor: pointer; margin-right: 15px; font-size: 22px; }
-        .user-img { width: 38px; height: 38px; border-radius: 50%; background: #222; margin-right: 12px; }
-
-        /* BARRE DE RECHERCHE DANS LE CHAT */
-        .search-chat-bar { background: #0a0a0a; padding: 8px 15px; display: flex; border-bottom: 1px solid #111; }
-        .search-chat-bar input { flex: 1; background: #1a1a1a; border: none; border-radius: 8px; padding: 8px; color: white; font-size: 12px; outline: none; }
 
         /* ZONE DE MESSAGES */
-        .messages-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .bubble { max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
-        .received { align-self: flex-start; background: #1a1a1a; border-bottom-left-radius: 4px; }
-        .sent { align-self: flex-end; background: var(--orange); color: black; font-weight: 500; border-bottom-right-radius: 4px; }
-        .chat-img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
-
-        /* BARRE DE SAISIE (CLAVIER FIX) */
-        .input-area { 
-            padding: 12px 15px; background: var(--noir); border-top: 1px solid #1a1a1a; 
-            display: flex; align-items: center; gap: 10px; padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        #chatBox { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .bubble { 
+            max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 14px; 
+            position: relative; transition: 0.2s; cursor: pointer; -webkit-tap-highlight-color: transparent;
         }
-        .message-input { flex: 1; background: #111; border: 1px solid #222; padding: 12px 18px; border-radius: 25px; color: white; outline: none; font-size: 16px; /* 16px évite le zoom auto sur iPhone */ }
-        .btn-plus { width: 40px; height: 40px; background: #1a1a1a; border-radius: 50%; border: none; color: white; cursor: pointer; }
-        .btn-send { width: 42px; height: 42px; background: var(--orange); border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; }
+        .sent { align-self: flex-end; background: var(--orange); color: black; border-bottom-right-radius: 4px; }
+        .received { align-self: flex-start; background: #1a1a1a; border-bottom-left-radius: 4px; }
+        .chat-img { max-width: 100%; border-radius: 10px; }
 
-        /* MENU + */
-        .attach-menu { position: absolute; bottom: 80px; left: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 15px; display: none; flex-direction: column; padding: 10px; z-index: 100; }
-        .attach-option { display: flex; align-items: center; gap: 10px; padding: 10px 15px; cursor: pointer; }
+        /* MENU CONTEXTUEL (APPUI LONG) */
+        #contextMenu {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .menu-content { background: #1a1a1a; width: 260px; border-radius: 15px; border: 1px solid #333; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #222; text-align: center; cursor: pointer; font-weight: bold; }
+        .menu-item:last-child { border-bottom: none; color: #ff4444; }
+
+        /* BARRE DE SAISIE (FORCE L'AFFICHAGE) */
+        .input-area { 
+            padding: 10px 15px; background: #000; border-top: 1px solid #222; 
+            display: flex; align-items: center; gap: 10px; z-index: 1000;
+            min-height: 60px;
+        }
+        .message-input { 
+            flex: 1; background: #111; border: 1px solid #333; padding: 12px 15px; 
+            border-radius: 25px; color: white; outline: none; font-size: 16px; /* 16px = Pas de zoom iPhone */
+        }
+        .btn-action { 
+            width: 45px; height: 45px; border-radius: 50%; border: none; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .btn-plus { background: #222; color: white; font-size: 24px; }
+        .btn-send { background: var(--orange); }
+
         input[type="file"] { display: none; }
-        
-        /* Highlight pour la recherche */
-        .highlight { background: yellow; color: black; border-radius: 2px; }
     </style>
 </head>
 <body>
 
     <div class="chat-header">
         <div class="back-btn" onclick="window.location.href='message-list.html'">←</div>
-        <img src="https://picsum.photos/100?random=1" class="user-img">
         <div style="font-weight: bold;">Alexandre Dupont</div>
     </div>
 
-    <div class="search-chat-bar">
-        <input type="text" id="searchInput" placeholder="Rechercher dans la discussion..." oninput="searchMessages()">
+    <div id="chatBox">
+        <div class="bubble received">Appuie longtemps sur moi pour voir le menu !</div>
     </div>
 
-    <div class="messages-container" id="chatBox"></div>
-
-    <div class="attach-menu" id="attachMenu">
-        <label class="attach-option" for="upload-photo">🖼️ Photo <input type="file" id="upload-photo" accept="image/*" onchange="handleImage(this)"></label>
-        <label class="attach-option" onclick="clearChat()" style="color: #ff4444;">🗑️ Effacer tout</label>
+    <div id="contextMenu" onclick="closeMenu()">
+        <div class="menu-content" onclick="event.stopPropagation()">
+            <div class="menu-item" onclick="copyMsg()">📋 Copier le texte</div>
+            <div class="menu-item" onclick="pinMsg()">📌 Épingler</div>
+            <div class="menu-item" onclick="deleteMsg()">🗑️ Supprimer le message</div>
+        </div>
     </div>
 
-    <div class="input-area" id="inputArea">
-        <button class="btn-plus" onclick="toggleMenu()">+</button>
-        <input type="text" id="msgInput" class="message-input" placeholder="Message..." autocomplete="off">
-        <button class="btn-send" onclick="sendMessage()">
+    <div class="input-area">
+        <button class="btn-action btn-plus" onclick="document.getElementById('fileIn').click()">+</button>
+        <input type="file" id="fileIn" accept="image/*" onchange="sendImg(this)">
+        
+        <input type="text" id="msgInput" class="message-input" placeholder="Ecrivez ici..." autocomplete="off">
+        
+        <button class="btn-action btn-send" onclick="sendTxt()">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="black"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
     </div>
@@ -72,91 +84,81 @@
     <script>
         const chatBox = document.getElementById('chatBox');
         const msgInput = document.getElementById('msgInput');
-        const attachMenu = document.getElementById('attachMenu');
+        let currentIdx = null;
+        let timer;
 
-        window.onload = () => { loadMessages(); };
-
-        function loadMessages() {
-            chatBox.innerHTML = "";
-            const history = JSON.parse(localStorage.getItem('floy_chat_history')) || [];
-            history.forEach(msg => renderBubble(msg.content, msg.type, msg.isImage));
+        // Charger messages
+        window.onload = () => {
+            const data = JSON.parse(localStorage.getItem('floy_chat')) || [];
+            data.forEach((m, i) => draw(m, i));
             chatBox.scrollTop = chatBox.scrollHeight;
+        };
+
+        function sendTxt() {
+            const val = msgInput.value.trim();
+            if(val) { save({content: val, type: 'sent', isImg: false}); msgInput.value = ""; }
         }
 
-        // FIX CLAVIER : Scroll auto quand on clique sur l'input
-        msgInput.addEventListener('focus', () => {
-            setTimeout(() => {
-                chatBox.scrollTop = chatBox.scrollHeight;
-                window.scrollTo(0, 0); // Empêche le décalage du body
-            }, 300);
-        });
-
-        function sendMessage() {
-            const text = msgInput.value.trim();
-            if (text !== "") {
-                saveMessage(text, 'sent', false);
-                msgInput.value = "";
-                attachMenu.style.display = 'none';
-            }
-        }
-
-        function handleImage(input) {
-            if (input.files && input.files[0]) {
+        function sendImg(input) {
+            if(input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = (e) => saveMessage(e.target.result, 'sent', true);
+                reader.onload = (e) => save({content: e.target.result, type: 'sent', isImg: true});
                 reader.readAsDataURL(input.files[0]);
-                attachMenu.style.display = 'none';
             }
         }
 
-        function saveMessage(content, type, isImage) {
-            const history = JSON.parse(localStorage.getItem('floy_chat_history')) || [];
-            history.push({ content, type, isImage });
-            localStorage.setItem('floy_chat_history', JSON.stringify(history));
-            renderBubble(content, type, isImage);
+        function save(obj) {
+            const data = JSON.parse(localStorage.getItem('floy_chat')) || [];
+            data.push(obj);
+            localStorage.setItem('floy_chat', JSON.stringify(data));
+            draw(obj, data.length - 1);
         }
 
-        function renderBubble(content, type, isImage) {
+        function draw(m, i) {
             const div = document.createElement('div');
-            div.className = `bubble ${type}`;
-            div.setAttribute('data-text', isImage ? "" : content.toLowerCase());
-
-            if (isImage) {
-                const img = document.createElement('img');
-                img.src = content;
-                img.className = "chat-img";
-                div.appendChild(img);
+            div.className = `bubble ${m.type}`;
+            if(m.isImg) {
+                div.innerHTML = `<img src="${m.content}" class="chat-img">`;
             } else {
-                div.innerText = content;
+                div.innerText = m.content;
             }
+
+            // GESTION APPUI LONG
+            div.onmousedown = div.ontouchstart = () => {
+                timer = setTimeout(() => {
+                    currentIdx = i;
+                    document.getElementById('contextMenu').style.display = 'flex';
+                }, 700);
+            };
+            div.onmouseup = div.ontouchend = () => clearTimeout(timer);
+
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // FONCTION RECHERCHE
-        function searchMessages() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const bubbles = document.querySelectorAll('.bubble');
-            bubbles.forEach(b => {
-                if (term === "") { b.style.opacity = "1"; b.style.display = "block"; }
-                else {
-                    const txt = b.getAttribute('data-text');
-                    if (txt.includes(term)) {
-                        b.style.opacity = "1";
-                        b.style.display = "block";
-                    } else {
-                        b.style.opacity = "0.2";
-                        b.style.display = "none";
-                    }
-                }
-            });
+        function closeMenu() { document.getElementById('contextMenu').style.display = 'none'; }
+
+        function deleteMsg() {
+            let data = JSON.parse(localStorage.getItem('floy_chat'));
+            data.splice(currentIdx, 1);
+            localStorage.setItem('floy_chat', JSON.stringify(data));
+            location.reload(); 
         }
 
-        function toggleMenu() { attachMenu.style.display = (attachMenu.style.display === 'flex') ? 'none' : 'flex'; }
-        function clearChat() { if(confirm("Vider la discussion ?")) { localStorage.removeItem('floy_chat_history'); loadMessages(); } }
-        msgInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-    </script>
+        function copyMsg() {
+            const data = JSON.parse(localStorage.getItem('floy_chat'));
+            navigator.clipboard.writeText(data[currentIdx].content);
+            alert("Copié !");
+            closeMenu();
+        }
 
+        function pinMsg() { alert("Épinglé !"); closeMenu(); }
+
+        // Force le focus clavier sur mobile
+        msgInput.addEventListener('click', () => {
+            msgInput.focus();
+        });
+    </script>
     <script src="navbar.js"></script>
 </body>
 </html>
