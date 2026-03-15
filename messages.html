@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Floy - Messages Permanents</title>
+    <title>Floy - Messages & Nav SVG</title>
     <script src="db.js"></script>
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --nav-h: 70px; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --nav-h: 75px; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
         /* HEADER */
@@ -15,7 +15,7 @@
         .search-container { background: #1a1a1a; border-radius: 12px; padding: 10px; display: flex; align-items: center; }
         .search-container input { background: transparent; border: none; color: white; margin-left: 10px; outline: none; width: 100%; }
 
-        /* STORY PERMANENTE */
+        /* STORY */
         .story-bar { display: flex; gap: 15px; padding: 15px 20px; border-bottom: 1px solid #111; overflow-x: auto; }
         .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; position: relative; cursor: pointer; }
         .story-circle { width: 65px; height: 65px; border-radius: 50%; padding: 2px; border: 2px solid #444; transition: 0.3s; }
@@ -23,20 +23,31 @@
         .story-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #222; }
         .plus-badge { position: absolute; bottom: 18px; right: 0; background: var(--orange); width: 20px; height: 20px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center; color: black; font-weight: bold; }
 
-        /* LISTE CHAT */
-        .chat-list { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+        /* LISTE */
+        .chat-list { flex: 1; overflow-y: auto; padding-bottom: 100px; }
         .chat-item { display: flex; align-items: center; padding: 15px 20px; text-decoration: none; color: white; border-bottom: 0.5px solid #0a0a0a; }
         .avatar { width: 55px; height: 55px; border-radius: 50%; margin-right: 15px; background: #222; object-fit: cover; }
         .chat-info { flex: 1; min-width: 0; }
         .user-name { font-weight: bold; font-size: 16px; }
         .last-msg { font-size: 14px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* NAV BAR */
-        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: #050505; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; align-items: center; padding-bottom: 10px; }
-        .nav-item { color: #555; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; }
-        .nav-item.active { color: white; }
+        /* BARRE DE NAVIGATION SVG */
+        .nav-bar { 
+            position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); 
+            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; 
+            align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 1000;
+        }
+        .nav-item { 
+            color: #666; text-decoration: none; display: flex; flex-direction: column; 
+            align-items: center; gap: 4px; transition: 0.2s;
+        }
+        .nav-item.active { color: var(--orange); }
+        .nav-item svg { width: 26px; height: 26px; }
+        .nav-text { font-size: 10px; font-weight: 500; }
 
-        .fab { position: fixed; bottom: 90px; right: 20px; background: var(--orange); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; }
+        /* BOUTON GROUPE */
+        .fab { position: fixed; bottom: 95px; right: 20px; background: var(--orange); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 99; }
     </style>
 </head>
 <body>
@@ -64,9 +75,22 @@
     </button>
 
     <nav class="nav-bar">
-        <a href="index.html" class="nav-item">Accueil</a>
-        <a href="messages.html" class="nav-item active">Messages</a>
-        <a href="profil.html" class="nav-item">Profil</a>
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span class="nav-text">Accueil</span>
+        </a>
+        <a href="explorer.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span class="nav-text">Explorer</span>
+        </a>
+        <a href="messages.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span class="nav-text">Messages</span>
+        </a>
+        <a href="profil.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span class="nav-text">Profil</span>
+        </a>
     </nav>
 
     <script>
@@ -75,7 +99,6 @@
             { id: "u2", name: "Julie Martin", img: "https://i.pravatar.cc/150?u=2" }
         ];
 
-        // --- SAUVEGARDE STORY ---
         function saveStory(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -83,7 +106,6 @@
                     const imgData = e.target.result;
                     document.getElementById('myStoryImg').src = imgData;
                     document.getElementById('myStoryCircle').classList.add('active');
-                    // On enregistre l'image et l'état orange
                     localStorage.setItem('user_story_img', imgData);
                     localStorage.setItem('user_story_active', 'true');
                 };
@@ -91,23 +113,12 @@
             }
         }
 
-        // --- CHARGEMENT STORY AU RÉVEIL ---
-        function loadStory() {
-            const savedImg = localStorage.getItem('user_story_img');
-            const isActive = localStorage.getItem('user_story_active');
-            if (savedImg) document.getElementById('myStoryImg').src = savedImg;
-            if (isActive === 'true') document.getElementById('myStoryCircle').classList.add('active');
-        }
-
-        // --- CRÉATION GROUPE ---
         function createGroup() {
             const name = prompt("Nom du groupe :");
             if (!name) return;
-            const participants = prompt("Membres (Alex, Julie...) :");
-            
+            const participants = prompt("Inviter qui ?");
             const groups = JSON.parse(localStorage.getItem('floy_groups') || "[]");
-            const newG = { id: "grp_" + Date.now(), name: name, isGroup: true, members: participants, img: "https://ui-avatars.com/api/?name="+name+"&background=FF7A1A" };
-            groups.unshift(newG);
+            groups.unshift({ id: "grp_" + Date.now(), name: name, members: participants, isGroup: true, img: "https://ui-avatars.com/api/?name="+name+"&background=FF7A1A" });
             localStorage.setItem('floy_groups', JSON.stringify(groups));
             refreshUI();
         }
@@ -116,30 +127,26 @@
             const container = document.getElementById('chatList');
             const groups = JSON.parse(localStorage.getItem('floy_groups') || "[]");
             const all = [...groups, ...baseContacts];
-            
             let html = "";
             for (let c of all) {
                 if (query && !c.name.toLowerCase().includes(query.toLowerCase())) continue;
-                let lastText = c.isGroup ? "Membres: " + c.members : "Démarrer un chat";
+                let last = "Démarrer un chat";
                 try {
                     const msgs = await DBModule.getMessages(c.id);
-                    if (msgs.length > 0) lastText = msgs[msgs.length - 1].content;
+                    if (msgs.length > 0) last = msgs[msgs.length - 1].content;
                 } catch(e) {}
-
-                html += `
-                    <a href="chat.html?id=${c.id}" class="chat-item">
-                        <img src="${c.img}" class="avatar">
-                        <div class="chat-info">
-                            <div class="user-name">${c.name}</div>
-                            <div class="last-msg">${lastText}</div>
-                        </div>
-                    </a>`;
+                html += `<a href="chat.html?id=${c.id}" class="chat-item">
+                    <img src="${c.img}" class="avatar">
+                    <div class="chat-info"><div class="user-name">${c.name}</div><div class="last-msg">${last}</div></div>
+                </a>`;
             }
             container.innerHTML = html;
         }
 
         window.onload = () => {
-            loadStory();
+            const savedImg = localStorage.getItem('user_story_img');
+            if (savedImg) document.getElementById('myStoryImg').src = savedImg;
+            if (localStorage.getItem('user_story_active') === 'true') document.getElementById('myStoryCircle').classList.add('active');
             refreshUI();
         };
     </script>
