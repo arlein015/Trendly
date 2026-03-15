@@ -1,74 +1,19 @@
-:root {
-    --bg-dark: #0d1117;
-    --sidebar-bg: #161b22;
-    --text-main: #c9d1d9;
-    --accent-blue: #2f81f7;
-    --border: #30363d;
-}
+:root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --msg-recu: #1a1a1a; }
 
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: -apple-system, sans-serif;
-    margin: 0;
-    height: 100vh;
-    display: flex;
-}
+body { background: var(--noir); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
 
-.app-container { display: flex; width: 100%; }
+/* Header */
+.chat-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #1a1a1a; background: var(--noir); sticky top: 0; }
+.back-btn { cursor: pointer; margin-right: 15px; font-size: 20px; }
+.user-img { width: 35px; height: 35px; border-radius: 50%; background: #222; margin-right: 10px; }
 
-.sidebar {
-    width: 260px;
-    background-color: var(--sidebar-bg);
-    border-right: 1px solid var(--border);
-    padding: 20px;
-}
+/* Bulles */
+.messages-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.bubble { max-width: 75%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; position: relative; }
+.received { align-self: flex-start; background: var(--msg-recu); color: white; border-bottom-left-radius: 4px; }
+.sent { align-self: flex-end; background: var(--orange); color: black; font-weight: 500; border-bottom-right-radius: 4px; }
 
-/* LE BADGE BLEU : Il ne doit jamais changer */
-.badge-bleu {
-    background-color: var(--accent-blue);
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 10px;
-    margin-left: 5px;
-    display: inline-block;
-}
-
-.chat-area { flex: 1; display: flex; flex-direction: column; }
-
-.chat-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--border);
-}
-
-.messages-container {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.input-area {
-    padding: 20px;
-    display: flex;
-    gap: 10px;
-    border-top: 1px solid var(--border);
-}
-
-input {
-    flex: 1;
-    background: var(--sidebar-bg);
-    border: 1px solid var(--border);
-    color: white;
-    padding: 12px;
-    border-radius: 8px;
-}
-
-button {
-    background: var(--accent-blue);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-}
+/* Input */
+.input-area { padding: 15px; background: var(--noir); border-top: 1px solid #1a1a1a; display: flex; gap: 10px; align-items: center; }
+.input-area input { flex: 1; background: #111; border: 1px solid #222; padding: 12px; border-radius: 25px; color: white; outline: none; }
+.send-btn { background: var(--orange); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
