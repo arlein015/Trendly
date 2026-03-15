@@ -292,6 +292,17 @@
             document.getElementById('profImg').src = document.getElementById('editPreview').src;
             closeModal('editModal');
         }
+        function toggleMenu() {
+    document.getElementById('sideMenu').classList.toggle('active');
+    document.getElementById('menuOverlay').classList.toggle('active');
+}
+
+function logout() {
+    if(confirm("Voulez-vous vraiment vous déconnecter de Floy ?")) {
+        localStorage.clear(); // Optionnel : vide la session
+        window.location.href = 'login.html'; // Redirige vers la connexion
+    }
+}
     </script>
 </body>
 </html>
