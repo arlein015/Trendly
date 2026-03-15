@@ -3,44 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Floy - Discussions</title>
+    <title>Floy - Messages</title>
     <script src="db.js"></script>
     <style>
-        :root { --orange: #FF7A1A; --bleu: #0095f6; --noir: #000; --gris: #121212; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
         /* HEADER */
-        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a1a1a; flex-shrink: 0; }
+        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a1a1a; }
         .header h1 { margin: 0; font-size: 22px; font-weight: 800; }
 
-        /* SECTION STORYS */
+        /* STORYS */
         .story-bar { display: flex; gap: 15px; padding: 15px; overflow-x: auto; border-bottom: 8px solid #080808; flex-shrink: 0; }
         .story-bar::-webkit-scrollbar { display: none; }
-        .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
+        .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; cursor: pointer; }
+        
         .story-ring { width: 60px; height: 60px; border-radius: 50%; padding: 2px; border: 2px solid var(--orange); position: relative; }
         .add-story .story-ring { border: 2px dashed #444; }
-        .add-story .plus { position: absolute; bottom: 0; right: 0; background: var(--orange); width: 18px; height: 18px; border-radius: 50%; border: 2px solid black; display: flex; align-items: center; justify-content: center; color: black; font-size: 14px; font-weight: bold; }
+        .add-story .plus { 
+            position: absolute; bottom: 0; right: 0; background: var(--orange); 
+            width: 20px; height: 20px; border-radius: 50%; border: 2px solid black; 
+            display: flex; align-items: center; justify-content: center; color: black; font-size: 16px; font-weight: bold; 
+        }
         .story-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #222; }
         .story-name { font-size: 11px; color: #888; }
 
         /* LISTE DES DISCUSSIONS */
         .chat-list { flex: 1; overflow-y: auto; }
-        .chat-item { display: flex; align-items: center; padding: 15px; text-decoration: none; color: white; transition: 0.2s; border-bottom: 0.5px solid #080808; }
-        .chat-item:active { background: #111; }
+        .chat-item { display: flex; align-items: center; padding: 15px; text-decoration: none; color: white; border-bottom: 0.5px solid #080808; }
         
-        .avatar-box { margin-right: 15px; flex-shrink: 0; }
-        .avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #222; }
-        
+        .avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #222; margin-right: 15px; flex-shrink: 0; }
         .chat-info { flex: 1; min-width: 0; }
-        .chat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .user-name { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 4px; overflow: hidden; text-overflow: ellipsis; }
-        .cert-icon { color: var(--bleu); flex-shrink: 0; }
-        .time { font-size: 12px; color: #555; }
+        .chat-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .user-name { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 4px; }
         
+        /* BADGE ORANGE */
+        .cert-icon { color: var(--orange); flex-shrink: 0; }
+        
+        .time { font-size: 12px; color: #555; }
         .last-msg { font-size: 14px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* BOUTON FLOTTANT GROUPE */
-        .fab { position: fixed; bottom: 30px; right: 20px; background: var(--orange); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: none; cursor: pointer; z-index: 10; }
+        .fab { position: fixed; bottom: 30px; right: 20px; background: var(--orange); width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -51,75 +54,66 @@
     </div>
 
     <div class="story-bar">
-        <div class="story-item add-story">
+        <div class="story-item add-story" onclick="document.getElementById('storyInput').click()">
             <div class="story-ring">
                 <img src="https://via.placeholder.com/60" class="story-img">
                 <div class="plus">+</div>
             </div>
             <span class="story-name">Ta story</span>
         </div>
-        <div id="storyList" style="display:flex; gap:15px;"></div>
+        <input type="file" id="storyInput" hidden accept="image/*" onchange="alert('Story sélectionnée !')">
+        
+        <div id="storyList" style="display:flex; gap:15px;">
+            <div class="story-item"><div class="story-ring"><img src="https://i.pravatar.cc/150?u=9" class="story-img"></div><span class="story-name">Sarah</span></div>
+            <div class="story-item"><div class="story-ring"><img src="https://i.pravatar.cc/150?u=8" class="story-img"></div><span class="story-name">Kevin</span></div>
+        </div>
     </div>
 
-    <div class="chat-list" id="chatList">
-        </div>
+    <div class="chat-list" id="chatList"></div>
 
     <button class="fab">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="black"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
     </button>
 
     <script>
-        // Ta liste de contacts
+        // Chaque contact a un ID unique pour séparer les discussions
         const contacts = [
-            { id: "convo_1", name: "Alexandre Dupont", cert: true, img: "https://i.pravatar.cc/150?u=1" },
-            { id: "convo_2", name: "Julie Martin", cert: false, img: "https://i.pravatar.cc/150?u=2" },
-            { id: "convo_3", name: "Marc Evans", cert: true, img: "https://i.pravatar.cc/150?u=3" }
+            { id: "convo_alex", name: "Alexandre Dupont", cert: true, img: "https://i.pravatar.cc/150?u=1" },
+            { id: "convo_julie", name: "Julie Martin", cert: false, img: "https://i.pravatar.cc/150?u=2" },
+            { id: "convo_marc", name: "Marc Evans", cert: true, img: "https://i.pravatar.cc/150?u=3" }
         ];
 
         async function renderChats() {
             const listContainer = document.getElementById('chatList');
-            if (!listContainer) return;
-
             let chatData = [];
 
-            // 1. On récupère les données pour chaque contact
             for (let c of contacts) {
-                try {
-                    const msgs = await DBModule.getMessages(c.id);
-                    const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1] : null;
-                    
-                    chatData.push({
-                        ...c,
-                        lastMessage: lastMsg,
-                        // Si pas de message, on met 0 pour le tri
-                        timestamp: lastMsg ? (lastMsg.timestamp || 0) : 0 
-                    });
-                } catch (e) {
-                    console.error("Erreur DB pour " + c.name, e);
-                }
+                const msgs = await DBModule.getMessages(c.id); // On récupère les messages propres à CET ID
+                const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1] : null;
+                
+                chatData.push({
+                    ...c,
+                    lastMessage: lastMsg,
+                    timestamp: lastMsg ? (lastMsg.timestamp || 0) : 0 
+                });
             }
 
-            // 2. TRI PAR RÉCURRENCE (Le plus récent en haut)
+            // Tri : Le message le plus récent monte en haut
             chatData.sort((a, b) => b.timestamp - a.timestamp);
 
-            // 3. AFFICHAGE PROPRE
             listContainer.innerHTML = chatData.map(chat => {
                 let preview = "Démarrer une discussion";
                 let timeStr = "";
 
                 if (chat.lastMessage) {
-                    if (chat.lastMessage.type === 'image') preview = "📷 Photo";
-                    else if (chat.lastMessage.type === 'video') preview = "🎥 Vidéo";
-                    else preview = chat.lastMessage.content;
-
-                    // Formater l'heure
+                    preview = chat.lastMessage.type === 'text' ? chat.lastMessage.content : "📷 Média";
                     const d = new Date(chat.lastMessage.timestamp);
                     timeStr = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 }
 
                 return `
                     <a href="chat.html?id=${chat.id}" class="chat-item">
-                        <div class="avatar-box"><img src="${chat.img}" class="avatar"></div>
+                        <img src="${chat.img}" class="avatar">
                         <div class="chat-info">
                             <div class="chat-top">
                                 <span class="user-name">
@@ -135,7 +129,6 @@
             }).join('');
         }
 
-        // On lance le rendu
         window.onload = renderChats;
     </script>
 </body>
