@@ -82,6 +82,50 @@
         .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #1a1a1a; z-index: 100; }
         .nav-icon { width: 28px; height: 28px; fill: #666; }
         .nav-icon.active { fill: white; }
+        /* --- EFFETS DE SURVOL SUR LA GRILLE (HOVER) --- */
+
+/* 1. Zoom Léger (Scale) */
+.video-item img {
+    /* Transition indispensable pour rendre l'effet fluide */
+    transition: transform 0.4s ease-in-out; 
+}
+
+.video-item:hover img {
+    /* Agrandit l'image de 8% (1.08) */
+    transform: scale(1.08); 
+}
+
+/* 2. Assombrissement et Mise en avant des infos */
+
+/* On crée l'overlay noir par défaut (invisible) */
+.video-item::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 40%);
+    opacity: 0; /* Caché par défaut */
+    transition: opacity 0.3s ease;
+    z-index: 1; /* Derrière le view-count, devant l'img */
+}
+
+/* On cache les infos par défaut pour les faire apparaître au hover (Optionnel) */
+.view-count {
+    opacity: 0.8; /* Légèrement transparent de base */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(0px);
+    z-index: 2; /* Devant l'overlay */
+}
+
+/* --- ACTIONS AU SURVOL --- */
+
+.video-item:hover::after {
+    opacity: 1; /* L'ombre apparaît */
+}
+
+.video-item:hover .view-count {
+    opacity: 1; /* Les infos deviennent totalement opaques */
+    transform: translateY(-3px); /* Petit mouvement vers le haut pour le dynamisme */
+}
     </style>
 </head>
 <body onload="animateCounters()">
