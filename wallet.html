@@ -3,139 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Portefeuille</title>
+    <title>Floy - Wallet & Binance</title>
     <style>
-        :root { 
-            --orange-floy: #FF7A1A; 
-            --noir: #000; 
-            --gris: #121212; 
-            --blanc: #fff; 
-        }
+        :root { --orange-floy: #FF7A1A; --binance-yellow: #F3BA2F; --noir: #000; --gris: #121212; }
+        body { background: var(--noir); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 40px; }
         
-        body { 
-            background: var(--noir); color: var(--blanc); 
-            font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px;
-        }
-
-        /* Header */
-        .header { 
-            display: flex; align-items: center; padding: 20px; 
-            border-bottom: 1px solid #222; position: sticky; top: 0; background: var(--noir);
-        }
+        .header { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #222; }
         .back-btn { font-size: 24px; cursor: pointer; text-decoration: none; color: white; margin-right: 20px; }
 
-        /* Carte de solde */
+        /* Carte de Solde */
         .balance-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
-            margin: 20px; padding: 30px; border-radius: 25px;
-            border: 1px solid #333; text-align: center;
-            box-shadow: 0 10px 30px rgba(255, 122, 26, 0.1);
+            background: linear-gradient(145deg, #1a1a1a, #000);
+            margin: 20px; padding: 30px; border-radius: 25px; border: 1px solid #333; text-align: center;
         }
-        .balance-label { color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-        .balance-amount { font-size: 42px; font-weight: bold; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .currency-icon { color: var(--orange-floy); }
+        .balance-amount { font-size: 38px; font-weight: bold; margin: 10px 0; color: var(--orange-floy); }
 
-        /* Actions rapides */
-        .action-row { display: flex; justify-content: space-around; margin: 20px; gap: 15px; }
+        /* Actions SVGs */
+        .action-row { display: flex; justify-content: space-around; margin: 20px; gap: 10px; }
         .action-btn { 
             flex: 1; background: var(--gris); border: 1px solid #333; 
-            padding: 15px; border-radius: 15px; text-align: center; cursor: pointer;
-            transition: 0.3s;
+            padding: 15px; border-radius: 18px; cursor: pointer; text-align: center;
         }
-        .action-btn:active { transform: scale(0.95); background: #1a1a1a; }
-        .action-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+        .action-btn svg { width: 24px; height: 24px; fill: white; margin-bottom: 8px; }
+        .action-btn span { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; }
 
-        /* Section Transactions */
-        .section-title { padding: 0 20px; font-size: 18px; font-weight: bold; margin-top: 30px; }
-        .transaction-list { padding: 10px 20px; }
+        /* Section Binance */
+        .binance-box {
+            margin: 20px; padding: 20px; border-radius: 20px;
+            background: rgba(243, 186, 47, 0.05); border: 1px solid rgba(243, 186, 47, 0.2);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .binance-logo { display: flex; align-items: center; gap: 10px; font-weight: bold; color: var(--binance-yellow); }
+        .btn-connect { 
+            background: var(--binance-yellow); color: black; border: none; 
+            padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; 
+        }
+
+        /* Liste Transactions */
         .transaction-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 0; border-bottom: 1px solid #111;
+            display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #111;
         }
-        .trans-info { display: flex; align-items: center; gap: 12px; }
-        .trans-icon { width: 40px; height: 40px; background: #1a1a1a; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-        .trans-name { font-weight: 500; font-size: 14px; }
-        .trans-date { color: #555; font-size: 12px; }
-        .trans-amount { font-weight: bold; color: #44ff44; }
-        .trans-amount.minus { color: #ff4444; }
-
-        /* Badge Floy (Le même que ton image) */
-        .floy-badge-small { width: 14px; height: 14px; vertical-align: middle; margin-left: 4px; }
+        .trans-icon-bg { width: 40px; height: 40px; background: #1a1a1a; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+        .trans-icon-bg svg { width: 20px; height: 20px; fill: var(--orange-floy); }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="profile.html" class="back-btn">‹</a>
-        <span style="font-weight:bold">MON PORTEFEUILLE</span>
+        <span style="font-weight:bold">PORTEFEUILLE</span>
     </div>
 
     <div class="balance-card">
-        <div class="balance-label">Solde actuel</div>
-        <div class="balance-amount">
-            <span class="currency-icon">◈</span>
-            <span id="solde">1,250.00</span>
+        <div style="color:#888; font-size:12px;">SOLDE TOTAL ESTIMÉ</div>
+        <div class="balance-amount">1,250.00 ◈</div>
+        <div style="color: #44ff44; font-size: 13px;">+ 5.2% ce mois</div>
+    </div>
+
+    <div class="binance-box">
+        <div class="binance-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.624 13.92l2.817-2.817 2.817 2.817-2.817 2.817-2.817-2.817zm-4.124 4.125l2.817-2.817 2.817 2.817-2.817 2.817-2.817-2.817zm-4.125-4.125l2.817-2.817 2.817 2.817-2.817 2.817-2.817-2.817zm4.125-4.125l2.817-2.817 2.817 2.817-2.817 2.817-2.817-2.817zm0-8.25l2.817 2.817-2.817 2.817-2.817-2.817 2.817-2.817zm8.25 8.25l2.817 2.817-2.817 2.817-2.817-2.817 2.817-2.817zm-16.5 0l2.817 2.817-2.817 2.817-2.817-2.817 2.817-2.817zm8.25 8.25l2.817 2.817-2.817 2.817-2.817-2.817 2.817-2.817z"/></svg>
+            BINANCE
         </div>
-        <div style="color: #888; font-size: 12px;">Environ 12.50 €</div>
+        <button class="btn-connect" id="binanceBtn" onclick="connectBinance()">Connecter</button>
     </div>
 
     <div class="action-row">
         <div class="action-btn">
-            <span class="action-icon">📥</span>
-            <span style="font-size: 12px; font-weight: bold;">Recharger</span>
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Dépôt</span>
         </div>
-        <div class="action-btn" style="border-color: var(--orange-floy);">
-            <span class="action-icon">📤</span>
-            <span style="font-size: 12px; font-weight: bold; color: var(--orange-floy);">Retirer</span>
+        <div class="action-btn">
+            <svg viewBox="0 0 24 24"><path d="M5 13h14v-2H5v2zM19 13l-4 4 1.41 1.41L21.82 13l-5.41-5.41L15 9l4 4z"/></svg>
+            <span>Retrait</span>
+        </div>
+        <div class="action-btn">
+            <svg viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+            <span>Échange</span>
         </div>
     </div>
 
-    <div class="section-title">Historique des gains</div>
-    <div class="transaction-list">
-        
-        <div class="transaction-item">
-            <div class="trans-info">
-                <div class="trans-icon">✨</div>
-                <div>
-                    <div class="trans-name">Récompense Créateur 
-                        <svg class="floy-badge-small" viewBox="0 0 512 512">
-                            <path d="M512 256c0 .9-16.1 11.8-19.1 20.5l-20.7 61.2c-2.3 6.7-1 14.1 3.4 19.6l39.9 50.1c5.8 7.2 5.3 17.6-1.1 24l-45.7 45.7c-6.4 6.4-16.8 6.9-24 1.1l-50.1-39.9c-5.5-4.4-12.9-5.7-19.6-3.4l-61.2 20.7c-8.7 3-19.6 19.1-20.5 19.1s-11.8-16.1-20.5-19.1l-61.2-20.7c-6.7-2.3-14.1-1-19.6 3.4l-50.1 39.9c-7.2 5.8-17.6 5.3-24-1.1l-45.7-45.7c-6.4-6.4-6.9-16.8-1.1-24l39.9-50.1c4.4-5.5 5.7-12.9 3.4-19.6L20.7 276.5C17.7 267.8 1.6 256.9 1.6 256s16.1-11.8 19.1-20.5l20.7-61.2c2.3-6.7 1-14.1-3.4-19.6L18.1 104.6c-5.8-7.2-5.3-17.6 1.1-24l45.7-45.7c6.4-6.4 16.8-6.9 24-1.1L139 73.7c5.5 4.4 12.9 5.7 19.6 3.4l61.2-20.7c8.7-3 19.6-19.1 20.5-19.1s11.8 16.1 20.5 19.1l61.2 20.7c6.7 2.3 14.1 1 19.6-3.4l50.1-39.9c7.2-5.8 17.6-5.3 24 1.1l45.7 45.7c6.4 6.4 6.9 16.8 1.1 24l-39.9 50.1c-4.4 5.5-5.7 12.9-3.4 19.6l20.7 61.2c3 8.7 19.1 19.6 19.1 20.5z" fill="#FF7A1A"/>
-                            <path d="M369.4 174.6c-12.5-12.5-32.8-12.5-45.3 0L224 274.7l-44.1-44.1c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l66.7 66.7c12.5 12.5 32.8 12.5 45.3 0l122.7-122.7c12.6-12.5 12.6-32.8.1-45.3z" fill="black"/>
-                        </svg>
-                    </div>
-                    <div class="trans-date">Aujourd'hui, 14:20</div>
-                </div>
-            </div>
-            <div class="trans-amount">+ 150.00</div>
-        </div>
+    <div style="padding: 20px; font-weight: bold;">HISTORIQUE</div>
 
-        <div class="transaction-item">
-            <div class="trans-info">
-                <div class="trans-icon">🎁</div>
-                <div>
-                    <div class="trans-name">Cadeau de Live</div>
-                    <div class="trans-date">Hier, 21:05</div>
-                </div>
+    <div class="transaction-item">
+        <div style="display:flex; align-items:center;">
+            <div class="trans-icon-bg">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
             </div>
-            <div class="trans-amount">+ 45.00</div>
-        </div>
-
-        <div class="transaction-item">
-            <div class="trans-info">
-                <div class="trans-icon" style="background: rgba(255,68,68,0.1);">💳</div>
-                <div>
-                    <div class="trans-name">Retrait vers Banque</div>
-                    <div class="trans-date">12 Mars 2026</div>
-                </div>
+            <div>
+                <div style="font-size:14px; font-weight:bold;">Récompense Vidéo</div>
+                <div style="font-size:11px; color:#555;">14 Mars 2026</div>
             </div>
-            <div class="trans-amount minus">- 500.00</div>
         </div>
-
+        <div style="color:var(--orange-floy); font-weight:bold;">+ 15.00 ◈</div>
     </div>
 
     <script>
-        // Tu pourras ajouter ici la logique pour récupérer le solde réel depuis ta base de données
-        console.log("Wallet Floy prêt");
+        function connectBinance() {
+            const btn = document.getElementById('binanceBtn');
+            btn.innerText = "Liaison...";
+            btn.style.opacity = "0.5";
+            
+            setTimeout(() => {
+                btn.innerText = "Connecté ✅";
+                btn.style.background = "#222";
+                btn.style.color = "#F3BA2F";
+                btn.style.opacity = "1";
+                alert("Votre compte Binance est maintenant lié à Floy !");
+            }, 2000);
+        }
     </script>
+
 </body>
 </html>
