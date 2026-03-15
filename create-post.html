@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Créer</title>
+    <style>
+        body { background: #000; color: white; font-family: sans-serif; margin: 0; text-align: center; }
+        .upload-area { border: 2px dashed #222; margin: 50px 20px; padding: 50px; border-radius: 20px; }
+        .btn-post { background: #FF7A1A; border: none; padding: 15px 40px; border-radius: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h3>Nouvelle Publication</h3>
+    <div class="upload-area">
+        <div style="font-size: 40px; margin-bottom: 10px;">📸</div>
+        <span>Cliquez pour choisir une photo</span>
+    </div>
+    <textarea placeholder="Écrivez une légende..." style="width: 80%; background: #111; border: 1px solid #222; color: white; padding: 15px; border-radius: 10px;"></textarea>
+    <br><br>
+    <button class="btn-post" onclick="alert('Publication réussie !'); window.location.href='profile.html'">PUBLIER</button>
+
+    <script src="navbar.js"></script>
+</body>
+</html>
