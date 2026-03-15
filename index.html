@@ -3,30 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Home</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟠</text></svg>">
+    <title>Floy - Bienvenue</title>
     <style>
-        :root { --orange-floy: #FF7A1A; --noir: #000; }
-        body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; }
-        .feed-item { border-bottom: 1px solid #111; padding-bottom: 15px; margin-bottom: 15px; }
-        .post-img { width: 100%; aspect-ratio: 1/1; background: #111; object-fit: cover; }
-        .post-info { padding: 12px; }
-        .user-name { font-weight: bold; font-size: 14px; }
+        body { background: #000; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
     </style>
 </head>
 <body>
-    <div style="padding: 15px; font-weight: 900; color: var(--orange-floy); font-size: 20px;">FLOY</div>
-    
-    <div id="feed">
-        <div class="feed-item">
-            <div class="post-info"><span class="user-name">alex_dev</span> • Super projet !</div>
-            <img src="https://picsum.photos/500?random=11" class="post-img">
-        </div>
-        <div class="feed-item">
-            <div class="post-info"><span class="user-name">lisa_floy</span> • Enfin en ligne 🚀</div>
-            <img src="https://picsum.photos/500?random=12" class="post-img">
-        </div>
-    </div>
-
-    <script src="navbar.js"></script>
+    <script>
+        // Redirection immédiate vers le profil pour éviter l'erreur 404
+        window.location.href = "profil.html";
+    </script>
+    <p>Chargement de Floy...</p>
 </body>
 </html>
