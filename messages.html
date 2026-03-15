@@ -58,13 +58,13 @@
     </div>
 
     <div class="story-bar">
-        <div class="story-item" onclick="document.getElementById('stIn').click()">
-            <div id="myStoryCircle" class="story-circle">
-                <img id="myStoryImg" src="ma_photo.jpg" class="story-img" onerror="this.src='https://ui-avatars.com/api/?name=Me'">
-                <div class="plus-badge">+</div>
-            </div>
-            <span class="story-name">Ta story</span>
-        </div>
+        <div class="story-item">
+    <div id="myStoryCircle" class="story-circle" onclick="window.location.href='story-view.html'">
+        <img id="myStoryImg" src="ma_photo.jpg" class="story-img">
+    </div>
+    <div class="plus-badge" onclick="window.location.href='story-creator.html'">+</div>
+    <span class="story-name">Ta story</span>
+</div>
         <input type="file" id="stIn" hidden accept="image/*" onchange="saveStory(this)">
     </div>
 
