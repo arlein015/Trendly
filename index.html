@@ -2,20 +2,65 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟠</text></svg>">
-    <title>Floy - Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+    <title>Floy - Feed</title>
     <style>
-        body { background: #000; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 90px; }
+
+        /* HEADER */
+        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 100; }
+        .logo { color: var(--orange); font-size: 24px; font-weight: 900; letter-spacing: -1px; }
+
+        /* STORIES */
+        .stories { display: flex; gap: 15px; padding: 15px 20px; overflow-x: auto; border-bottom: 1px solid #1a1a1a; }
+        .stories::-webkit-scrollbar { display: none; }
+        .story-circle { min-width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--orange); padding: 3px; }
+        .story-img { width: 100%; height: 100%; border-radius: 50%; background: #222; object-fit: cover; }
+
+        /* POSTS */
+        .post { margin-bottom: 20px; border-bottom: 1px solid #111; }
+        .post-header { padding: 10px 15px; display: flex; align-items: center; gap: 10px; }
+        .post-avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--orange); }
+        .post-img { width: 100%; aspect-ratio: 1/1; background: #111; object-fit: cover; }
+        .post-actions { padding: 12px 15px; display: flex; gap: 15px; }
+        .post-caption { padding: 0 15px 15px; font-size: 14px; line-height: 1.4; }
+        .post-caption b { margin-right: 5px; }
+
+        /* NAV BAR */
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: #050505; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-evenly; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { color: #666; text-decoration: none; }
+        .nav-item.active { color: var(--orange); }
     </style>
 </head>
 <body>
-    <script>
-        // Redirige automatiquement vers le profil pour ne plus jamais voir le 404
-        window.location.href = "profil.html";
-    </script>
-    <div style="text-align:center;">
-        <p>Lancement de Floy...</p>
+
+    <header class="header">
+        <div class="logo">FLOY</div>
+        <div class="icons">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+        </div>
+    </header>
+
+    <div class="stories">
+        <div class="story-circle"><img src="https://i.pravatar.cc/150?u=1" class="story-img"></div>
+        <div class="story-circle"><img src="https://i.pravatar.cc/150?u=2" class="story-img"></div>
+        <div class="story-circle"><img src="https://i.pravatar.cc/150?u=3" class="story-img"></div>
+        <div class="story-circle" style="border-color: #333;"><img src="https://i.pravatar.cc/150?u=4" class="story-img"></div>
     </div>
-</body>
-</html>
+
+    <div class="post">
+        <div class="post-header">
+            <div class="post-avatar"></div>
+            <b>Arlein_Dev</b>
+        </div>
+        <img src="https://picsum.photos/600/600" class="post-img">
+        <div class="post-actions">
+            <span>❤️</span> <span>💬</span> <span>✈️</span>
+        </div>
+        <div class="post-caption"><b>Arlein_Dev</b> Nouveau design pour l'application Floy ! Qu'en pensez-vous ? #coding #webdev</div>
+    </div>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item active"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2
