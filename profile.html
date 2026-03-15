@@ -126,6 +126,80 @@
     opacity: 1; /* Les infos deviennent totalement opaques */
     transform: translateY(-3px); /* Petit mouvement vers le haut pour le dynamisme */
 }
+    /* Fond sombre qui couvre tout l'écran */
+    .share-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85);
+        display: none; /* Masqué par défaut */
+        z-index: 2000;
+        backdrop-filter: blur(5px);
+    }
+
+    /* Fenêtre surgissante (Popup) */
+    .share-popup {
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%) scale(0.7);
+        width: 280px;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 25px;
+        padding: 30px 20px;
+        text-align: center;
+        z-index: 2001;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* État quand la popup est ouverte */
+    .share-popup.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .qr-box {
+        background: white;
+        padding: 12px;
+        border-radius: 15px;
+        display: inline-block;
+        margin: 20px 0;
+    }
+
+    .qr-box img {
+        width: 160px;
+        height: 160px;
+        display: block;
+    }
+
+    .share-title { font-weight: bold; font-size: 18px; margin-bottom: 5px; color: white; }
+    .share-handle { color: #888; font-size: 14px; margin-bottom: 20px; }
+
+    /* Bouton orange Floy */
+    .btn-copy {
+        background: #FF7A1A;
+        color: black;
+        border: none;
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-copy:active { transform: scale(0.95); }
+
+    .close-share {
+        position: absolute;
+        top: 15px; right: 20px;
+        font-size: 28px;
+        color: #555;
+        cursor: pointer;
+    }
     </style>
 </head>
 <body onload="animateCounters()">
@@ -165,6 +239,13 @@
             <button class="btn-sec" onclick="window.location.href='edit-profile.html'">Modifier le profil</button>
             <button class="btn-sec" onclick="window.location.href='follower-growth.html'">Analytics</button>
         </div>
+        <div class="qr-box">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://floy.app/arlein_off" alt="QR Code Floy">
+    </div>
+        <button class="btn-copy" onclick="copyFloyLink()">
+        🔗 Copier le lien
+    </button>
+</div>
     </div>
 
     <div class="tabs-selector">
@@ -191,8 +272,13 @@
         </div>
     </div>
 
+    <div id="shareOverlay" class="share-overlay" onclick="closeSharePopup()"></div>
     <div id="menuOverlay" class="menu-overlay" onclick="toggleMenu()"></div>
+    <div id="sharePopup" class="share-popup">
     <div id="sideMenu" class="side-menu">
+        <span class="close-share" onclick="closeSharePopup()">&times;</span>
+        <div class="share-title">Partager mon profil</div>
+        <div class="share-handle">@arlein_off</div>
         <div style="padding:20px; border-bottom:1px solid #222; font-weight:bold">Paramètres</div>
         <div class="menu-item" onclick="window.location.href='edit-profile.html'">⚙️ Profil</div>
         <div class="menu-item" onclick="window.location.href='wallet.html'">💳 Portefeuille</div>
@@ -250,36 +336,48 @@
                 updateCount();
             });
         }
-        // Ajoute ceci à l'intérieur de tes balises <script>
-function openSharePopup() {
-    // 1. On affiche d'abord le fond sombre (Overlay)
-    const overlay = document.getElementById('shareOverlay');
-    const popup = document.getElementById('sharePopup');
-
-    if (overlay && popup) {
-        overlay.style.display = 'block';
+        function openSharePopup() {
+        const overlay = document.getElementById('shareOverlay');
+        const popup = document.getElementById('sharePopup');
         
-        // 2. On ajoute la classe 'active' pour l'animation de la popup
-        setTimeout(() => {
-            popup.classList.add('active');
-        }, 10);
-    } else {
-        console.error("Erreur : Le module share-popup n'est pas présent dans la page.");
+        if(overlay && popup) {
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                popup.classList.add('active');
+            }, 10);
+        }
     }
-}
 
-function closeSharePopup() {
-    const overlay = document.getElementById('shareOverlay');
-    const popup = document.getElementById('sharePopup');
-
-    if (overlay && popup) {
-        popup.classList.remove('active');
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 300);
+        function closeSharePopup() {
+        const overlay = document.getElementById('shareOverlay');
+        const popup = document.getElementById('sharePopup');
+        
+        if(overlay && popup) {
+            popup.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        }
     }
-}
+        function copyFloyLink() {
+        const profileUrl = "https://floy.app/arlein_off";
+        
+        navigator.clipboard.writeText(profileUrl).then(() => {
+            const btn = document.querySelector('.btn-copy');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = "✅ Lien copié !";
+            btn.style.background = "#28a745"; // Vert
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = "#FF7A1A"; // Retour Orange
+                closeSharePopup();
+            }, 1200);
+        });
+    }
     </script>
     <iframe src="share-popup.html" style="display:none;" id="shareFrame"></iframe>
 </body>
 </html>
+
