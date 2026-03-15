@@ -4,60 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Floy - Paramètres</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --floy-orange: #ff8c00; --bg-black: #000; }
-        body { margin: 0; background: var(--bg-black); color: white; font-family: 'Poppins', sans-serif; }
-        
-        .header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 0.5px solid #222; }
-        
-        .settings-list { padding: 10px; }
-        .setting-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 18px; margin-bottom: 5px;
-            background: rgba(255, 255, 255, 0.03); /* Effet brillant */
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            cursor: pointer;
+        :root { --orange-floy: #FF7A1A; --noir: #000; --gris: #121212; }
+        body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; }
+        .header { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #222; }
+        .back-btn { font-size: 24px; cursor: pointer; margin-right: 20px; text-decoration: none; color: white; }
+        .setting-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 20px; border-bottom: 1px solid #111; text-decoration: none; color: white;
         }
-        .setting-item i { color: var(--floy-orange); font-size: 18px; width: 30px; }
-        .setting-item span { flex: 1; font-size: 14px; }
-        .setting-item .arrow { color: #444; font-size: 12px; }
-
-        .logout { color: #ff4444 !important; margin-top: 20px; border: 1px solid rgba(255,68,68,0.2); }
+        .setting-item:active { background: #161616; }
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .chevron { color: #555; font-size: 18px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
-        <h3 style="margin:0;">Paramètres</h3>
+        <a href="profile.html" class="back-btn">‹</a>
+        <span style="font-weight:bold; text-transform: uppercase;">Paramètres</span>
     </div>
 
     <div class="settings-list">
-        <div class="setting-item" onclick="window.location.href='edit-video.html'">
-            <i class="fas fa-user-edit"></i>
-            <span>Compte</span>
-            <i class="fas fa-chevron-right arrow"></i>
-        </div>
-        <div class="setting-item">
-            <i class="fas fa-lock"></i>
-            <span>Confidentialité</span>
-            <i class="fas fa-chevron-right arrow"></i>
-        </div>
-        <div class="setting-item">
-            <i class="fas fa-bell"></i>
-            <span>Notifications</span>
-            <i class="fas fa-chevron-right arrow"></i>
-        </div>
-        <div class="setting-item">
-            <i class="fas fa-wallet"></i>
-            <span>Portefeuille</span>
-            <i class="fas fa-chevron-right arrow"></i>
-        </div>
-        <div class="setting-item logout" onclick="window.location.href='index.html'">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Déconnexion</span>
-        </div>
+        <a href="settings-language.html" class="setting-item">
+            <div class="item-info"><span>🌐</span> Langue</div>
+            <span class="chevron">›</span>
+        </a>
+        <a href="notification-settings.html" class="setting-item">
+            <div class="item-info"><span>🔔</span> Notifications</div>
+            <span class="chevron">›</span>
+        </a>
+        <a href="sound-settings.html" class="setting-item">
+            <div class="item-info"><span>🎵</span> Sons et Musique</div>
+            <span class="chevron">›</span>
+        </a>
+        <a href="system-settings.html" class="setting-item">
+            <div class="item-info"><span>📱</span> Système & Affichage</div>
+            <span class="chevron">›</span>
+        </a>
+        <a href="cookie-settings.html" class="setting-item">
+            <div class="item-info"><span>🍪</span> Cookies & Confidentialité</div>
+            <span class="chevron">›</span>
+        </a>
     </div>
 </body>
 </html>
