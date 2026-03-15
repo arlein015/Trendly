@@ -66,8 +66,9 @@
     </div>
 
     <script>
-        const CURRENT_USER = "U1"; 
-        const CONVO_ID = "convo_1";
+       // Remplace ton ancienne ligne CONVO_ID par celle-ci :
+        const params = new URLSearchParams(window.location.search);
+        const CONVO_ID = params.get('id') || "default_chat";
         const partner = (CURRENT_USER === "U1") ? "Utilisateur 2" : "Utilisateur 1";
         document.getElementById('partnerName').innerText = partner;
 
