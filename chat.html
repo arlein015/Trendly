@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Floy - Chat Premium</title>
+    <title>Floy - Chat Privé</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; }
         body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -11,16 +11,24 @@
         /* HEADER */
         .chat-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #1a1a1a; background: var(--noir); z-index: 100; }
         .back-btn { cursor: pointer; margin-right: 15px; font-size: 24px; color: white; text-decoration: none; }
+        .user-info { display: flex; flex-direction: column; }
+        .status { font-size: 10px; color: #00ff00; }
 
         /* ZONE MESSAGES */
         #chatBox { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .bubble { max-width: 75%; padding: 12px; border-radius: 18px; font-size: 15px; position: relative; user-select: none; }
+        .bubble { max-width: 75%; padding: 12px; border-radius: 18px; font-size: 15px; position: relative; border: none; outline: none; }
         .sent { align-self: flex-end; background: var(--orange); color: black; border-bottom-right-radius: 2px; }
         .received { align-self: flex-start; background: #1a1a1a; border-bottom-left-radius: 2px; }
         
-        /* MÉDIAS DANS LES BULLES */
-        .chat-img { max-width: 200px; border-radius: 10px; display: block; }
-        .vocal-msg audio { height: 35px; width: 100%; filter: invert(1); }
+        /* PHOTOS SANS BORDURES */
+        .chat-img { 
+            max-width: 220px; 
+            border-radius: 12px; 
+            display: block; 
+            border: none; /* Supprime toute bordure */
+            outline: none;
+            box-shadow: none;
+        }
 
         /* BARRE DE SAISIE */
         .input-area { 
@@ -28,39 +36,26 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
         .message-input { flex: 1; background: #151515; border: 1px solid #222; padding: 12px 18px; border-radius: 25px; color: white; font-size: 16px; outline: none; }
-        
-        /* BOUTON + ORANGE */
-        .btn-plus { color: var(--orange); font-size: 32px; background: none; border: none; cursor: pointer; font-weight: bold; padding: 0 5px; }
+        .btn-plus { color: var(--orange); font-size: 32px; background: none; border: none; cursor: pointer; font-weight: bold; }
 
-        /* VISUALISEUR DE VAGUES */
+        /* VOCAL & VISUALISEUR */
         #waveCanvas { display: none; flex: 1; height: 40px; }
         #vocalTimer { display: none; color: #ff4444; font-weight: bold; margin-right: 10px; font-family: monospace; }
-
         .btn-icon { background: none; border: none; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; }
         .btn-send { width: 42px; height: 42px; background: var(--orange); border-radius: 50%; display: none; }
-
-        /* MENU CONTEXTUEL */
-        #contextMenu { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 9999; }
-        .menu-box { background: #1a1a1a; width: 260px; border-radius: 15px; overflow: hidden; border: 1px solid #333; }
-        .menu-opt { padding: 15px; text-align: center; border-bottom: 1px solid #222; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="chat-header">
         <div class="back-btn" onclick="history.back()">←</div>
-        <b>Discussion</b>
+        <div class="user-info">
+            <b id="partnerName">Chargement...</b>
+            <span class="status">en ligne</span>
+        </div>
     </div>
 
     <div id="chatBox"></div>
-
-    <div id="contextMenu" onclick="this.style.display='none'">
-        <div class="menu-box" onclick="event.stopPropagation()">
-            <div class="menu-opt" onclick="copyAction()">📋 Copier</div>
-            <div class="menu-opt" onclick="deleteAction()" style="color: #ff4444;">🗑️ Supprimer</div>
-            <div class="menu-opt" style="background: #222;" onclick="document.getElementById('contextMenu').style.display='none'">Annuler</div>
-        </div>
-    </div>
 
     <div class="input-area">
         <button class="btn-plus" onclick="document.getElementById('fileIn').click()">+</button>
@@ -68,10 +63,10 @@
         
         <span id="vocalTimer">0:00</span>
         <canvas id="waveCanvas"></canvas>
-        <input type="text" id="msgInput" class="message-input" placeholder="Message..." oninput="toggleUI()">
+        <input type="text" id="msgInput" class="message-input" placeholder="Message privé..." oninput="toggleUI()">
 
         <button id="micBtn" class="btn-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
         </button>
 
         <button id="sendBtn" class="btn-icon btn-send" onclick="sendText()">
@@ -80,6 +75,19 @@
     </div>
 
     <script>
+        // SIMULATION UTILISATEURS (Pour ton test)
+        // Change 'U1' par 'U2' sur l'autre appareil pour tester l'inversion des noms
+        const CURRENT_USER = "U1"; 
+        const USERS = {
+            "U1": { name: "Moi (U1)", partner: "Utilisateur 2" },
+            "U2": { name: "Moi (U2)", partner: "Utilisateur 1" }
+        };
+
+        // ID Unique de la conversation pour la sécurité MP
+        const CONVO_ID = "convo_u1_u2"; 
+
+        document.getElementById('partnerName').innerText = USERS[CURRENT_USER].partner;
+
         const chatBox = document.getElementById('chatBox');
         const msgInput = document.getElementById('msgInput');
         const micBtn = document.getElementById('micBtn');
@@ -88,9 +96,7 @@
         const timerLabel = document.getElementById('vocalTimer');
         const ctx = canvas.getContext('2d');
 
-        let mediaRecorder, audioContext, analyser, dataArray, source;
-        let audioChunks = [];
-        let startTime, timerInterval, animationId, selectedIdx, holdTimer;
+        let mediaRecorder, audioChunks = [], startTime, timerInterval;
 
         window.onload = load;
 
@@ -100,7 +106,7 @@
             sendBtn.style.display = hasText ? "flex" : "none";
         }
 
-        // --- VOCAL AVEC VAGUES ---
+        // --- ENREGISTREMENT VOCAL ---
         micBtn.addEventListener('mousedown', startVoice);
         micBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startVoice(); });
         window.addEventListener('mouseup', stopVoice);
@@ -111,51 +117,26 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
-
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                source = audioContext.createMediaStreamSource(stream);
-                source.connect(analyser);
-                analyser.fftSize = 64;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-
                 mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                 mediaRecorder.onstop = saveVoice;
-
                 mediaRecorder.start();
+
                 msgInput.style.display = "none";
-                canvas.style.display = "block";
                 timerLabel.style.display = "block";
                 startTime = Date.now();
                 timerInterval = setInterval(() => {
                     const s = Math.floor((Date.now() - startTime) / 1000);
                     timerLabel.innerText = `0:${s < 10 ? '0' : ''}${s}`;
                 }, 1000);
-                drawWave();
-            } catch (err) { alert("Micro bloqué"); }
+            } catch (err) { alert("Micro non autorisé."); }
         }
 
         function stopVoice() {
             if (mediaRecorder && mediaRecorder.state === "recording") {
                 mediaRecorder.stop();
                 clearInterval(timerInterval);
-                cancelAnimationFrame(animationId);
                 msgInput.style.display = "block";
-                canvas.style.display = "none";
                 timerLabel.style.display = "none";
-            }
-        }
-
-        function drawWave() {
-            animationId = requestAnimationFrame(drawWave);
-            analyser.getByteFrequencyData(dataArray);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#FF7A1A';
-            let x = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-                let h = (dataArray[i] / 255) * canvas.height;
-                ctx.fillRect(x, (canvas.height - h) / 2, 3, h);
-                x += 5;
             }
         }
 
@@ -163,13 +144,13 @@
             const blob = new Blob(audioChunks, { type: 'audio/mp3' });
             const reader = new FileReader();
             reader.readAsDataURL(blob);
-            reader.onloadend = () => save({ content: reader.result, type: 'sent', isVocal: true });
+            reader.onloadend = () => save({ content: reader.result, sender: CURRENT_USER, isVocal: true });
         }
 
-        // --- GÉNÉRAL ---
+        // --- ENVOI TEXTE & IMAGE ---
         function sendText() {
             if(msgInput.value.trim()) {
-                save({ content: msgInput.value, type: 'sent' });
+                save({ content: msgInput.value, sender: CURRENT_USER });
                 msgInput.value = ""; toggleUI();
             }
         }
@@ -177,49 +158,38 @@
         function uploadImg(input) {
             if(input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = (e) => save({ content: e.target.result, type: 'sent', isImg: true });
+                reader.onload = (e) => save({ content: e.target.result, sender: CURRENT_USER, isImg: true });
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
+        // --- SYSTÈME MP SÉCURISÉ ---
         function save(obj) {
-            const logs = JSON.parse(localStorage.getItem('floy_chat_history')) || [];
+            // On utilise une clé spécifique à CETTE conversation
+            const logs = JSON.parse(localStorage.getItem(CONVO_ID)) || [];
             logs.push(obj);
-            localStorage.setItem('floy_chat_history', JSON.stringify(logs));
+            localStorage.setItem(CONVO_ID, JSON.stringify(logs));
             load();
         }
 
         function load() {
             chatBox.innerHTML = "";
-            const logs = JSON.parse(localStorage.getItem('floy_chat_history')) || [];
-            logs.forEach((m, i) => {
+            const logs = JSON.parse(localStorage.getItem(CONVO_ID)) || [];
+            logs.forEach((m) => {
                 const b = document.createElement('div');
-                b.className = `bubble ${m.type}`;
-                if(m.isVocal) b.innerHTML = `<div class="vocal-msg"><audio controls src="${m.content}"></audio></div>`;
+                // Si le sender est moi, la bulle va à droite (sent), sinon à gauche (received)
+                b.className = `bubble ${m.sender === CURRENT_USER ? 'sent' : 'received'}`;
+                
+                if(m.isVocal) b.innerHTML = `<audio controls src="${m.content}" style="width:180px; filter:invert(1);"></audio>`;
                 else if(m.isImg) b.innerHTML = `<img src="${m.content}" class="chat-img">`;
                 else b.innerText = m.content;
 
-                b.onmousedown = b.ontouchstart = () => {
-                    holdTimer = setTimeout(() => { selectedIdx = i; document.getElementById('contextMenu').style.display='flex'; }, 600);
-                };
-                b.onmouseup = b.ontouchend = () => clearTimeout(holdTimer);
                 chatBox.appendChild(b);
             });
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function deleteAction() {
-            let logs = JSON.parse(localStorage.getItem('floy_chat_history'));
-            logs.splice(selectedIdx, 1);
-            localStorage.setItem('floy_chat_history', JSON.stringify(logs));
-            load(); document.getElementById('contextMenu').style.display='none';
-        }
-
-        function copyAction() {
-            const logs = JSON.parse(localStorage.getItem('floy_chat_history'));
-            navigator.clipboard.writeText(logs[selectedIdx].content);
-            document.getElementById('contextMenu').style.display='none';
-        }
+        msgInput.onkeypress = (e) => { if(e.key === "Enter") sendText(); };
     </script>
 </body>
 </html>
