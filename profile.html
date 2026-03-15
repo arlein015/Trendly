@@ -6,14 +6,13 @@
     <title>Floy - Profil Officiel</title>
     <style>
         :root { --orange-floy: #FF7A1A; --noir: #000; --gris: #121212; }
-        body { background: var(--noir); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; }
+        body { background: var(--noir); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 100px; }
 
         /* BARRE DE MENU HAUTE */
         .nav-top {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 20px; position: sticky; top: 0; background: var(--noir); z-index: 100;
         }
-
         .nav-right-icons { display: flex; gap: 18px; align-items: center; }
 
         /* BADGE VERIFIE */
@@ -34,10 +33,13 @@
         .btn-edit { flex: 1; background: #1a1a1a; color: white; border: 1px solid #333; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .btn-main { flex: 2; background: var(--orange-floy); color: black; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
 
-        /* MODAL PARTAGE / QR CODE */
+        /* GRILLE PHOTOS */
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 10px; }
+        .photo-item { aspect-ratio: 1/1; background-color: #111; background-size: cover; background-position: center; }
+
+        /* MODAL PARTAGE */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background: #121212; width: 80%; padding: 25px; border-radius: 20px; text-align: center; border: 1px solid #222; }
-        .qr-placeholder { width: 150px; height: 150px; background: white; margin: 20px auto; padding: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -46,7 +48,6 @@
         <div style="font-weight: 800; font-size: 16px;">floy.app</div>
         <div class="nav-right-icons">
             <svg onclick="openShare()" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-            
             <svg width="24" height="24" viewBox="0 0 24 24" fill="white" style="cursor:pointer;"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
         </div>
     </div>
@@ -72,27 +73,29 @@
         <button class="btn-edit" onclick="window.location.href='withdraw-funds.html'" style="flex:0;">💰</button>
     </div>
 
+    <div class="photo-grid">
+        <div class="photo-item" style="background-image:url('https://picsum.photos/300?sig=10')"></div>
+        <div class="photo-item" style="background-image:url('https://picsum.photos/300?sig=11')"></div>
+        <div class="photo-item" style="background-image:url('https://picsum.photos/300?sig=12')"></div>
+    </div>
+
     <div id="shareModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin:0;">Partager le profil</h2>
-            <div class="qr-placeholder">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://floy.app/user" alt="QR Code">
-            </div>
-            <input type="text" readonly value="https://floy.app/votre_pseudo" style="width:100%; background:#000; border:1px solid #333; color:var(--orange-floy); padding:10px; border-radius:8px; text-align:center;">
-            <button onclick="closeShare()" style="margin-top:20px; background:none; border:none; color:white; font-weight:bold; cursor:pointer;">FERMER</button>
+            <h2 style="margin:0;">Partager</h2>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=floy" style="margin:15px; border-radius:10px;">
+            <button onclick="closeShare()" style="background:none; border:none; color:white; font-weight:bold; cursor:pointer; width:100%;">FERMER</button>
         </div>
     </div>
 
+    <script src="navbar.js"></script>
+
     <script>
-        // --- SAUVEGARDE PERMANENTE (STORAGE) ---
+        // Logique de chargement des données
         window.onload = function() {
-            // Si c'est vide, on met des valeurs de base pour pas que ça reste à 0
             if(!localStorage.getItem('f_name')) {
                 localStorage.setItem('f_name', 'Utilisateur Floy');
-                localStorage.setItem('f_bio', 'Développeur & Créateur');
-                localStorage.setItem('f_followers', '1250');
-                localStorage.setItem('f_following', '450');
-                localStorage.setItem('f_likes', '8500');
+                localStorage.setItem('f_bio', 'Passionné de Python 🐍');
+                localStorage.setItem('f_followers', '0');
             }
             loadData();
         };
@@ -101,36 +104,19 @@
             document.getElementById('p-name').innerText = localStorage.getItem('f_name');
             document.getElementById('p-bio').innerText = localStorage.getItem('f_bio');
             document.getElementById('s-followers').innerText = localStorage.getItem('f_followers');
-            document.getElementById('s-following').innerText = localStorage.getItem('f_following');
-            document.getElementById('s-likes').innerText = localStorage.getItem('f_likes');
-            
-            if(localStorage.getItem('isFollow') === 'true') {
-                document.getElementById('btn-f').innerText = "ABONNÉ";
-                document.getElementById('btn-f').style.background = "#222";
-                document.getElementById('btn-f').style.color = "white";
-            }
+            document.getElementById('s-following').innerText = localStorage.getItem('f_following') || "0";
+            document.getElementById('s-likes').innerText = localStorage.getItem('f_likes') || "0";
         }
 
-        // --- GESTION DU FOLLOW ---
         function doFollow() {
             let count = parseInt(localStorage.getItem('f_followers'));
-            let state = localStorage.getItem('isFollow') === 'true';
-
-            if(!state) {
-                count++;
-                localStorage.setItem('isFollow', 'true');
-            } else {
-                count--;
-                localStorage.setItem('isFollow', 'false');
-            }
+            count++;
             localStorage.setItem('f_followers', count);
             loadData();
         }
 
-        // --- GESTION DU PARTAGE ---
         function openShare() { document.getElementById('shareModal').style.display = 'flex'; }
         function closeShare() { document.getElementById('shareModal').style.display = 'none'; }
-            src="navbar.js"
     </script>
 </body>
 </html>
