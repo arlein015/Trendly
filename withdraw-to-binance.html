@@ -9,77 +9,80 @@
         body { background: var(--noir); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
         
         .header { display: flex; align-items: center; margin-bottom: 30px; }
-        .back-btn { font-size: 24px; color: white; text-decoration: none; margin-right: 20px; }
+        .back-btn { font-size: 28px; color: white; cursor: pointer; margin-right: 20px; }
 
-        .binance-status {
+        .status-box {
             background: rgba(243, 186, 47, 0.1); border: 1px solid var(--binance-yellow);
-            padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px;
+            padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px;
         }
 
-        .withdraw-card {
-            background: #111; border: 1px solid #222; padding: 20px; border-radius: 15px;
+        .withdraw-input-card {
+            background: #0f0f0f; border: 1px solid #222; padding: 20px; border-radius: 20px;
         }
-        .input-box {
-            background: #000; border: 1px solid #333; padding: 15px; border-radius: 10px; margin-top: 10px;
+        .input-field {
+            background: #000; border: 1px solid #333; padding: 15px; border-radius: 12px; margin: 15px 0;
         }
-        .input-box input {
-            background: transparent; border: none; color: white; width: 100%; font-size: 18px; outline: none;
+        .input-field input {
+            background: transparent; border: none; color: white; width: 100%; font-size: 20px; outline: none; font-weight: bold;
         }
 
-        .info-row { display: flex; justify-content: space-between; font-size: 13px; margin-top: 15px; color: #888; }
-        .btn-confirm {
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 8px; }
+        
+        .btn-withdraw {
             width: 100%; background: var(--binance-yellow); color: black; border: none;
-            padding: 18px; border-radius: 15px; font-weight: 800; margin-top: 30px; cursor: pointer;
+            padding: 18px; border-radius: 15px; font-weight: 800; font-size: 16px; margin-top: 25px; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="withdraw-funds.html" class="back-btn">‹</a>
-        <span style="font-weight:bold;">RETRAIT VERS BINANCE</span>
+        <div class="back-btn" onclick="window.location.href='withdraw-funds.html'">‹</div>
+        <span style="font-weight:bold;">TRANSFERT VERS BINANCE</span>
     </div>
 
-    <div class="binance-status">
+    <div class="status-box">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--binance-yellow)"><path d="M12 0L8.12 3.88L12 7.76L15.88 3.88L12 0Z"/><path d="M24 12L20.12 8.12L16.24 12L20.12 15.88L24 12Z"/><path d="M12 24L15.88 20.12L12 16.24L8.12 20.12L12 24Z"/><path d="M0 12L3.88 15.88L7.76 12L3.88 8.12L0 12Z"/><path d="M12 11.23L12.77 12L12 12.77L11.23 12L12 11.23Z"/><path d="M8.53 12L12 8.53L15.47 12L12 15.47L8.53 12Z"/></svg>
         <div>
-            <div style="font-size: 12px; font-weight: bold;">Compte Binance lié</div>
-            <div style="font-size: 10px; opacity: 0.7;">ID: 582***92 (Vérifié)</div>
+            <div style="font-size: 12px; font-weight: bold;">Compte Binance Vérifié</div>
+            <div style="font-size: 10px; color: var(--binance-yellow);">ID: 582***92</div>
         </div>
     </div>
 
-    <div class="withdraw-card">
-        <label style="font-size: 11px; font-weight: bold; color: #555;">MONTANT À RETIRER (USDT)</label>
-        <div class="input-box">
-            <input type="number" placeholder="0.00" id="usdtAmt" oninput="calc()">
+    <div class="withdraw-input-card">
+        <label style="font-size: 11px; font-weight: bold; color: #444;">MONTANT À RETIRER (USDT)</label>
+        <div class="input-field">
+            <input type="number" id="uAmt" placeholder="0.00" oninput="calcFinal()">
         </div>
         
-        <div class="info-row">
-            <span>Frais de réseau (Gas)</span>
+        <div class="summary-row">
+            <span>Frais de retrait</span>
             <span>0.80 USDT</span>
         </div>
-        <div class="info-row" style="color: white; font-weight: bold;">
-            <span>Vous recevrez</span>
-            <span id="finalAmt">0.00 USDT</span>
+        <div class="summary-row" style="color: white; font-weight: bold; font-size: 15px; border-top: 1px solid #222; pt: 10px;">
+            <span>Total reçu</span>
+            <span id="fAmt" style="color: var(--binance-yellow);">0.00 USDT</span>
         </div>
     </div>
 
-    <button class="btn-confirm" onclick="sendToBinance()">CONFIRMER LE TRANSFERT</button>
+    <button class="btn-withdraw" onclick="finish()">CONFIRMER LE RETRAIT</button>
 
     <script>
-        function calc() {
-            const val = document.getElementById('usdtAmt').value;
-            const final = document.getElementById('finalAmt');
-            if(val > 0.8) {
-                final.innerText = (val - 0.8).toFixed(2) + " USDT";
+        function calcFinal() {
+            const v = document.getElementById('uAmt').value;
+            const res = document.getElementById('fAmt');
+            if(v > 0.8) {
+                res.innerText = (v - 0.8).toFixed(2) + " USDT";
             } else {
-                final.innerText = "0.00 USDT";
+                res.innerText = "0.00 USDT";
             }
         }
 
-        function sendToBinance() {
-            alert("Demande envoyée ! Les USDT arriveront sur votre compte Binance sous 5 à 15 minutes.");
-            window.location.href = "withdraw-funds.html";
+        function finish() {
+            const v = document.getElementById('uAmt').value;
+            if(!v || v <= 0.8) return alert("Le montant minimum est de 1 USDT.");
+            alert("Demande de retrait confirmée ! Les fonds arriveront sous peu.");
+            window.location.href = 'withdraw-funds.html';
         }
     </script>
 </body>
