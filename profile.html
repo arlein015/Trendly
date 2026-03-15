@@ -141,6 +141,42 @@
         <div class="btn-plus-large" onclick="window.location.href='upload.html'">+</div>
         <svg class="nav-icon" onclick="window.location.href='messages.html'" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
         <svg class="nav-icon active" onclick="window.location.href='profile.html'" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+     <div class="menu-burger" onclick="toggleMenu()">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+</div>
+
+<div id="sideMenu" class="side-menu">
+    <div class="menu-content">
+        <div class="menu-header">
+            <h3>Paramètres</h3>
+            <span class="close-btn" onclick="toggleMenu()">×</span>
+        </div>
+        
+        <div class="menu-list">
+            <div class="menu-item" onclick="window.location.href='edit-profile.html'">
+                <span>⚙️ Paramètres du compte</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='wallet.html'">
+                <span>💳 Carte & Paiements</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='privacy.html'">
+                <span>🔒 Confidentialité</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='security.html'">
+                <span>🛡️ Sécurité</span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='ads.html'">
+                <span>📊 Contenu publicitaire</span>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #222; margin: 10px 0;">
+            <div class="menu-item" onclick="logout()">
+                <span style="color: #ff4444;">🚪 Déconnexion</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="menuOverlay" class="menu-overlay" onclick="toggleMenu()"></div>
     </nav>
 
     <script>
