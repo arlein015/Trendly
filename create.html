@@ -3,93 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+    <link rel="icon" href="data:,">
     <title>Créer - Floy</title>
     <style>
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #1a1a1a; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; font-family: sans-serif; overflow: hidden; color: white; }
+
+        /* --- MODE PUBLIER (CAMÉRA) --- */
+        #page-publier { position: absolute; width: 100%; height: 100%; z-index: 1; }
+        #video-preview { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        .camera-overlay { position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent 20%, transparent 80%, rgba(0,0,0,0.6)); }
+
+        /* --- MODE CRÉER (MODÈLES) --- */
+        #page-creer { position: absolute; width: 100%; height: 100%; z-index: 2; background: #000; overflow-y: auto; display: none; padding-bottom: 120px; }
+        .create-header { padding: 20px; text-align: center; font-weight: bold; font-size: 18px; border-bottom: 1px solid #222; position: sticky; top: 0; background: #000; z-index: 10; }
         
-        /* APPAREIL PHOTO (FLUX VIDÉO) */
-        #video-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transform: scaleX(-1); }
+        .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px; text-align: center; font-size: 11px; }
+        .tool-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .tool-icon { width: 45px; height: 45px; background: #1a1a1a; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
-        /* INTERFACE OVERLAY */
-        .overlay { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.8) 100%); }
+        .banner-new { margin: 0 20px; background: linear-gradient(90deg, #fff, #f0f0f0); color: black; padding: 25px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; }
+        
+        .models-section { padding: 20px; }
+        .models-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .model-card { background: #111; border-radius: 10px; aspect-ratio: 3/4; overflow: hidden; position: relative; }
+        .model-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        .top-icons { padding: 40px 20px; display: flex; justify-content: space-between; }
-        .close-btn { font-size: 28px; background: none; border: none; color: white; cursor: pointer; }
+        /* --- CONTRÔLES DU BAS (COMMUNS) --- */
+        .bottom-ui { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: linear-gradient(to top, rgba(0,0,0,1) 70%, transparent); padding-bottom: env(safe-area-inset-bottom); }
+        
+        .capture-btn-container { display: flex; justify-content: center; padding: 20px 0; }
+        .capture-btn { width: 70px; height: 70px; border-radius: 50%; border: 5px solid white; display: flex; align-items: center; justify-content: center; }
+        .capture-btn-inner { width: 55px; height: 55px; background: white; border-radius: 50%; }
 
-        /* BOUTON CAPTURE CENTRAL */
-        .capture-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
-        .capture-btn { width: 75px; height: 75px; border-radius: 50%; border: 5px solid white; background: none; padding: 5px; cursor: pointer; margin-bottom: 30px; }
-        .capture-btn-inner { width: 100%; height: 100%; border-radius: 50%; background: white; transition: 0.2s; }
-        .capture-btn.live-mode .capture-btn-inner { background: #FF0000; }
+        .selector-tabs { display: flex; justify-content: center; gap: 30px; padding: 15px 0; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .tab { opacity: 0.5; transition: 0.3s; cursor: pointer; }
+        .tab.active { opacity: 1; border-bottom: 2px solid white; padding-bottom: 5px; }
 
-        /* SÉLECTEUR DE MODE (PUBLIER / CRÉER / LIVE) */
-        .mode-selector { display: flex; justify-content: center; gap: 30px; padding-bottom: 30px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-        .mode { opacity: 0.5; transition: 0.3s; cursor: pointer; }
-        .mode.active { opacity: 1; color: white; }
-
-        /* ÉCRAN DE LANCEMENT LIVE (CACHÉ PAR DÉFAUT) */
-        #live-setup { position: absolute; bottom: 150px; left: 0; right: 0; text-align: center; display: none; animation: fadeIn 0.3s; }
-        .btn-start-live { background: #FF0000; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .close-x { position: absolute; top: 40px; left: 20px; z-index: 110; font-size: 24px; cursor: pointer; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-    <video id="video-preview" autoplay playsinline></video>
+    <div class="close-x" onclick="window.location.href='./index.html'">✕</div>
 
-    <div class="overlay">
-        <div class="top-icons">
-            <button class="close-btn" onclick="window.location.href='index.html'">✕</button>
-            <div style="font-size: 20px;">⚡ ⚙️</div>
-        </div>
-
-        <div class="bottom-controls">
-            <div id="live-setup">
-                <h2 style="margin-bottom: 20px;">Prêt à passer en direct ?</h2>
-                <button class="btn-start-live" onclick="window.location.href='live-stream.html'">DÉMARRER LE LIVE</button>
-            </div>
-
-            <div class="capture-container">
-                <div class="capture-btn" id="mainBtn">
-                    <div class="capture-btn-inner"></div>
-                </div>
-            </div>
-
-            <div class="mode-selector">
-                <span class="mode active" onclick="switchMode(this, 'publier')">Publier</span>
-                <span class="mode" onclick="switchMode(this, 'creer')">Créer</span>
-                <span class="mode" onclick="switchMode(this, 'live')">Live</span>
+    <div id="page-publier">
+        <video id="video-preview" autoplay playsinline></video>
+        <div class="camera-overlay">
+            <div></div> <div class="capture-btn-container">
+                <div class="capture-btn"><div class="capture-btn-inner"></div></div>
             </div>
         </div>
     </div>
 
+    <div id="page-creer">
+        <div class="create-header">CREATE</div>
+        
+        <div class="tools-grid">
+            <div class="tool-item"><div class="tool-icon">🎨</div>Éditeur</div>
+            <div class="tool-item"><div class="tool-icon">✂️</div>AutoCut</div>
+            <div class="tool-item"><div class="tool-icon">💬</div>Légendes</div>
+            <div class="tool-item"><div class="tool-icon">👤</div>AI Self</div>
+        </div>
+
+        <div class="banner-new">
+            <span style="font-size: 20px;">➕</span> Nouvelle vidéo
+        </div>
+
+        <div class="models-section">
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: bold;">Modèles</span>
+                <span style="color: #888;">🔍</span>
+            </div>
+            <div class="models-grid">
+                <div class="model-card"><img src="https://picsum.photos/400/600?1"></div>
+                <div class="model-card"><img src="https://picsum.photos/400/600?2"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-ui">
+        <div class="selector-tabs">
+            <span class="tab active" id="btn-publier" onclick="showMode('publier')">PUBLIER</span>
+            <span class="tab" id="btn-creer" onclick="showMode('creer')">CRÉER</span>
+        </div>
+    </div>
+
     <script>
-        // Activation de la caméra au chargement
+        // Gestion de la caméra
         async function initCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
                 document.getElementById('video-preview').srcObject = stream;
-            } catch (err) {
-                console.log("Caméra bloquée ou non disponible");
-            }
+            } catch (err) { console.log("Caméra inaccessible"); }
         }
 
-        function switchMode(element, mode) {
-            // Mise à jour visuelle des textes
-            document.querySelectorAll('.mode').forEach(m => m.classList.remove('active'));
-            element.classList.add('active');
+        // Switch entre les deux pages
+        function showMode(mode) {
+            const pagePublier = document.getElementById('page-publier');
+            const pageCreer = document.getElementById('page-creer');
+            const btnPublier = document.getElementById('btn-publier');
+            const btnCreer = document.getElementById('btn-creer');
 
-            const liveSetup = document.getElementById('live-setup');
-            const mainBtn = document.getElementById('mainBtn');
-
-            if (mode === 'live') {
-                liveSetup.style.display = 'block';
-                mainBtn.classList.add('live-mode');
+            if (mode === 'creer') {
+                pagePublier.style.display = 'none';
+                pageCreer.style.display = 'block';
+                btnCreer.classList.add('active');
+                btnPublier.classList.remove('active');
             } else {
-                liveSetup.style.display = 'none';
-                mainBtn.classList.remove('live-mode');
+                pagePublier.style.display = 'block';
+                pageCreer.style.display = 'none';
+                btnPublier.classList.add('active');
+                btnCreer.classList.remove('active');
             }
         }
 
