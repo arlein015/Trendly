@@ -3,152 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Messages</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+    <title>Messages - Floy</title>
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --nav-h: 75px; }
-        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 100px; overflow-x: hidden; }
-
-        /* HEADER & RECHERCHE */
-        .header { padding: 20px 20px 10px; sticky: top; background: var(--noir); z-index: 10; }
-        h1 { margin: 0 0 15px; font-size: 28px; }
-        .search-bar { background: #1c1c1c; padding: 12px 15px; border-radius: 12px; display: flex; align-items: center; gap: 10px; }
-        .search-bar input { background: none; border: none; color: white; width: 100%; outline: none; font-size: 16px; }
-
-        /* STORIES */
-        .story-bar { display: flex; gap: 15px; padding: 15px 20px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #111; }
-        .story-bar::-webkit-scrollbar { display: none; }
-        .story-item { display: flex; flex-direction: column; align-items: center; min-width: 75px; text-align: center; }
-        .story-circle { width: 66px; height: 66px; border-radius: 50%; padding: 2px; border: 2px solid #333; position: relative; }
-        .story-circle.active { border-color: var(--orange); }
-        .story-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .story-name { font-size: 11px; margin-top: 6px; color: #ccc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 70px; }
-
-        /* LISTE DE DISCUSSION */
-        .chat-list { padding: 5px 0; }
-        .chat-item { display: flex; align-items: center; padding: 15px 20px; text-decoration: none; color: white; transition: 0.2s; }
-        .chat-item:active { background: #111; }
-        .avatar-container { position: relative; margin-right: 15px; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #222; }
-        .status-dot { position: absolute; bottom: 3px; right: 3px; width: 14px; height: 14px; background: #2ecc71; border: 3px solid var(--noir); border-radius: 50%; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 90px; }
         
-        .chat-info { flex: 1; border-bottom: 0.5px solid #111; padding-bottom: 15px; }
-        .chat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .user-name { font-weight: 700; font-size: 16px; }
-        .group-tag { background: #333; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle; }
-        .time { color: #666; font-size: 12px; }
-        .last-msg { color: #888; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .header { padding: 15px 20px; border-bottom: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: black; z-index: 100; }
+        .header h1 { font-size: 20px; margin: 0; }
 
-        /* NAV BAR SVG */
-        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: rgba(5,5,5,0.95); backdrop-filter: blur(15px); border-top: 1px solid #1a1a1a; display: flex; justify-content: space-evenly; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { color: #666; text-decoration: none; display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .nav-item.active { color: var(--orange); }
-        .nav-item svg { width: 26px; height: 26px; }
+        .chat-list { padding: 10px 0; }
+        .chat-item { display: flex; align-items: center; padding: 15px 20px; gap: 15px; text-decoration: none; color: white; transition: background 0.2s; }
+        .chat-item:active { background: #111; }
+        .chat-avatar { width: 55px; height: 55px; border-radius: 50%; background: #333; overflow: hidden; }
+        .chat-info { flex: 1; border-bottom: 0.5px solid #1a1a1a; padding-bottom: 10px; }
+        .chat-info h3 { margin: 0 0 5px; font-size: 16px; }
+        .chat-info p { margin: 0; font-size: 14px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* NAV BAR SVG MODERNE */
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: rgba(5,5,5,0.98); border-top: 1px solid #1a1a1a; display: flex; justify-content: space-evenly; align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 1000; }
+        .nav-link { color: #666; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
+        .nav-link.active { color: white; }
+        .nav-svg { width: 26px; height: 26px; fill: currentColor; }
+        .nav-plus { background: white; border-radius: 10px; padding: 5px 12px; color: black !important; }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <header class="header">
         <h1>Messages</h1>
-        <div class="search-bar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="searchInput" placeholder="Rechercher une discussion..." oninput="filterChats()">
-        </div>
-    </div>
+        <svg class="nav-svg" viewBox="0 0 24 24" style="color:var(--orange)"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+    </header>
 
-    <div class="story-bar" id="storyBar">
-        <div class="story-item" onclick="window.location.href='story-creator.html'">
-            <div class="story-circle"><img src="ma_photo.jpg" class="story-img" onerror="this.src='https://ui-avatars.com/api/?name=Moi'"><div style="position:absolute; bottom:0; right:0; background:var(--orange); border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; color:black; font-weight:bold; font-size:14px; border:2px solid black">+</div></div>
-            <span class="story-name">Ma Story</span>
-        </div>
+    <div class="chat-list">
+        <a href="chat.html" class="chat-item">
+            <div class="chat-avatar"><img src="https://ui-avatars.com/api/?name=Sam" width="100%"></div>
+            <div class="chat-info">
+                <h3>Sam_Floy</h3>
+                <p>Le live de demain est prêt ? 🔥</p>
+            </div>
+        </a>
+        <a href="#" class="chat-item">
+            <div class="chat-avatar"><img src="https://ui-avatars.com/api/?name=Lina" width="100%"></div>
+            <div class="chat-info">
+                <h3>Lina_Dev</h3>
+                <p>J'adore le nouveau module + !</p>
+            </div>
+        </a>
     </div>
-
-    <div class="chat-list" id="chatList">
-        </div>
 
     <nav class="nav-bar">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        </a>
-        <a href="explorer.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </a>
-        <a href="story-creator.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-        </a>
-        <a href="messages.html" class="nav-item active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        </a>
-        <a href="profil.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </a>
+        <a href="index.html" class="nav-link"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <a href="explorer.html" class="nav-link"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></a>
+        <a href="create.html" class="nav-link nav-plus"><svg class="nav-svg" viewBox="0 0 24 24" style="width:20px; height:20px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></a>
+        <a href="messages.html" class="nav-link active"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-7H6V5h12v2z"/></svg></a>
+        <a href="profil.html" class="nav-link"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></a>
     </nav>
 
-    <script>
-        // Données fictives pour les Groupes Actifs et Discussions de base
-        const defaultChats = [
-            { id: 'group_dev', name: 'Dev Floy Team', img: 'https://i.pravatar.cc/150?u=dev', lastMsg: 'Le module live est prêt !', time: '12:45', isGroup: true, active: true },
-            { id: 'contact_sarah', name: 'Sarah Wilson', img: 'https://i.pravatar.cc/150?u=sarah', lastMsg: 'Tu as vu ma story ?', time: 'Hier', isGroup: false, active: true }
-        ];
-
-        function loadAllMessages() {
-            const chatList = document.getElementById('chatList');
-            const storyBar = document.getElementById('storyBar');
-            
-            // 1. Récupérer les contacts ajoutés via le Profil
-            const addedContacts = JSON.parse(localStorage.getItem('floy_contacts') || "[]");
-            
-            // 2. Fusionner avec les groupes/discussions par défaut
-            const allDiscussions = [...addedContacts, ...defaultChats];
-
-            // 3. Afficher les discussions
-            if (allDiscussions.length === 0) {
-                chatList.innerHTML = '<p style="color:#444; text-align:center; margin-top:50px;">Aucun message</p>';
-            } else {
-                renderChats(allDiscussions);
-            }
-
-            // 4. Générer des stories basées sur les contacts actifs
-            allDiscussions.forEach(c => {
-                if(c.active || addedContacts.includes(c)) {
-                    const item = document.createElement('div');
-                    item.className = 'story-item';
-                    item.innerHTML = `
-                        <div class="story-circle active"><img src="${c.img}" class="story-img" onerror="this.src='https://ui-avatars.com/api/?name=${c.name}'"></div>
-                        <span class="story-name">${c.name.split(' ')[0]}</span>
-                    `;
-                    storyBar.appendChild(item);
-                }
-            });
-        }
-
-        function renderChats(data) {
-            const chatList = document.getElementById('chatList');
-            chatList.innerHTML = data.map(c => `
-                <a href="chat.html?id=${c.id}" class="chat-item">
-                    <div class="avatar-container">
-                        <img src="${c.img}" class="avatar" onerror="this.src='https://ui-avatars.com/api/?name=${c.name}'">
-                        ${c.active ? '<div class="status-dot"></div>' : ''}
-                    </div>
-                    <div class="chat-info">
-                        <div class="chat-top">
-                            <span class="user-name">${c.name} ${c.isGroup ? '<span class="group-tag">GROUPE</span>' : ''}</span>
-                            <span class="time">${c.time || 'A l\'instant'}</span>
-                        </div>
-                        <div class="last-msg">${c.lastMsg || 'Démarrer la discussion...'}</div>
-                    </div>
-                </a>
-            `).join('');
-        }
-
-        function filterChats() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const addedContacts = JSON.parse(localStorage.getItem('floy_contacts') || "[]");
-            const all = [...addedContacts, ...defaultChats];
-            const filtered = all.filter(c => c.name.toLowerCase().includes(query));
-            renderChats(filtered);
-        }
-
-        window.onload = loadAllMessages;
-    </script>
 </body>
 </html>
