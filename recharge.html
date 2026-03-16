@@ -2,39 +2,65 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="icon" type="image/png" href="./favicon.png">
     <title>Paiement - Floy</title>
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; }
-        body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; padding: 20px; text-align: center; }
-        .payment-box { background: var(--gris); padding: 30px; border-radius: 25px; border: 1px solid #262626; margin-top: 50px; }
-        .price { font-size: 32px; font-weight: bold; color: var(--orange); margin: 20px 0; }
-        .pay-method { background: white; color: black; padding: 15px; border-radius: 12px; margin-bottom: 10px; font-weight: bold; cursor: pointer; display: block; width: 100%; border: none; }
-        .back { color: #666; text-decoration: none; font-size: 14px; margin-top: 20px; display: inline-block; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; --binance: #F3BA2F; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; }
+        
+        .payment-container { max-width: 400px; margin: 20px auto; text-align: center; }
+        .price-display { font-size: 48px; font-weight: 900; color: var(--orange); margin: 20px 0; letter-spacing: -1px; }
+        
+        .method-btn { 
+            width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--bordure); 
+            background: var(--gris); color: white; font-weight: 700; font-size: 14px; 
+            margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px;
+            transition: 0.2s;
+        }
+        .method-btn:active { transform: scale(0.98); background: #1a1a1a; }
+        
+        /* LOGOS CUSTOM */
+        .icon-box { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        .cancel-btn { display: block; margin-top: 30px; color: #666; text-decoration: none; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div class="payment-box">
-        <h2>Confirmer l'achat</h2>
-        <div id="displayAmount" class="price">0.00$</div>
+    <div class="payment-container">
+        <h2 style="font-size: 18px; color: #888;">Montant à régler</h2>
+        <div id="amtBox" class="price-display">0.00$</div>
         
-        <button class="pay-method" onclick="finish()">💳 Carte Bancaire</button>
-        <button class="pay-method" style="background:#F7931A; color:white;" onclick="finish()">🟠 Orange Money</button>
-        
-        <a href="./shop.html" class="back">Annuler</a>
+        <button class="method-btn" onclick="pay()">
+            <div class="icon-box">
+                <svg width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="20" y="6" fill="#1A1A1A" rx="4"/><path d="M10 12h2l1.5 5h.1l1.4-5h2l-2.5 8h-2l-2.5-8z" fill="#f7f7f7"/></svg>
+            </div>
+            CARTE VISA / MASTERCARD
+        </button>
+
+        <button class="method-btn" onclick="pay()" style="border-left: 4px solid var(--binance);">
+            <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--binance)"><path d="M12 6.654l-3.346 3.346L12 13.346l3.346-3.346L12 6.654zm0-6.654l-3.346 3.346L5.308 0 1.962 3.346 5.308 6.692 8.654 3.346 12 6.692l3.346-3.346 3.346 3.346 3.346-3.346L18.692 0l-3.346 3.346L12 0zm0 24l3.346-3.346L18.692 24l3.346-3.346-3.346-3.346-3.346 3.346L12 17.308l-3.346 3.346-3.346-3.346-3.346 3.346L1.962 20.654 5.308 17.308l3.346 3.346L12 24zm0-10.654l-3.346-3.346L5.308 13.346 1.962 10 5.308 6.654 8.654 10 12 13.346l3.346-3.346 3.346 3.346 3.346-3.346L22.038 10l-3.346 3.346-3.346-3.346L12 13.346z"/></svg>
+            </div>
+            BINANCE PAY
+        </button>
+
+        <button class="method-btn" onclick="pay()" style="border-left: 4px solid #FF6600;">
+            <div class="icon-box">
+                <rect width="28" height="28" style="fill:#FF6600; rx:4;" />
+                <svg width="28" height="28" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FF6600" rx="15"/><path d="M25 25h50v50H25z" fill="white"/><path d="M35 35h30v30H35z" fill="#FF6600"/></svg>
+            </div>
+            ORANGE MONEY
+        </button>
+
+        <a href="./shop.html" class="cancel-btn">Annuler</a>
     </div>
 
     <script>
-        // Récupère le prix dans l'URL (ex: recharge.html?amt=4.49)
         const params = new URLSearchParams(window.location.search);
-        const amount = params.get('amt') || "0.00";
-        document.getElementById('displayAmount').innerText = amount + "$";
-
-        function finish() {
-            alert("Paiement réussi ! Vos jetons ont été ajoutés.");
-            window.location.href = './shop.html';
-        }
+        document.getElementById('amtBox').innerText = (params.get('amt') || "0.00") + "$";
+        function pay() { alert("Connexion sécurisée en cours..."); setTimeout(() => { alert("Paiement Réussi !"); window.location.href='./shop.html'; }, 1000); }
     </script>
 </body>
 </html>
