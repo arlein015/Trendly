@@ -4,41 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="icon" href="data:,">
-    <title>Créer - Floy</title>
+    <title>Studio Floy</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); font-family: -apple-system, sans-serif; overflow: hidden; color: white; }
 
-        /* --- CAMÉRA PERMANENTE --- */
-        #video-container { position: absolute; width: 100%; height: 100%; z-index: 1; background: #000; }
-        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: filter 0.3s ease; }
+        /* CAMÉRA PERMANENTE */
+        #video-container { position: absolute; width: 100%; height: 100%; z-index: 1; }
+        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
 
-        /* --- OVERLAYS --- */
-        .ui-layer { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
-        .ui-layer * { pointer-events: auto; }
+        /* EFFETS SPÉCIAUX (CSS) */
+        .effect-vhs { filter: contrast(120%) brightness(110%) saturate(80%) sepia(20%); }
+        .effect-zoom { transform: scaleX(-1) scale(1.2); }
+        .effect-blur { filter: blur(4px) brightness(0.8); }
 
-        /* FILTRES (SCROLL HORIZONTAL) */
-        .filters-container { padding: 20px 0; display: flex; gap: 15px; overflow-x: auto; padding-left: 20px; scrollbar-width: none; }
-        .filters-container::-webkit-scrollbar { display: none; }
-        .filter-item { min-width: 60px; text-align: center; font-size: 10px; color: #ccc; }
-        .filter-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid white; margin-bottom: 5px; overflow: hidden; background: #222; display: flex; align-items: center; justify-content: center; }
-        .filter-circle.active { border-color: var(--orange); box-shadow: 0 0 10px var(--orange); }
+        /* INTERFACE COULISSANTE */
+        .overlay { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+        .overlay * { pointer-events: auto; }
 
-        /* INTERFACE DU BAS */
-        .bottom-controls { background: linear-gradient(to top, rgba(0,0,0,0.9) 50%, transparent); padding-bottom: env(safe-area-inset-bottom); }
-        .capture-row { display: flex; align-items: center; justify-content: center; gap: 40px; padding: 20px 0; }
+        /* PAGE CRÉER (MODÈLES) - CACHÉE PAR DÉFAUT */
+        #page-creer { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--noir); z-index: 20; display: none; overflow-y: auto; 
+            padding: 60px 20px 120px; box-sizing: border-box;
+        }
+        .tool-icon-svg { width: 50px; height: 50px; background: var(--gris); border-radius: 12px; display: flex; align-items: center; justify-content: center; fill: var(--orange); margin-bottom: 8px; }
+
+        /* BOUTONS ET NAVIGATION */
+        .bottom-ui { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding-bottom: env(safe-area-inset-bottom); }
+        .capture-row { display: flex; align-items: center; justify-content: center; gap: 35px; padding: 20px 0; }
         
-        .icon-btn { width: 45px; height: 45px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; fill: white; border: none; cursor: pointer; }
-        
-        .capture-btn { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; padding: 5px; display: flex; align-items: center; justify-content: center; background: none; }
-        .capture-btn-inner { width: 100%; height: 100%; background: white; border-radius: 50%; transition: 0.3s; }
+        .capture-btn { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; padding: 5px; background: none; }
+        .capture-btn-inner { width: 100%; height: 100%; background: white; border-radius: 50%; }
+        .capture-btn.live-mode { border-color: var(--orange); }
+        .capture-btn.live-mode .capture-btn-inner { background: var(--orange); }
 
-        /* MODES */
-        .mode-tabs { display: flex; justify-content: center; gap: 25px; padding: 15px 0; font-size: 13px; font-weight: 800; }
-        .tab { color: #666; cursor: pointer; }
+        .tabs { display: flex; justify-content: center; gap: 25px; padding: 15px 0; font-size: 13px; font-weight: 800; }
+        .tab { color: #666; cursor: pointer; transition: 0.3s; }
         .tab.active { color: white; border-bottom: 2px solid var(--orange); }
 
-        .close-btn { position: absolute; top: 45px; left: 20px; z-index: 100; fill: white; }
+        .close-btn { position: absolute; top: 40px; left: 20px; z-index: 100; fill: white; }
     </style>
 </head>
 <body>
@@ -47,92 +52,91 @@
         <video id="video-preview" autoplay playsinline></video>
     </div>
 
-    <div class="close-btn" onclick="window.location.href='./index.html'">
-        <svg width="28" height="28" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    <div id="page-creer">
+        <h2 style="color:var(--orange); text-align:center;">FLOY STUDIO</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px;">
+            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></div>EDIT</div>
+            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>AI</div>
+            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>MODEL</div>
+            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M7 19h10V4H7v15zm-5-2h2V7H2v10zM20 7v10h2V7h-2z"/></svg></div>CLIPS</div>
+        </div>
+        <div style="background:var(--orange); padding:20px; border-radius:15px; text-align:center; font-weight:bold;">+ NOUVELLE VIDÉO</div>
     </div>
 
-    <div class="ui-layer">
-        <div></div> <div class="bottom-controls">
-            <div class="filters-container">
-                <div class="filter-item" onclick="applyFilter('none', this)">
-                    <div class="filter-circle active">Normal</div>
-                    <span>ORIGINAL</span>
-                </div>
-                <div class="filter-item" onclick="applyFilter('grayscale(100%)', this)">
-                    <div class="filter-circle" style="background:gray"></div>
-                    <span>N&B</span>
-                </div>
-                <div class="filter-item" onclick="applyFilter('sepia(80%)', this)">
-                    <div class="filter-circle" style="background:#704214"></div>
-                    <span>VINTAGE</span>
-                </div>
-                <div class="filter-item" onclick="applyFilter('hue-rotate(90deg)', this)">
-                    <div class="filter-circle" style="background:#1aff1a"></div>
-                    <span>NEON</span>
-                </div>
-                <div class="filter-item" onclick="applyFilter('invert(100%)', this)">
-                    <div class="filter-circle" style="background:#fff"></div>
-                    <span>INVERSÉ</span>
-                </div>
+    <div class="overlay">
+        <div class="close-btn" onclick="window.location.href='./index.html'">
+            <svg width="28" height="28" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </div>
+
+        <div class="bottom-ui">
+            <div style="display:flex; gap:15px; overflow-x:auto; padding:10px 20px; scrollbar-width:none;">
+                <button onclick="setEffect('none')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid white; color:white; font-size:10px;">NORMAL</button>
+                <button onclick="setEffect('vhs')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid var(--orange); color:var(--orange); font-size:10px;">VHS</button>
+                <button onclick="setEffect('zoom')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid white; color:white; font-size:10px;">ZOOM</button>
+                <button onclick="setEffect('blur')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid white; color:white; font-size:10px;">FLOU</button>
             </div>
 
             <div class="capture-row">
-                <button class="icon-btn" onclick="document.getElementById('file-input').click()">
-                    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <button style="background:none; border:none; fill:white;" onclick="document.getElementById('file').click()">
+                    <svg width="30" height="30" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                 </button>
-                <input type="file" id="file-input" hidden accept="image/*,video/*">
+                <input type="file" id="file" hidden>
 
-                <button class="capture-btn">
-                    <div class="capture-btn-inner" id="btn-core"></div>
-                </button>
+                <button class="capture-btn" id="main-btn"><div class="capture-btn-inner"></div></button>
 
-                <button class="icon-btn" onclick="toggleCamera()">
-                    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                <button style="background:none; border:none; fill:white;">
+                    <svg width="30" height="30" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
                 </button>
             </div>
 
-            <div class="mode-tabs">
-                <span class="tab active">PUBLIER</span>
-                <span class="tab" onclick="window.location.href='./live-setup.html'">LIVE</span>
+            <div class="tabs">
+                <span class="tab active" id="tab-publier" onclick="changeMode('publier')">PUBLIER</span>
+                <span class="tab" id="tab-creer" onclick="changeMode('creer')">CRÉER</span>
+                <span class="tab" id="tab-live" onclick="changeMode('live')">LIVE</span>
             </div>
         </div>
     </div>
 
     <script>
-        let currentStream;
         const video = document.getElementById('video-preview');
 
-        // Initialisation de la caméra (Marche en permanence)
-        async function startCamera() {
+        // Caméra permanente
+        async function start() {
             try {
-                if (currentStream) {
-                    currentStream.getTracks().forEach(track => track.stop());
-                }
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "user" }, 
-                    audio: false 
-                });
-                currentStream = stream;
-                video.srcObject = stream;
-            } catch (err) {
-                console.error("Erreur Caméra: ", err);
+                const s = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = s;
+            } catch(e) { console.log("Caméra bloquée"); }
+        }
+
+        // Effets photo/vidéo
+        function setEffect(name) {
+            video.className = '';
+            if(name !== 'none') video.classList.add('effect-' + name);
+        }
+
+        // Switcher entre PUBLIER, CRÉER et LIVE
+        function changeMode(mode) {
+            const pageCreer = document.getElementById('page-creer');
+            const mainBtn = document.getElementById('main-btn');
+            
+            // Reset onglets
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + mode).classList.add('active');
+
+            if(mode === 'creer') {
+                pageCreer.style.display = 'block';
+                mainBtn.classList.remove('live-mode');
+            } else if(mode === 'live') {
+                pageCreer.style.display = 'none';
+                mainBtn.classList.add('live-mode');
+                // Rediriger ou afficher setup live
+            } else {
+                pageCreer.style.display = 'none';
+                mainBtn.classList.remove('live-mode');
             }
         }
 
-        // Application des filtres
-        function applyFilter(filterValue, element) {
-            video.style.filter = filterValue;
-            document.querySelectorAll('.filter-circle').forEach(c => c.classList.remove('active'));
-            element.querySelector('.filter-circle').classList.add('active');
-        }
-
-        // Simuler le changement de caméra
-        function toggleCamera() {
-            alert("Bascule Caméra Avant/Arrière activée");
-        }
-
-        // Relancer au chargement/actualisation
-        window.addEventListener('load', startCamera);
+        start();
     </script>
 </body>
 </html>
