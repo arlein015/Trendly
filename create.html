@@ -4,46 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="icon" href="data:,">
-    <title>Studio Floy</title>
+    <title>Floy Studio - Création</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--noir); font-family: -apple-system, sans-serif; overflow: hidden; color: white; }
 
-        /* CAMÉRA PERMANENTE */
+        /* --- 1. CAMÉRA & EFFETS --- */
         #video-container { position: absolute; width: 100%; height: 100%; z-index: 1; }
-        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        #video-preview { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: 0.3s; }
+        
+        /* Classes d'effets visuels */
+        .fx-vhs { filter: contrast(130%) brightness(110%) saturate(70%) sepia(30%); }
+        .fx-pixel { filter: contrast(150%) brightness(90%) hue-rotate(20deg); }
+        .fx-zoom { transform: scaleX(-1) scale(1.3); }
+        .fx-blur { filter: blur(8px) brightness(0.7); }
 
-        /* EFFETS SPÉCIAUX (CSS) */
-        .effect-vhs { filter: contrast(120%) brightness(110%) saturate(80%) sepia(20%); }
-        .effect-zoom { transform: scaleX(-1) scale(1.2); }
-        .effect-blur { filter: blur(4px) brightness(0.8); }
+        /* --- 2. INTERFACES (OVERLAYS) --- */
+        .overlay-ui { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+        .overlay-ui * { pointer-events: auto; }
 
-        /* INTERFACE COULISSANTE */
-        .overlay { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
-        .overlay * { pointer-events: auto; }
-
-        /* PAGE CRÉER (MODÈLES) - CACHÉE PAR DÉFAUT */
+        /* Page "CRÉER" (Studio) */
         #page-creer { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--noir); z-index: 20; display: none; overflow-y: auto; 
-            padding: 60px 20px 120px; box-sizing: border-box;
+            background: var(--noir); z-index: 50; display: none; padding: 60px 20px; box-sizing: border-box;
         }
-        .tool-icon-svg { width: 50px; height: 50px; background: var(--gris); border-radius: 12px; display: flex; align-items: center; justify-content: center; fill: var(--orange); margin-bottom: 8px; }
 
-        /* BOUTONS ET NAVIGATION */
-        .bottom-ui { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding-bottom: env(safe-area-inset-bottom); }
-        .capture-row { display: flex; align-items: center; justify-content: center; gap: 35px; padding: 20px 0; }
-        
-        .capture-btn { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; padding: 5px; background: none; }
-        .capture-btn-inner { width: 100%; height: 100%; background: white; border-radius: 50%; }
-        .capture-btn.live-mode { border-color: var(--orange); }
-        .capture-btn.live-mode .capture-btn-inner { background: var(--orange); }
+        /* Page "LIVE" (Setup) */
+        #page-live-setup {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 40; display: none;
+            flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+        }
 
-        .tabs { display: flex; justify-content: center; gap: 25px; padding: 15px 0; font-size: 13px; font-weight: 800; }
-        .tab { color: #666; cursor: pointer; transition: 0.3s; }
-        .tab.active { color: white; border-bottom: 2px solid var(--orange); }
+        /* --- 3. COMPOSANTS SVG & BOUTONS --- */
+        .tool-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 10px; color: #888; }
+        .icon-svg-bg { width: 50px; height: 50px; background: var(--gris); border-radius: 14px; display: flex; align-items: center; justify-content: center; fill: var(--orange); border: 1px solid var(--bordure); }
 
-        .close-btn { position: absolute; top: 40px; left: 20px; z-index: 100; fill: white; }
+        .capture-row { display: flex; align-items: center; justify-content: center; gap: 40px; padding: 20px 0; }
+        .main-btn { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; padding: 5px; background: none; transition: 0.3s; }
+        .main-btn-inner { width: 100%; height: 100%; background: white; border-radius: 50%; }
+        .main-btn.live-mode { border-color: var(--orange); }
+        .main-btn.live-mode .main-btn-inner { background: var(--orange); border-radius: 10px; } /* Devient carré pour le stop live */
+
+        /* Navigation Bas */
+        .nav-tabs { display: flex; justify-content: center; gap: 30px; padding: 20px 0; font-size: 13px; font-weight: 900; background: linear-gradient(to top, black, transparent); }
+        .tab { color: #555; cursor: pointer; transition: 0.2s; }
+        .tab.active { color: white; border-bottom: 2px solid var(--orange); padding-bottom: 4px; }
+
+        .close-x { position: absolute; top: 40px; left: 20px; z-index: 100; fill: white; }
     </style>
 </head>
 <body>
@@ -52,91 +60,104 @@
         <video id="video-preview" autoplay playsinline></video>
     </div>
 
-    <div id="page-creer">
-        <h2 style="color:var(--orange); text-align:center;">FLOY STUDIO</h2>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px;">
-            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></div>EDIT</div>
-            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>AI</div>
-            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>MODEL</div>
-            <div style="text-align:center; font-size:10px;"><div class="tool-icon-svg"><svg viewBox="0 0 24 24"><path d="M7 19h10V4H7v15zm-5-2h2V7H2v10zM20 7v10h2V7h-2z"/></svg></div>CLIPS</div>
-        </div>
-        <div style="background:var(--orange); padding:20px; border-radius:15px; text-align:center; font-weight:bold;">+ NOUVELLE VIDÉO</div>
+    <div class="close-x" onclick="window.location.href='./index.html'">
+        <svg width="28" height="28" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
     </div>
 
-    <div class="overlay">
-        <div class="close-btn" onclick="window.location.href='./index.html'">
-            <svg width="28" height="28" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    <div id="page-creer">
+        <h2 style="color:var(--orange); text-align:center; letter-spacing:3px;">FLOY STUDIO</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 40px;">
+            <div class="tool-btn"><div class="icon-svg-bg"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></div>ÉDITEUR</div>
+            <div class="tool-btn"><div class="icon-svg-bg"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>AI SELF</div>
+            <div class="tool-btn"><div class="icon-svg-bg"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>MODÈLES</div>
+            <div class="tool-btn"><div class="icon-svg-bg"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M7 19h10V4H7v15zm-5-2h2V7H2v10z"/></svg></div>DÉTOURAGE</div>
         </div>
+        <div style="margin-top:50px; background:white; color:black; padding:20px; border-radius:15px; text-align:center; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="black"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> NOUVELLE VIDÉO
+        </div>
+    </div>
 
-        <div class="bottom-ui">
+    <div id="page-live-setup">
+        <div style="color:var(--orange); font-weight:bold; margin-bottom:10px;">DIRECT</div>
+        <input type="text" placeholder="Titre du live..." style="background:none; border:none; border-bottom:2px solid var(--orange); color:white; font-size:24px; text-align:center; outline:none; margin-bottom:40px; width:80%;">
+        <button style="background:var(--orange); color:white; border:none; padding:15px 40px; border-radius:30px; font-weight:bold;">COMMENCER</button>
+    </div>
+
+    <div class="overlay-ui">
+        <div></div> <div class="bottom-area">
             <div style="display:flex; gap:15px; overflow-x:auto; padding:10px 20px; scrollbar-width:none;">
-                <button onclick="setEffect('none')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid white; color:white; font-size:10px;">NORMAL</button>
-                <button onclick="setEffect('vhs')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid var(--orange); color:var(--orange); font-size:10px;">VHS</button>
-                <button onclick="setEffect('zoom')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid white; color:white; font-size:10px;">ZOOM</button>
-                <button onclick="setEffect('blur')" style="min-width:60px; height:60px; border-radius:50%; background:none; border:2px solid white; color:white; font-size:10px;">FLOU</button>
+                <div onclick="applyFx('none')" style="min-width:65px; height:65px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; font-size:10px;">NORMAL</div>
+                <div onclick="applyFx('vhs')" style="min-width:65px; height:65px; border-radius:50%; border:2px solid var(--orange); color:var(--orange); display:flex; align-items:center; justify-content:center; font-size:10px;">VHS</div>
+                <div onclick="applyFx('zoom')" style="min-width:65px; height:65px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; font-size:10px;">ZOOM</div>
+                <div onclick="applyFx('blur')" style="min-width:65px; height:65px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; font-size:10px;">FLOU</div>
             </div>
 
             <div class="capture-row">
-                <button style="background:none; border:none; fill:white;" onclick="document.getElementById('file').click()">
-                    <svg width="30" height="30" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <button style="background:none; border:none; fill:white;" onclick="document.getElementById('file-up').click()">
+                    <svg width="32" height="32" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                 </button>
-                <input type="file" id="file" hidden>
+                <input type="file" id="file-up" hidden>
 
-                <button class="capture-btn" id="main-btn"><div class="capture-btn-inner"></div></button>
+                <button class="main-btn" id="master-btn" onclick="takeAction()"><div class="main-btn-inner"></div></button>
 
                 <button style="background:none; border:none; fill:white;">
-                    <svg width="30" height="30" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
                 </button>
             </div>
 
-            <div class="tabs">
-                <span class="tab active" id="tab-publier" onclick="changeMode('publier')">PUBLIER</span>
-                <span class="tab" id="tab-creer" onclick="changeMode('creer')">CRÉER</span>
-                <span class="tab" id="tab-live" onclick="changeMode('live')">LIVE</span>
+            <div class="nav-tabs">
+                <span class="tab active" onclick="setMode('publier', this)">PUBLIER</span>
+                <span class="tab" onclick="setMode('creer', this)">CRÉER</span>
+                <span class="tab" onclick="setMode('live', this)">LIVE</span>
             </div>
         </div>
     </div>
 
     <script>
         const video = document.getElementById('video-preview');
+        const masterBtn = document.getElementById('master-btn');
 
         // Caméra permanente
-        async function start() {
+        async function initCamera() {
             try {
                 const s = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.srcObject = s;
-            } catch(e) { console.log("Caméra bloquée"); }
+            } catch(e) { console.error("Accès caméra refusé"); }
         }
 
-        // Effets photo/vidéo
-        function setEffect(name) {
+        // Effets visuels
+        function applyFx(type) {
             video.className = '';
-            if(name !== 'none') video.classList.add('effect-' + name);
+            if(type !== 'none') video.classList.add('fx-' + type);
         }
 
-        // Switcher entre PUBLIER, CRÉER et LIVE
-        function changeMode(mode) {
-            const pageCreer = document.getElementById('page-creer');
-            const mainBtn = document.getElementById('main-btn');
-            
-            // Reset onglets
+        // Gestion des modes
+        function setMode(mode, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + mode).classList.add('active');
+            el.classList.add('active');
+
+            // Reset des pages
+            document.getElementById('page-creer').style.display = 'none';
+            document.getElementById('page-live-setup').style.display = 'none';
+            masterBtn.classList.remove('live-mode');
 
             if(mode === 'creer') {
-                pageCreer.style.display = 'block';
-                mainBtn.classList.remove('live-mode');
+                document.getElementById('page-creer').style.display = 'block';
             } else if(mode === 'live') {
-                pageCreer.style.display = 'none';
-                mainBtn.classList.add('live-mode');
-                // Rediriger ou afficher setup live
-            } else {
-                pageCreer.style.display = 'none';
-                mainBtn.classList.remove('live-mode');
+                document.getElementById('page-live-setup').style.display = 'flex';
+                masterBtn.classList.add('live-mode');
             }
         }
 
-        start();
+        function takeAction() {
+            if(masterBtn.classList.contains('live-mode')) {
+                alert("Lancement du Live...");
+            } else {
+                alert("Photo capturée !");
+            }
+        }
+
+        initCamera();
     </script>
 </body>
 </html>
