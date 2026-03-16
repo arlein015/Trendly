@@ -6,31 +6,62 @@
     <link rel="icon" type="image/png" href="./favicon.png">
     <title>Boutique Floy</title>
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; --rouge: #ff4444; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 90px; }
         
-        /* HEADER SHOP */
-        .shop-header { padding: 30px 20px; text-align: center; background: linear-gradient(180deg, #1a1a1a 0%, var(--noir) 100%); border-bottom: 1px solid var(--bordure); }
-        .token-balance { font-size: 48px; font-weight: 900; color: var(--orange); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
-        .history-link { font-size: 11px; color: #666; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        /* HEADER */
+        .shop-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bordure); background: var(--noir); }
+        .balance-box { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 20px; color: var(--orange); }
+        .history-btn { color: #666; text-decoration: none; font-size: 12px; font-weight: bold; }
 
-        .section-title { padding: 25px 20px 15px; font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1.2px; font-weight: bold; }
+        /* BADGE HERO AVEC URGENCE */
+        .vip-hero { 
+            margin: 20px; padding: 30px; border-radius: 28px; 
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); 
+            border: 1px solid rgba(255, 122, 26, 0.4);
+            position: relative; overflow: hidden; text-align: center;
+        }
 
-        /* PACKS */
-        .pack-list { padding: 0 20px; }
-        .pack-card { background: var(--gris); border: 1px solid var(--bordure); padding: 20px; border-radius: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .pack-card:active { transform: scale(0.98); background: #1a1a1a; }
+        /* BANDEAU OFFRE LIMITÉE */
+        .promo-tag {
+            position: absolute; top: 15px; right: -30px;
+            background: var(--rouge); color: white; padding: 5px 40px;
+            font-size: 10px; font-weight: bold; transform: rotate(45deg);
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+
+        .badge-visual {
+            width: 70px; height: 70px; background: rgba(255,122,26,0.1); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto 15px; border: 1px solid var(--orange);
+            box-shadow: 0 0 20px rgba(255,122,26,0.2);
+        }
+
+        /* COMPTE À REBOURS STYLE */
+        .countdown-box {
+            display: inline-flex; gap: 10px; background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3); padding: 8px 15px;
+            border-radius: 12px; margin-bottom: 20px; color: var(--rouge);
+            font-family: monospace; font-weight: bold; font-size: 14px;
+        }
+
+        .vip-title { font-size: 22px; font-weight: 900; margin-bottom: 8px; }
+        .vip-price { font-size: 20px; font-weight: bold; color: white; margin-bottom: 15px; }
+        .price-strike { text-decoration: line-through; color: #666; font-size: 16px; margin-right: 8px; }
         
-        .pack-name { font-weight: bold; font-size: 16px; margin-bottom: 4px; display: block; }
-        .pack-desc { font-size: 12px; color: #666; }
-        .price-btn { background: var(--orange); color: white; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 800; cursor: pointer; }
+        .btn-rent { 
+            background: var(--orange); color: white; border: none; padding: 14px; 
+            border-radius: 15px; font-weight: 800; font-size: 15px; cursor: pointer; width: 100%;
+        }
 
-        /* ABONNEMENT */
-        .sub-card { margin: 0 20px; padding: 25px; border-radius: 22px; background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); border: 1px solid rgba(255, 122, 26, 0.3); display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
-        .sub-card::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,122,26,0.1) 0%, transparent 70%); pointer-events: none; }
+        /* LISTE JETONS */
+        .section-title { padding: 10px 20px; font-size: 12px; color: #666; text-transform: uppercase; font-weight: bold; }
+        .pack-list { padding: 0 20px; }
+        .pack-card { background: var(--gris); border: 1px solid var(--bordure); padding: 18px; border-radius: 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .price-tag { background: #222; color: white; border: 1px solid #444; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
         /* NAV BAS */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: var(--noir); border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: var(--noir); border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
         .nav-item { fill: #444; }
         .nav-item.active { fill: var(--orange); }
     </style>
@@ -38,38 +69,45 @@
 <body>
 
     <div class="shop-header">
-        <a href="./transactions.html" class="history-link">Historique des achats 📋</a>
-        <div class="token-balance">
-            <span id="currentTokens">550</span>
-            <span style="font-size: 20px; background: var(--orange); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">F</span>
+        <div class="balance-box">
+            <span style="background:var(--orange); color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:14px;">F</span>
+            <span>550</span>
         </div>
-        <p style="font-size: 12px; color: #666; margin-top: 8px;">Votre solde actuel Floy</p>
+        <a href="./transactions.html" class="history-btn">HISTORIQUE</a>
     </div>
 
-    <div class="section-title">Acheter des Jetons</div>
+    <div class="vip-hero">
+        <div class="promo-tag">OFFRE</div>
+        
+        <div class="badge-visual">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="var(--orange)">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+            </svg>
+        </div>
+
+        <div class="vip-title">FLOY CERTIFIED</div>
+        
+        <div class="countdown-box" id="timer">
+            L'offre expire dans : 00:00:00
+        </div>
+
+        <div class="vip-price">
+            <span class="price-strike">15.00$</span> 10.00$ / mois
+        </div>
+        
+        <button class="btn-rent" onclick="window.location.href='./recharge.html?amt=10.00'">PROFITER DE L'OFFRE</button>
+    </div>
+
+    <div class="section-title">Recharger des jetons</div>
     <div class="pack-list">
         <div class="pack-card">
-            <div><span class="pack-name">100 Jetons</span><span class="pack-desc">Pour quelques Boosts</span></div>
-            <button class="price-btn" onclick="goToPay(0.99)">0.99$</button>
+            <div><b style="display:block;">100 Jetons</b><small style="color:#666;">Pack Découverte</small></div>
+            <button class="price-tag" onclick="window.location.href='./recharge.html?amt=0.99'">0.99$</button>
         </div>
         <div class="pack-card">
-            <div><span class="pack-name">500 Jetons</span><span class="pack-desc">Pack le plus populaire</span></div>
-            <button class="price-btn" onclick="goToPay(4.49)">4.49$</button>
+            <div><b style="display:block;">500 Jetons</b><small style="color:#666;">Pack Boost</small></div>
+            <button class="price-tag" onclick="window.location.href='./recharge.html?amt=4.49'">4.49$</button>
         </div>
-        <div class="pack-card" style="border: 1px solid var(--orange);">
-            <div><span class="pack-name">1200 Jetons</span><span class="pack-desc">Meilleure offre (VIP)</span></div>
-            <button class="price-btn" onclick="goToPay(9.99)">9.99$</button>
-        </div>
-    </div>
-
-    <div class="section-title">Abonnement Mensuel</div>
-    <div class="sub-card">
-        <div>
-            <h3 style="margin:0; font-size:18px; color: var(--orange);">Badge Certifié</h3>
-            <p style="margin:5px 0 0; font-size:12px; color:#aaa;">Badge bleu + Liens illimités</p>
-            <p style="margin:10px 0 0; font-size:14px; font-weight: bold;">10$ <span style="font-weight: normal; font-size: 12px; color: #666;">/ mois</span></p>
-        </div>
-        <button class="price-btn" style="background: white; color: black;" onclick="goToPay(10.00)">Louer</button>
     </div>
 
     <nav class="bottom-nav">
@@ -79,16 +117,32 @@
     </nav>
 
     <script>
-        function goToPay(amount) {
-            window.location.href = `./recharge.html?amt=${amount.toFixed(2)}`;
+        // LOGIQUE DU COMPTE À REBOURS (Timer de 2 heures qui se reset pour la démo)
+        function startTimer(duration, display) {
+            var timer = duration, hours, minutes, seconds;
+            setInterval(function () {
+                hours = parseInt(timer / 3600, 10);
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = "L'offre expire dans : " + hours + ":" + minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = duration; // Reset pour la démo
+                }
+            }, 1000);
         }
 
-        // Système de sécurité : si solde < coût mensuel (exemple fictif de vérification)
-        const balance = 550; 
-        if(balance <= 0) {
-            console.log("Abonnement suspendu : solde insuffisant.");
-            // Ici tu pourrais ajouter une bannière "Abonnement expiré"
-        }
+        window.onload = function () {
+            var twoHours = 60 * 60 * 2;
+            var display = document.querySelector('#timer');
+            startTimer(twoHours, display);
+        };
     </script>
+
 </body>
 </html>
