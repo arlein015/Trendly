@@ -63,6 +63,13 @@
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: var(--noir); border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; z-index: 10; }
         .nav-item { fill: #444; }
         .nav-item.active { fill: var(--orange); }
+        .giant-badge-container svg {
+    filter: drop-shadow(0 0 20px rgba(255, 122, 26, 0.7));
+    transition: 0.3s;
+}
+.giant-badge-container:hover svg {
+    transform: scale(1.1) rotate(5deg);
+}
     </style>
 </head>
 <body>
@@ -78,10 +85,11 @@
     </div>
 
     <div class="vip-hero">
-       <div class="giant-badge-container">
-    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z" fill="var(--orange)"/>
-        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <div class="giant-badge-container">
+    <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 1L13.31 2.94L15.61 2.45L16.42 4.61L18.66 5.31L18.81 7.62L20.69 9.02L20.14 11.27L21.43 13.14L20.21 15.11L20.9 17.32L18.8 18.28L18.42 20.56L16.2 20.73L15.22 22.82L13.04 22.1L11.55 23.88L9.62 22.6L7.54 23.59L6.5 21.52L4.22 21.84L3.65 19.59L1.51 18.73L2.06 16.48L0.57 14.71L1.64 12.65L0.72 10.53L2.43 8.97L2.41 6.66L4.57 5.79L5.2 3.56L7.51 3.86L8.64 1.84L10.87 2.44L12 1Z" fill="var(--orange)"/>
+        
+        <path d="M7.5 12.5L10.5 15.5L16.5 8.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 </div>
 
@@ -138,9 +146,6 @@
         window.onload = function () {
             startTimer(60 * 60 * 2, document.querySelector('#timer'));
         };
-        .giant-badge-container svg {
-    filter: drop-shadow(0 0 15px rgba(255, 122, 26, 0.6));
-}
     </script>
 </body>
 </html>
