@@ -28,23 +28,10 @@
             border: 1px solid var(--bordure); position: relative; text-align: center;
         }
 
-        .giant-badge-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    perspective: 1000px; /* Ajoute un peu de profondeur */
-}
-
-.giant-badge-container svg {
-    filter: drop-shadow(0 0 15px rgba(255, 122, 26, 0.5));
-    animation: slowRotate 10s linear infinite; /* Rotation très lente pour le style */
-}
-
-@keyframes slowRotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .giant-badge-container { display: flex;justify-content: center; align-items: center; perspective: 1000px; /* Ajoute un peu de profondeur */}
+        .giant-badge-container svg {filter: drop-shadow(0 0 15px rgba(255, 122, 26, 0.5)); animation: slowRotate 10s linear infinite; /* Rotation très lente pour le style */}
+        
+        @keyframes slowRotate {from { transform: rotate(0deg); } to { transform: rotate(360deg); }}
 
         .vip-title { font-size: 26px; font-weight: 900; margin-bottom: 5px; color: white; letter-spacing: 1px; }
         
