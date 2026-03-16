@@ -29,10 +29,21 @@
         }
 
         .giant-badge-container {
-            margin-bottom: 25px; filter: drop-shadow(0 0 25px rgba(255, 122, 26, 0.5));
-            animation: pulse 3s infinite ease-in-out;
-            display: flex; justify-content: center;
-        }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px; /* Ajoute un peu de profondeur */
+}
+
+.giant-badge-container svg {
+    filter: drop-shadow(0 0 15px rgba(255, 122, 26, 0.5));
+    animation: slowRotate 10s linear infinite; /* Rotation très lente pour le style */
+}
+
+@keyframes slowRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
         .vip-title { font-size: 26px; font-weight: 900; margin-bottom: 5px; color: white; letter-spacing: 1px; }
@@ -63,13 +74,6 @@
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: var(--noir); border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; z-index: 10; }
         .nav-item { fill: #444; }
         .nav-item.active { fill: var(--orange); }
-        .giant-badge-container svg {
-    filter: drop-shadow(0 0 20px rgba(255, 122, 26, 0.7));
-    transition: 0.3s;
-}
-.giant-badge-container:hover svg {
-    transform: scale(1.1) rotate(5deg);
-}
     </style>
 </head>
 <body>
@@ -85,11 +89,11 @@
     </div>
 
     <div class="vip-hero">
-      <div class="giant-badge-container">
+    <div class="giant-badge-container">
     <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 1L13.31 2.94L15.61 2.45L16.42 4.61L18.66 5.31L18.81 7.62L20.69 9.02L20.14 11.27L21.43 13.14L20.21 15.11L20.9 17.32L18.8 18.28L18.42 20.56L16.2 20.73L15.22 22.82L13.04 22.1L11.55 23.88L9.62 22.6L7.54 23.59L6.5 21.52L4.22 21.84L3.65 19.59L1.51 18.73L2.06 16.48L0.57 14.71L1.64 12.65L0.72 10.53L2.43 8.97L2.41 6.66L4.57 5.79L5.2 3.56L7.51 3.86L8.64 1.84L10.87 2.44L12 1Z" fill="var(--orange)"/>
+        <path d="M12 21.35l-1.45 1.32-1.94-.37-1.7 1-1.25-1.55-1.95.12-.66-1.85-1.88-.54.02-1.95-1.46-1.3L1.5 12l-1.32-1.45.37-1.94-1-1.7 1.55-1.25-.12-1.95 1.85-.66.54-1.88 1.95.02 1.3-1.46L12 1.5l1.45 1.32 1.94.37 1.7-1 1.25 1.55 1.95-.12.66 1.85 1.88.54-.02 1.95 1.46 1.3L22.5 12l1.32 1.45-.37 1.94 1 1.7-1.55 1.25.12 1.95-1.85.66-.54 1.88-1.95-.02-1.3 1.46L12 22.5l-1.45-1.32z" fill="var(--orange)"/>
         
-        <path d="M7.5 12.5L10.5 15.5L16.5 8.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 12.5L10 15.5L17 8.5" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 </div>
 
