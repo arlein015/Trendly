@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Créer un Post - Floy</title>
+    <style>
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
+        
+        body { 
+            background: var(--noir); color: white; 
+            font-family: -apple-system, sans-serif; margin: 0; 
+            display: flex; flex-direction: column; height: 100vh;
+        }
+
+        /* HEADER */
+        .post-header {
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--bordure);
+        }
+        .cancel-btn { color: white; text-decoration: none; font-size: 16px; }
+        .publish-btn { 
+            color: var(--orange); background: none; border: none; 
+            font-weight: 800; font-size: 16px; cursor: pointer; 
+        }
+        .publish-btn:disabled { color: #444; }
+
+        /* ZONE D'UPLOAD */
+        .upload-container {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; position: relative;
+        }
+
+        #preview-container {
+            width: 100%; max-width: 400px; aspect-ratio: 1/1;
+            background: var(--gris); border-radius: 15px; border: 2px dashed var(--bordure);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            cursor: pointer;
+        }
+
+        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        .upload-icon { text-align: center; color: #666; }
+        .upload-icon svg { width: 50px; height: 50px; margin-bottom: 10px; stroke: #666; fill: none; stroke-width: 1.5; }
+
+        /* LÉGENDE */
+        .caption-area { padding: 20px; }
+        textarea {
+            width: 100%; background: none; border: none; color: white;
+            font-size: 16px; resize: none; outline: none; height: 100px;
+        }
+
+        #file-input { display: none; }
+    </style>
+</head>
+<body>
+
+    <header class="post-header">
+        <a href="./index.html" class="cancel-btn">Annuler</a>
+        <div style="font-weight: 900; font-size: 18px;">Nouveau Post</div>
+        <button id="btn-publier" class="publish-btn" disabled onclick="uploadToCloudinary()">Publier</button>
+    </header>
+
+    <div class="upload-container">
+        <label id="preview-container" for="file-input">
+            <div class="upload-icon" id="icon-placeholder">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <p style="font-size: 14px; font-weight: bold;">Choisir une photo</p>
+            </div>
+            <img id="preview-img" src="#" alt="Aperçu">
+        </label>
+        <input type="file" id="file-input" accept="image/*">
+    </div>
+
+    <div class="caption-area">
+        <textarea id="caption" placeholder="Écris une légende..."></textarea>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const previewImg = document.getElementById('preview-img');
+        const placeholder = document.getElementById('icon-placeholder');
+        const btnPublier = document.getElementById('btn-publier');
+
+        // Gérer l'aperçu de l'image
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    btnPublier.disabled = false;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Fonction d'upload (Logique Cloudinary)
+        async function uploadToCloudinary() {
+            const file = fileInput.files[0];
+            const caption = document.getElementById('caption').value;
+            
+            btnPublier.innerText = "Envoi...";
+            btnPublier.disabled = true;
+
+            // Ici, tu mettras tes clés Cloudinary demain pour l'hébergement réel
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'ton_preset_ici'); // À configurer sur Cloudinary
+
+            try {
+                // Simulation pour tes tests immédiats
+                console.log("Upload de la photo avec la légende :", caption);
+                setTimeout(() => {
+                    alert("Post publié avec succès ! 🚀");
+                    window.location.href = './index.html';
+                }, 1500);
+            } catch (error) {
+                alert("Erreur lors de la publication");
+                btnPublier.disabled = false;
+                btnPublier.innerText = "Publier";
+            }
+        }
+    </script>
+</body>
+</html>
