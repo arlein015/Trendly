@@ -1,31 +1,19 @@
-<script type="module">
-    // On importe ce qu'on a créé dans le fichier config
-    import { db, storage } from './firebase-config.js';
-    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // Exemple de fonction de publication
-    window.publierPost = async function() {
-        const file = document.getElementById('file-input').files[0];
-        if(!file) return alert("Choisis une photo !");
+const firebaseConfig = {
+  apiKey: "AIzaSyD3cL4MokpURYKydVTugXArXC3-krQCAIc",
+  authDomain: "floy-2a96d.firebaseapp.com",
+  projectId: "Floy-2A96D",
+  storageBucket: "floy-2a96d.firebasestorage.app",
+  messagingSenderId: "360277317372",
+  appId: "1:360277317372:web:1b068a460ecc343022a979",
+  measurementId: "G-QV8DVCRY1Q"
+};
 
-        try {
-            // Upload de l'image
-            const storageRef = ref(storage, 'posts/' + Date.now());
-            await uploadBytes(storageRef, file);
-            const url = await getDownloadURL(storageRef);
-
-            // Enregistrement des données
-            await addDoc(collection(db, "posts"), {
-                imageUrl: url,
-                caption: document.getElementById('caption').value,
-                createdAt: new Date(),
-                username: "Utilisateur_Floy"
-            });
-
-            window.location.href = 'index.html';
-        } catch (e) {
-            console.error(e);
-        }
-    }
-</script>
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+export const auth = getAuth(app);
