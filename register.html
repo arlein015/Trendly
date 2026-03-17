@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Créer un compte</title>
+    <style>
+        :root { --orange: #FF7A1A; --noir: #000; }
+        body { background: var(--noir); color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .auth-card { width: 90%; max-width: 400px; padding: 20px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #111; color: white; box-sizing: border-box; }
+        .btn-register { width: 100%; padding: 12px; background: var(--orange); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <h1 style="color:var(--orange)">Rejoins Floy</h1>
+        <input type="text" id="reg-username" placeholder="Nom d'utilisateur">
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="password" id="reg-password" placeholder="Mot de passe">
+        <button class="btn-register" id="btn-signup">Créer mon compte</button>
+        <p style="font-size: 14px; color: #888;">Déjà un compte ? <a href="login.html" style="color:var(--orange)">Se connecter</a></p>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        document.getElementById('btn-signup').onclick = async () => {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const username = document.getElementById('reg-username').value;
+
+            try {
+                // 1. Création du compte dans Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Création du document profil dans Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    username: username,
+                    email: email,
+                    avatarUrl: "https://via.placeholder.com/150",
+                    bio: "Nouveau sur Floy",
+                    isVerified: false, // Badge orange à false par défaut
+                    followersCount: 0,
+                    createdAt: new Date()
+                });
+
+                alert("Compte créé avec succès !");
+                window.location.href = "profil.html";
+            } catch (error) {
+                alert("Erreur : " + error.message);
+            }
+        };
+    </script>
+</body>
+</html>
