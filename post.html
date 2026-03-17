@@ -2,114 +2,114 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Nouveau Post</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Floy - Publier</title>
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
+        :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .cancel { color: white; text-decoration: none; }
-        #publish-btn { background: var(--orange); border: none; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-        #publish-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .header-post { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-cancel { color: white; text-decoration: none; font-size: 16px; }
+        .btn-share { color: var(--orange); background: none; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-        .upload-container { background: var(--gris); border-radius: 15px; padding: 20px; text-align: center; border: 2px dashed var(--bordure); margin-bottom: 20px; }
-        #preview-img { width: 100%; border-radius: 10px; display: none; margin-bottom: 15px; }
-        
-        textarea { width: 100%; background: none; border: none; color: white; font-size: 16px; resize: none; outline: none; margin-top: 10px; }
+        .upload-area { 
+            width: 100%; aspect-ratio: 1/1; border: 2px dashed var(--bordure); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            border-radius: 15px; overflow: hidden; position: relative;
+        }
+        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .upload-icon { width: 50px; opacity: 0.5; }
+
+        .caption-area { width: 100%; background: none; border: none; color: white; padding: 15px 0; font-size: 16px; outline: none; resize: none; border-bottom: 1px solid var(--bordure); margin-top: 10px; }
+
+        /* NAV BAR */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
+        .nav-link { color: white; opacity: 0.6; }
+        .nav-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="index.html" class="cancel">Annuler</a>
-        <button id="publish-btn">Publier</button>
+    <div class="header-post">
+        <a href="index.html" class="btn-cancel">Annuler</a>
+        <button class="btn-share" id="publish-btn">Partager</button>
     </div>
 
-    <div class="upload-container" onclick="document.getElementById('file-input').click()">
-        <img id="preview-img" src="" alt="Aperçu">
-        <div id="upload-text">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:10px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <p>Cliquez pour ajouter une photo</p>
+    <div class="upload-area" onclick="document.getElementById('file-input').click()">
+        <img id="preview-img" src="">
+        <div id="placeholder-ui">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <p style="color: grey; font-size: 14px;">Cliquez pour choisir une photo</p>
         </div>
+        <input type="file" id="file-input" style="display:none" accept="image/*">
     </div>
 
-    <input type="file" id="file-input" accept="image/*" style="display: none;">
-    <textarea id="caption-box" placeholder="Écris une légende..."></textarea>
+    <textarea class="caption-area" id="caption" placeholder="Écrire une légende..."></textarea>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <a href="explore.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>
+        <a href="profil.html" class="nav-link"><img id="my-nav-pic" class="nav-avatar" src="https://via.placeholder.com/30"></a>
+    </nav>
 
     <script type="module">
         import { db } from './firebase-config.js';
-        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { collection, addDoc, serverTimestamp, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const fileInput = document.getElementById('file-input');
-        const previewImg = document.getElementById('preview-img');
-        const uploadText = document.getElementById('upload-text');
-        const publishBtn = document.getElementById('publish-btn');
-        const captionBox = document.getElementById('caption-box');
+        const MY_ID = "User_Floy_Account"; // Ton ID permanent
+        let base64Image = "";
 
-        let selectedFile = null;
-
-        // 1. Gérer l'aperçu de l'image
-        fileInput.onchange = (e) => {
-            selectedFile = e.target.files[0];
-            if (selectedFile) {
+        // 1. Gérer la prévisualisation de l'image
+        document.getElementById('file-input').onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    previewImg.src = event.target.result;
-                    previewImg.style.display = 'block';
-                    uploadText.style.display = 'none';
+                    base64Image = event.target.result;
+                    document.getElementById('preview-img').src = base64Image;
+                    document.getElementById('preview-img').style.display = "block";
+                    document.getElementById('placeholder-ui').style.display = "none";
                 };
-                reader.readAsDataURL(selectedFile);
+                reader.readAsDataURL(file);
             }
         };
 
-        // 2. Publier le post
-        publishBtn.onclick = async () => {
-            if (!selectedFile) {
+        // 2. Publier sur Firebase
+        document.getElementById('publish-btn').onclick = async () => {
+            const captionText = document.getElementById('caption').value;
+
+            if (!base64Image) {
                 alert("Veuillez choisir une image d'abord !");
                 return;
             }
 
-            publishBtn.innerText = "Envoi...";
-            publishBtn.disabled = true;
-
             try {
-                // A. Upload vers Cloudinary
-                const formData = new FormData();
-                formData.append('file', selectedFile);
-                formData.append('upload_preset', 'floy_preset'); // Ton preset Cloudinary
+                // On récupère tes infos actuelles (nom et photo) pour le post
+                onSnapshot(doc(db, "users", MY_ID), async (s) => {
+                    const userData = s.data();
+                    
+                    await addDoc(collection(db, "posts"), {
+                        userId: MY_ID, // Liaison cruciale
+                        username: userData.username || "Anonyme",
+                        userPhoto: userData.avatarUrl || "",
+                        imageUrl: base64Image, // Utilisation de Cloudinary recommandée pour plus de 100 utilisateurs
+                        caption: captionText,
+                        likesCount: 0,
+                        timestamp: serverTimestamp()
+                    });
 
-                const cloudResponse = await fetch(`https://api.cloudinary.com/v1_1/ds79k3f9g/upload`, {
-                    method: 'POST',
-                    body: formData
+                    alert("Post publié !");
+                    window.location.href = "index.html";
                 });
-
-                if (!cloudResponse.ok) throw new Error("Échec de l'upload Cloudinary");
-                
-                const cloudData = await cloudResponse.json();
-                const imageFinale = cloudData.secure_url;
-
-                // B. Enregistrement dans Firebase
-                await addDoc(collection(db, "posts"), {
-                    imageUrl: imageFinale,
-                    caption: captionBox.value.trim(),
-                    username: "User_Floy", // Tu pourras changer ça plus tard avec le login
-                    createdAt: serverTimestamp(),
-                    likes: 0
-                });
-
-                console.log("Post publié avec succès !");
-                window.location.href = "index.html"; // Retour au flux
-
             } catch (error) {
-                console.error("Erreur :", error);
-                alert("Erreur lors de la publication : " + error.message);
-                
-                // On débloque le bouton pour permettre de réessayer
-                publishBtn.innerText = "Publier";
-                publishBtn.disabled = false;
+                console.error("Erreur lors de la publication :", error);
             }
         };
+
+        // 3. Photo de la nav bar
+        onSnapshot(doc(db, "users", MY_ID), s => { 
+            if(s.exists() && s.data().avatarUrl) document.getElementById('my-nav-pic').src = s.data().avatarUrl; 
+        });
     </script>
 </body>
 </html>
