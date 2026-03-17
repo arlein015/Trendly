@@ -3,54 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Flux</title>
+    <title>Floy - Fil d'actualité</title>
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
-        header { height: 60px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--bordure); position: sticky; top: 0; background: black; z-index: 100; }
-        .logo { font-size: 22px; font-weight: 900; letter-spacing: -1.5px; }
-        .logo span { color: var(--orange); }
-        #feed { max-width: 500px; margin: 0 auto; }
-        .post { border-bottom: 1px solid var(--bordure); padding-bottom: 15px; }
-        .post-user { padding: 12px; font-weight: bold; }
-        .post img { width: 100%; display: block; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(0,0,0,0.95); border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .btn-plus { background: var(--orange); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-        .nav-btn { color: #555; text-decoration: none; }
-        .nav-btn.active { color: white; }
+        
+        header { padding: 15px; border-bottom: 1px solid var(--bordure); background: black; position: sticky; top: 0; z-index: 100; text-align: center; }
+        .logo { color: var(--orange); font-weight: 900; font-size: 24px; letter-spacing: 2px; }
+
+        /* STYLE DES POSTS */
+        .feed { max-width: 500px; margin: 0 auto; }
+        .post { border-bottom: 1px solid var(--bordure); margin-bottom: 10px; background: black; }
+        .post-header { padding: 12px; display: flex; align-items: center; font-weight: bold; font-size: 14px; }
+        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #111; }
+        .post-footer { padding: 12px; }
+        .username { font-weight: bold; margin-right: 8px; }
+        .caption { font-size: 14px; line-height: 1.4; color: #efefef; }
+
+        /* NAV BAR */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 70px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
+        .nav-btn { color: white; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <header><div class="logo">FL<span>OY</span></div></header>
+    <header><div class="logo">FLOY</div></header>
 
-    <main id="feed"></main>
+    <div class="feed" id="post-container">
+        <div style="text-align: center; padding: 50px; color: #555;">Chargement du flux...</div>
+    </div>
 
     <nav class="nav-bar">
-        <a href="index.html" class="nav-btn active"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
-        <a href="#" class="nav-btn"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>
-        <a href="post.html"><div class="btn-plus"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div></a>
-        <a href="messages.html" class="nav-btn"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
-        <a href="profil.html" class="nav-btn"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+        <a href="index.html" style="color: var(--orange);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+        <a href="post.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
+        <a href="messages.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
     </nav>
 
     <script type="module">
         import { db } from './firebase-config.js';
         import { collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const feed = document.getElementById('feed');
+        const postContainer = document.getElementById('post-container');
+
+        // On écoute la collection "posts" triée par date (plus récent en haut)
         const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
 
         onSnapshot(q, (snapshot) => {
-            feed.innerHTML = "";
+            postContainer.innerHTML = ""; // On vide pour mettre à jour
+
+            if (snapshot.empty) {
+                postContainer.innerHTML = "<div style='text-align:center; padding:50px;'>Aucun post pour le moment. Soyez le premier !</div>";
+                return;
+            }
+
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                feed.innerHTML += `
+                
+                // On crée le HTML du post
+                const postHTML = `
                     <div class="post">
-                        <div class="post-user">${data.username}</div>
-                        <img src="${data.imageUrl}">
-                        <div style="padding:12px;"><b>${data.username}</b> ${data.caption}</div>
-                    </div>`;
+                        <div class="post-header">
+                            <div style="width:30px; height:30px; background:var(--orange); border-radius:50%; margin-right:10px;"></div>
+                            <span>${data.username || "Anonyme"}</span>
+                        </div>
+                        <img class="post-img" src="${data.imageUrl}" alt="Post">
+                        <div class="post-footer">
+                            <span class="username">${data.username || "Anonyme"}</span>
+                            <span class="caption">${data.caption || ""}</span>
+                        </div>
+                    </div>
+                `;
+                postContainer.innerHTML += postHTML;
             });
         });
     </script>
