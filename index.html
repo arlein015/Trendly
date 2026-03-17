@@ -3,132 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Home</title>
+    <title>Floy - Fil d'actualité</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; --gris: #8e8e8e; }
-        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #222; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-top: 60px; padding-bottom: 60px; }
 
-        /* HEADER */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; position: sticky; top: 0; background: black; z-index: 1000; border-bottom: 1px solid var(--bordure); }
-        .logo { font-size: 24px; font-weight: bold; color: var(--orange); }
-
-        /* STORIES */
-        .stories-container { display: flex; gap: 15px; padding: 15px 10px; overflow-x: auto; border-bottom: 1px solid var(--bordure); scrollbar-width: none; }
-        .stories-container::-webkit-scrollbar { display: none; }
-
-        /* BOUTON STORY AVEC LE + ORANGE */
-        .story-item { display: flex; flex-direction: column; align-items: center; min-width: 75px; position: relative; cursor: pointer; }
-        .story-ring { width: 64px; height: 64px; border-radius: 50%; padding: 2px; border: 2px solid var(--orange); display: flex; align-items: center; justify-content: center; position: relative; }
-        .story-ring.my-story { border: 2px solid #333; } /* Bordure grise pour la tienne */
-        .story-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        
-        /* LE PETIT BOUTON + ORANGE */
-        .add-story-btn { 
-            position: absolute; bottom: 0; right: 0; 
-            background: var(--orange); color: white; 
-            width: 20px; height: 20px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 16px; font-weight: bold; border: 2px solid black;
+        /* BARRE DE NAVIGATION HAUTE */
+        .top-nav { 
+            position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.9);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+            border-bottom: 1px solid var(--bordure); z-index: 1000; box-sizing: border-box;
         }
+        .logo { font-size: 24px; font-weight: bold; color: var(--orange); letter-spacing: -1px; }
+        .search-box { display: flex; align-items: center; background: #1a1a1a; border-radius: 8px; padding: 5px 10px; width: 40%; }
+        .search-box input { background: none; border: none; color: white; margin-left: 5px; width: 100%; outline: none; }
 
-        .story-name { font-size: 11px; margin-top: 5px; color: white; }
+        /* POSTES */
+        .feed { max-width: 500px; margin: 0 auto; }
+        .post { border-bottom: 1px solid var(--bordure); margin-bottom: 10px; padding-bottom: 10px; }
+        .post-header { display: flex; align-items: center; padding: 10px; gap: 10px; }
+        .post-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+        .post-username { font-weight: bold; font-size: 14px; }
+        
+        .post-image { width: 100%; display: block; background: #050505; }
+        
+        /* INTERACTIONS (SVG/ICONES) */
+        .post-actions { display: flex; gap: 18px; padding: 12px; font-size: 22px; }
+        .action-btn { cursor: pointer; transition: 0.2s; }
+        .action-btn:active { transform: scale(1.2); }
+        .fa-heart.liked { color: #ff3040; }
 
-        /* POSTS & BADGES */
-        .post { border-bottom: 1px solid var(--bordure); margin-bottom: 10px; }
-        .post-header { display: flex; align-items: center; padding: 12px; gap: 10px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--orange); }
-        .user-name-wrapper { display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 14px; }
-        .verify-badge { width: 14px; height: 14px; fill: var(--orange); }
+        .post-info { padding: 0 12px; }
+        .likes-count { font-weight: bold; font-size: 14px; margin-bottom: 5px; display: block; }
+        .post-caption { font-size: 14px; line-height: 1.4; }
+        .post-caption b { margin-right: 5px; }
 
-        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #111; }
-        .post-actions { padding: 12px; display: flex; gap: 15px; }
-        .post-info { padding: 0 12px 15px; font-size: 14px; }
-
-        /* NAV BAR */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+        /* BARRE DE NAVIGATION BASSE */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--noir);
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid var(--bordure); z-index: 1000;
+        }
+        .bottom-nav i { font-size: 24px; color: white; cursor: pointer; }
+        .active-nav { color: var(--orange) !important; }
     </style>
 </head>
 <body>
 
-    <header class="header">
+    <nav class="top-nav">
         <div class="logo">Floy</div>
-    </header>
-
-    <div class="stories-container" id="stories-feed">
-        <div class="story-item" onclick="window.location.href='story-creator.html'">
-            <div class="story-ring my-story">
-                <img id="my-avatar-story" src="https://via.placeholder.com/60">
-                <div class="add-story-btn">+</div>
-            </div>
-            <div class="story-name">Ma story</div>
+        <div class="search-box">
+            <i class="fas fa-search" style="color:#555; font-size: 14px;"></i>
+            <input type="text" placeholder="Rechercher...">
         </div>
+        <div style="font-size: 20px;"><i class="far fa-heart"></i></div>
+    </nav>
+
+    <div class="feed" id="main-feed">
         </div>
 
-    <main class="feed" id="main-feed"></main>
-
-    <nav class="nav-bar">
-        <a href="index.html" style="color:var(--orange)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
-        <a href="post.html" style="color:white"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
-        <a href="profil.html" class="nav-link"><img id="nav-avatar" class="nav-avatar" src="https://via.placeholder.com/30"></a>
+    <nav class="bottom-nav">
+        <i class="fas fa-home active-nav"></i>
+        <i class="fas fa-search"></i>
+        <i class="fas fa-plus-square" onclick="window.location.href='add-post.html'"></i>
+        <i class="fas fa-video"></i>
+        <i class="fas fa-user" onclick="window.location.href='profil.html'"></i>
     </nav>
 
     <script type="module">
-        import { auth } from './firebase-config.js';
+        import { auth, db } from './firebase-config.js';
+        import { collection, query, orderBy, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        let currentUID = null;
+
         onAuthStateChanged(auth, (user) => {
-        if (!user) {
-        // Si l'utilisateur n'est pas connecté, on l'envoie au login
-        window.location.href = "login.html";
-    }
-});
-
-        const MY_ID = "User_Floy_Account";
-        const feedContainer = document.getElementById('main-feed');
-
-        // 1. Infos utilisateur (Ma Story & NavBar)
-        onSnapshot(doc(db, "users", MY_ID), (s) => {
-            if(s.exists()){
-                const data = s.data();
-                document.getElementById('nav-avatar').src = data.avatarUrl;
-                document.getElementById('my-avatar-story').src = data.avatarUrl;
+            if (user) {
+                currentUID = user.uid;
+                loadFeed();
+            } else {
+                window.location.href = "login.html";
             }
         });
 
-        // 2. Charger le Feed avec Badges de Certification
-        const qPosts = query(collection(db, "posts"), orderBy("timestamp", "desc"));
-        onSnapshot(qPosts, (snapshot) => {
-            feedContainer.innerHTML = "";
-            snapshot.forEach(async (postDoc) => {
-                const post = postDoc.data();
-                const userSnap = await getDoc(doc(db, "users", post.userId));
-                const u = userSnap.exists() ? userSnap.data() : { username: "Floyer", avatarUrl: "" };
+        function loadFeed() {
+            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                const feed = document.getElementById('main-feed');
+                feed.innerHTML = "";
+                
+                snapshot.forEach((postDoc) => {
+                    const post = postDoc.data();
+                    const postID = postDoc.id;
+                    const isLiked = post.likes && post.likes.includes(currentUID);
 
-                // Badge si certifié
-                const badgeHTML = u.isVerified ? `<svg class="verify-badge" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM10 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/></svg>` : "";
-
-                const art = document.createElement('article');
-                art.className = 'post';
-                art.innerHTML = `
-                    <div class="post-header">
-                        <img src="${u.avatarUrl}" class="user-avatar">
-                        <div class="user-name-wrapper">
-                            ${u.username} ${badgeHTML}
+                    const postHTML = `
+                        <div class="post">
+                            <div class="post-header">
+                                <img src="${post.userAvatar || 'https://via.placeholder.com/50'}" class="post-avatar">
+                                <span class="post-username">${post.username}</span>
+                                ${post.isVerified ? '<i class="fas fa-check-circle" style="color:#FF7A1A; font-size:12px;"></i>' : ''}
+                            </div>
+                            
+                            <img src="${post.imageUrl}" class="post-image" ondblclick="toggleLike('${postID}', ${isLiked})">
+                            
+                            <div class="post-actions">
+                                <i class="${isLiked ? 'fas fa-heart liked' : 'far fa-heart'} action-btn" onclick="toggleLike('${postID}', ${isLiked})"></i>
+                                <i class="far fa-comment action-btn" onclick="openComments('${postID}')"></i>
+                                <i class="far fa-paper-plane action-btn" onclick="sharePost('${post.imageUrl}')"></i>
+                            </div>
+                            
+                            <div class="post-info">
+                                <span class="likes-count">${post.likes ? post.likes.length : 0} J'aime</span>
+                                <div class="post-caption"><b>${post.username}</b> ${post.caption}</div>
+                                <div style="color:#555; font-size:12px; margin-top:5px; cursor:pointer;" onclick="openComments('${postID}')">
+                                    Voir les commentaires...
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <img src="${post.images[0]}" class="post-img" loading="lazy">
-                    <div class="post-actions">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                    </div>
-                    <div class="post-info">
-                        <b>${u.username}</b> ${post.caption || ""}
-                    </div>
-                `;
-                feedContainer.appendChild(art);
+                    `;
+                    feed.insertAdjacentHTML('beforeend', postHTML);
+                });
             });
-        });
+        }
+
+        // FONCTION LIKE (Gère les likes en temps réel)
+        window.toggleLike = async (id, alreadyLiked) => {
+            const postRef = doc(db, "posts", id);
+            if (alreadyLiked) {
+                await updateDoc(postRef, { likes: arrayRemove(currentUID) });
+            } else {
+                await updateDoc(postRef, { likes: arrayUnion(currentUID) });
+            }
+        };
+
+        window.sharePost = (url) => {
+            navigator.share({ title: 'Floy Post', url: url });
+        };
+
+        window.openComments = (id) => {
+            alert("Ouverture des commentaires pour le post : " + id);
+        };
     </script>
 </body>
 </html>
