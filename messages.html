@@ -65,19 +65,61 @@
 
     <script type="module">
         import { db } from './firebase-config.js';
-        import { collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, query, where, getDocs, limit, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Pour ce test, on simule l'ID de l'utilisateur connecté
-        const monID = "User_Floy"; 
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+const monID = "User_Floy"; // Ton ID actuel
 
-        const chatsList = document.getElementById('chats-list');
+// Fonction de recherche
+searchInput.addEventListener('input', async (e) => {
+    const text = e.target.value.trim();
+    
+    if (text.length < 1) {
+        searchResults.style.display = 'none';
+        return;
+    }
 
-        // On cherche les discussions où monID est présent dans le tableau 'users'
-        const q = query(
-            collection(db, "chats"), 
-            where("users", "array-contains", monID),
-            orderBy("timestamp", "desc")
-        );
+    // Recherche dans la collection "users"
+    const q = query(
+        collection(db, "users"), 
+        where("username", ">=", text),
+        where("username", "<=", text + '\uf8ff'),
+        limit(5)
+    );
+
+    const querySnapshot = await getDocs(q);
+    searchResults.innerHTML = "";
+    searchResults.style.display = 'block';
+
+    querySnapshot.forEach((userDoc) => {
+        const userData = userDoc.data();
+        if (userData.username === monID) return; // Ne pas se trouver soi-même
+
+        const div = document.createElement('div');
+        div.style = "padding: 15px; border-bottom: 1px solid #111; cursor: pointer; display: flex; align-items: center;";
+        div.innerHTML = `<div class="avatar" style="width:30px; height:30px; margin-right:10px;"></div> <b>${userData.username}</b>`;
+        
+        div.onclick = () => creerOuOuvrirChat(userData.username);
+        searchResults.appendChild(div);
+    });
+});
+
+// Fonction pour créer une discussion si elle n'existe pas
+async function creerOuOuvrirChat(autreUser) {
+    // Créer un ID unique pour la discussion (toujours le même pour ces deux personnes)
+    const chatID = [monID, autreUser].sort().join("_");
+    
+    // Créer/Mettre à jour le document de discussion dans Firebase
+    await setDoc(doc(db, "chats", chatID), {
+        users: [monID, autreUser],
+        lastMessage: "Nouvelle discussion commencée",
+        timestamp: serverTimestamp()
+    }, { merge: true });
+
+    // Rediriger vers la page de discussion
+    window.location.href = `chat_detail.html?id=${chatID}`;
+}
 
         onSnapshot(q, (snapshot) => {
             chatsList.innerHTML = "";
