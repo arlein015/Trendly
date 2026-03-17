@@ -74,8 +74,15 @@
     </nav>
 
     <script type="module">
-        import { db } from './firebase-config.js';
-        import { collection, query, orderBy, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { auth } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+        if (!user) {
+        // Si l'utilisateur n'est pas connecté, on l'envoie au login
+        window.location.href = "login.html";
+    }
+});
 
         const MY_ID = "User_Floy_Account";
         const feedContainer = document.getElementById('main-feed');
