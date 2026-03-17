@@ -23,13 +23,21 @@
         .stat-num { font-weight: bold; font-size: 18px; }
         .stat-label { font-size: 12px; color: var(--gris); }
 
-        .bio-section { margin-bottom: 20px; }
+        .bio-section { margin-bottom: 15px; }
         .display-name { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 5px; }
         .verify-badge { width: 16px; height: 16px; fill: var(--orange); }
         .bio-text { font-size: 14px; margin-top: 4px; color: #efefef; white-space: pre-wrap; }
+        
+        /* LIEN WEB ORANGE */
+        .web-link { 
+            display: flex; align-items: center; gap: 5px; 
+            margin-top: 8px; text-decoration: none; 
+            color: var(--orange); font-size: 14px; font-weight: 500;
+        }
+        .web-link svg { width: 14px; height: 14px; fill: var(--orange); }
 
         /* BOUTONS ACTIONS */
-        .profile-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+        .profile-actions { display: flex; gap: 10px; margin-top: 15px; margin-bottom: 20px; }
         .btn { flex: 1; border: none; border-radius: 8px; padding: 10px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .btn-edit { background: #1a1a1a; color: white; border: 1px solid var(--bordure); }
         .btn-follow { background: var(--orange); color: white; }
@@ -73,10 +81,15 @@
                 <span id="u-badge"></span>
             </div>
             <div class="bio-text" id="u-bio">Bio de l'utilisateur...</div>
+            
+            <a href="#" id="u-web-link" class="web-link" target="_blank" style="display:none;">
+                <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                <span id="u-web-text">site.com</span>
+            </a>
         </div>
 
         <div class="profile-actions">
-            <button class="btn btn-edit" id="btn-edit" onclick="window.location.href='edit-profil.html'">Modifier</button>
+            <button class="btn btn-edit" onclick="window.location.href='edit-profil.html'">Modifier</button>
             <button class="btn btn-follow" id="btn-follow" onclick="toggleFollow()">Suivre</button>
         </div>
     </div>
@@ -94,10 +107,8 @@
         import { db } from './firebase-config.js';
         import { doc, onSnapshot, collection, query, where, orderBy, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Pour le test, on utilise ton ID. Dans la vraie version, utilise auth.currentUser.uid
         const MY_ID = "User_Floy_Account"; 
 
-        // 1. Charger les données en temps réel
         onSnapshot(doc(db, "users", MY_ID), (s) => {
             if(s.exists()){
                 const u = s.data();
@@ -106,6 +117,18 @@
                 document.getElementById('u-pic').src = u.avatarUrl || "https://via.placeholder.com/100";
                 document.getElementById('nav-avatar').src = u.avatarUrl || "https://via.placeholder.com/30";
                 document.getElementById('u-bio').innerText = u.bio || "";
+                
+                // Gestion du lien Web
+                const webLink = document.getElementById('u-web-link');
+                const webText = document.getElementById('u-web-text');
+                if(u.webLink && u.webLink.trim() !== "") {
+                    webLink.style.display = "flex";
+                    webLink.href = u.webLink.startsWith('http') ? u.webLink : 'https://' + u.webLink;
+                    webText.innerText = u.webLink.replace(/^https?:\/\//, '');
+                } else {
+                    webLink.style.display = "none";
+                }
+
                 document.getElementById('count-followers').innerText = u.followersCount || 0;
                 document.getElementById('count-following').innerText = u.followingCount || 0;
                 
@@ -115,7 +138,7 @@
             }
         });
 
-        // 2. Grille de Posts
+        // Grille de Posts
         const q = query(collection(db, "posts"), where("userId", "==", MY_ID), orderBy("timestamp", "desc"));
         onSnapshot(q, (snaps) => {
             const grid = document.getElementById('profile-grid');
@@ -131,12 +154,9 @@
             });
         });
 
-        // 3. Fonction Suivre (Toggle)
         window.toggleFollow = async () => {
             const btn = document.getElementById('btn-follow');
             const isFollowing = btn.classList.contains('following');
-            
-            // Logique simplifiée pour ton test : met à jour le compteur dans Firestore
             const userRef = doc(db, "users", MY_ID);
             if(!isFollowing) {
                 await updateDoc(userRef, { followersCount: increment(1) });
@@ -149,10 +169,8 @@
             }
         };
 
-        // 4. Partager / Copier le lien
         window.copyProfileLink = () => {
-            const profileUrl = window.location.href;
-            navigator.clipboard.writeText(profileUrl).then(() => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
                 alert("Lien du profil copié !");
             });
         };
