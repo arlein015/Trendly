@@ -118,10 +118,32 @@
         alert("ID Binance copié !");
     }
 
-    function goToChat() {
-        // Redirige vers la messagerie pour envoyer la preuve
+    // On ajoute l'importation nécessaire au début de ton script
+import { addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+async function goToChat() {
+    const amount = document.getElementById('pay-amount').innerText;
+    const binanceID = document.getElementById('binance-id').innerText;
+    
+    try {
+        // Enregistrement automatique dans Firestore (comme un Google Sheet)
+        await addDoc(collection(db, "payments_logs"), {
+            userId: MY_ID,
+            username: "Arlein", // Idéalement récupéré dynamiquement
+            amount: amount + " USDT",
+            status: "En attente", // Pour que tu puisses valider plus tard
+            method: "Binance Pay",
+            timestamp: serverTimestamp()
+        });
+
+        alert("Paiement enregistré ! Redirection vers la messagerie pour envoyer ta preuve.");
+        window.location.href = "messages.html";
+        
+    } catch (e) {
+        console.error("Erreur lors de l'enregistrement: ", e);
         window.location.href = "messages.html";
     }
+}
     </script>
 </body>
 </html>
