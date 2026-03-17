@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Floy - Premium</title>
+    <style>
+        :root { --orange: #FF7A1A; --orange-dark: #cc5f10; --noir: #000; --gris-fonce: #1a1a1a; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 40px; }
+
+        .header { padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .btn-back { color: white; text-decoration: none; font-size: 24px; }
+
+        .hero { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, rgba(255,122,26,0.2) 0%, rgba(0,0,0,1) 100%); }
+        .hero h1 { font-size: 32px; margin: 0; color: var(--orange); }
+        .hero p { color: #ccc; margin-top: 10px; font-size: 16px; }
+
+        /* CARTES D'OFFRES */
+        .offers-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .card { 
+            background: var(--gris-fonce); border: 1px solid #333; border-radius: 20px; padding: 20px; 
+            position: relative; overflow: hidden; transition: transform 0.2s;
+        }
+        .card.active { border: 2px solid var(--orange); }
+        .badge-popular { 
+            position: absolute; top: 10px; right: -30px; background: var(--orange); 
+            color: black; font-weight: bold; font-size: 12px; padding: 5px 40px; 
+            transform: rotate(45deg); 
+        }
+
+        .card-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .card-price { font-size: 28px; font-weight: bold; margin-bottom: 15px; }
+        .card-price span { font-size: 14px; color: #888; }
+
+        .features-list { list-style: none; padding: 0; margin: 0; }
+        .features-list li { margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .check-icon { color: var(--orange); font-weight: bold; }
+
+        .btn-subscribe { 
+            width: 100%; background: var(--orange); color: white; border: none; 
+            padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; 
+            margin-top: 20px; cursor: pointer; 
+        }
+        .btn-subscribe:active { background: var(--orange-dark); }
+
+        .footer-note { text-align: center; font-size: 12px; color: #666; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="profil.html" class="btn-back">✕</a>
+        <span style="font-weight:bold; font-size:18px;">Floy Gold</span>
+    </div>
+
+    <div class="hero">
+        <h1>Passe au niveau supérieur</h1>
+        <p>Rejoins la communauté certifiée de Floy et booste ta visibilité.</p>
+    </div>
+
+    <div class="offers-container">
+        <div class="card active">
+            <div class="badge-popular">TOP</div>
+            <div class="card-title">Badge de Certification 🟠</div>
+            <div class="card-price">10$ <span>/ mois</span></div>
+            <ul class="features-list">
+                <li><span class="check-icon">✓</span> Badge orange sur ton profil</li>
+                <li><span class="check-icon">✓</span> Crédibilité maximale</li>
+                <li><span class="check-icon">✓</span> Support prioritaire</li>
+                <li><span class="check-icon">✓</span> Pas de publicité</li>
+            </ul>
+            <button class="btn-subscribe" onclick="handlePayment('badge')">Obtenir mon badge</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Boost de Post ⚡</div>
+            <div class="card-price">3$ <span>/ 24 heures</span></div>
+            <ul class="features-list">
+                <li><span class="check-icon">✓</span> Ton post tout en haut du feed</li>
+                <li><span class="check-icon">✓</span> 5x plus de likes et vues</li>
+                <li><span class="check-icon">✓</span> Badge "Boosté" sur l'image</li>
+            </ul>
+            <button class="btn-subscribe" style="background:#333;" onclick="handlePayment('boost')">Booster un post</button>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        En souscrivant, tu acceptes les conditions d'utilisation de Floy. <br>
+        L'abonnement est sans engagement.
+    </div>
+
+    <script>
+        function handlePayment(type) {
+            if(type === 'badge') {
+                alert("Redirection vers le paiement (Stripe/PayPal)... \nUne fois payé, Arlein activera ton badge sur Firebase !");
+            } else {
+                alert("Choisis le post que tu souhaites booster dans ton profil.");
+                window.location.href = "profil.html";
+            }
+        }
+    </script>
+</body>
+</html>
