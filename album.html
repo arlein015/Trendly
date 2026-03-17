@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Floy - Album</title>
+    <style>
+        :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 20px; }
+        
+        /* HEADER */
+        header { 
+            padding: 15px; border-bottom: 1px solid var(--bordure); 
+            display: flex; align-items: center; gap: 15px;
+            position: sticky; top: 0; background: black; z-index: 100; 
+        }
+        .back-btn { cursor: pointer; color: white; text-decoration: none; }
+
+        /* GRILLE COMPLETE ALPHUM */
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            padding: 5px;
+        }
+        .album-item { aspect-ratio: 1/1; background: #111; overflow: hidden; }
+        .album-item img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </a>
+        <div style="font-weight:bold;">Toutes les photos</div>
+    </header>
+
+    <div class="album-grid" id="album-grid">
+        </div>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Récupérer l'ID du post depuis l'URL (album.html?id=ID_DU_POST)
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+
+        if(postId) {
+            // Charger le post spécifique
+            getDoc(doc(db, "posts", postId)).then((docSnap) => {
+                if (docSnap.exists()) {
+                    const p = docSnap.data();
+                    const imagesArr = p.images || [];
+                    const grid = document.getElementById('album-grid');
+                    
+                    grid.innerHTML = "";
+                    // Afficher absolument toutes les images du tableau
+                    imagesArr.forEach(imgUrl => {
+                        const div = document.createElement('div');
+                        div.className = 'album-item';
+                        div.innerHTML = `<img src="${imgUrl}">`;
+                        grid.appendChild(div);
+                    });
+                } else {
+                    alert("Post introuvable.");
+                    window.location.href = "index.html";
+                }
+            });
+        } else {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
