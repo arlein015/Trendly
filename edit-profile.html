@@ -12,24 +12,24 @@
         .edit-header { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 15px; border-bottom: 1px solid var(--bordure); background: black;
+            position: sticky; top: 0; z-index: 100;
         }
         .btn-cancel { color: white; text-decoration: none; font-size: 16px; }
-        .btn-done { color: var(--bleu); background: none; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-done { color: var(--orange); background: none; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-        /* PHOTO EDIT */
+        /* PHOTO SECTION */
         .photo-edit-section { display: flex; flex-direction: column; align-items: center; padding: 25px 0; }
-        .current-pic { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 1px solid var(--bordure); }
-        .change-photo-btn { color: var(--bleu); font-weight: bold; font-size: 14px; cursor: pointer; }
+        .current-pic { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid var(--bordure); }
+        .change-photo-btn { color: var(--orange); font-weight: bold; font-size: 14px; cursor: pointer; }
 
         /* FORMULAIRE */
         .edit-form { padding: 0 15px; }
-        .input-group { border-bottom: 1px solid var(--bordure); padding: 12px 0; display: flex; align-items: center; }
-        .label { width: 100px; font-size: 15px; color: #efefef; }
-        .field { flex: 1; background: none; border: none; color: white; font-size: 16px; outline: none; }
-        .bio-field { height: 60px; resize: none; padding-top: 5px; }
+        .input-group { border-bottom: 1px solid var(--bordure); padding: 15px 0; display: flex; align-items: flex-start; }
+        .label { width: 90px; font-size: 15px; color: #ccc; padding-top: 2px; }
+        .field { flex: 1; background: none; border: none; color: white; font-size: 16px; outline: none; font-family: inherit; }
+        .bio-field { height: 80px; resize: none; }
 
-        /* LOADER */
-        #loader { display: none; color: var(--orange); font-size: 12px; margin-top: 10px; }
+        #upload-status { font-size: 12px; color: var(--orange); margin-top: 8px; display: none; }
     </style>
 </head>
 <body>
@@ -44,18 +44,20 @@
         <img id="preview-pic" class="current-pic" src="https://via.placeholder.com/100">
         <div class="change-photo-btn" onclick="document.getElementById('file-input').click()">Changer la photo de profil</div>
         <input type="file" id="file-input" style="display:none" accept="image/*">
-        <div id="loader">Téléchargement de l'image...</div>
+        <div id="upload-status">Téléchargement vers Cloudinary...</div>
     </div>
 
     <div class="edit-form">
         <div class="input-group">
             <div class="label">Nom</div>
-            <input type="text" id="edit-name" class="field" placeholder="Ton nom complet">
+            <input type="text" id="edit-name" class="field" placeholder="Ton nom">
         </div>
+
         <div class="input-group">
             <div class="label">Bio</div>
-            <textarea id="edit-bio" class="field bio-field" placeholder="Parle-nous de toi..."></textarea>
+            <textarea id="edit-bio" class="field bio-field" placeholder="Écris ta bio ici..."></textarea>
         </div>
+
         <div class="input-group">
             <div class="label">Lien Web</div>
             <input type="text" id="edit-web" class="field" placeholder="https://tonsite.com">
@@ -66,75 +68,79 @@
         import { db } from './firebase-config.js';
         import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CONFIGURATION (Utilise tes identifiants Cloudinary)
+        // CONFIGURATION CLOUDINARY
         const CLOUD_URL = "https://api.cloudinary.com/v1_1/ds79k3f9g/image/upload";
         const PRESET = "floy_preset";
-        const MY_ID = "User_Floy_Account"; // À remplacer par auth.currentUser.uid plus tard
+        const MY_ID = "User_Floy_Account";
 
         const fileInput = document.getElementById('file-input');
         const previewPic = document.getElementById('preview-pic');
         const saveBtn = document.getElementById('save-btn');
-        const loader = document.getElementById('loader');
+        const status = document.getElementById('upload-status');
 
-        let newAvatarUrl = "";
+        let updatedAvatarUrl = "";
 
-        // 1. Charger les données actuelles
-        async function loadCurrentData() {
-            const snap = await getDoc(doc(db, "users", MY_ID));
+        // 1. Charger les données actuelles depuis Firestore
+        async function loadProfileData() {
+            const docRef = doc(db, "users", MY_ID);
+            const snap = await getDoc(docRef);
             if (snap.exists()) {
-                const u = snap.data();
-                document.getElementById('edit-name').value = u.username || "";
-                document.getElementById('edit-bio').value = u.bio || "";
-                document.getElementById('edit-web').value = u.webLink || "";
-                previewPic.src = u.avatarUrl || "https://via.placeholder.com/100";
-                newAvatarUrl = u.avatarUrl;
+                const data = snap.data();
+                document.getElementById('edit-name').value = data.username || "";
+                document.getElementById('edit-bio').value = data.bio || "";
+                document.getElementById('edit-web').value = data.webLink || "";
+                previewPic.src = data.avatarUrl || "https://via.placeholder.com/100";
+                updatedAvatarUrl = data.avatarUrl;
             }
         }
-        loadCurrentData();
+        loadProfileData();
 
-        // 2. Changer la photo (Cloudinary)
+        // 2. Gérer le changement de photo
         fileInput.onchange = async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            // Prévisualisation immédiate
+            // Prévisualisation locale immédiate
             previewPic.src = URL.createObjectURL(file);
-            loader.style.display = "block";
+            status.style.display = "block";
             saveBtn.disabled = true;
 
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', PRESET);
+            const fd = new FormData();
+            fd.append('file', file);
+            fd.append('upload_preset', PRESET);
 
             try {
-                const res = await fetch(CLOUD_URL, { method: 'POST', body: formData });
+                const res = await fetch(CLOUD_URL, { method: 'POST', body: fd });
                 const data = await res.json();
-                newAvatarUrl = data.secure_url;
-                loader.innerText = "Image prête !";
+                updatedAvatarUrl = data.secure_url;
+                status.innerText = "Photo prête !";
             } catch (err) {
-                alert("Erreur upload photo");
+                alert("Erreur lors de l'envoi de la photo.");
+                status.style.display = "none";
             } finally {
                 saveBtn.disabled = false;
             }
         };
 
-        // 3. Sauvegarder les modifications
+        // 3. Sauvegarder toutes les infos
         saveBtn.onclick = async () => {
-            saveBtn.innerText = "Enregistrement...";
+            saveBtn.innerText = "Patience...";
             saveBtn.disabled = true;
 
             try {
-                await updateDoc(doc(db, "users", MY_ID), {
+                const userRef = doc(db, "users", MY_ID);
+                await updateDoc(userRef, {
                     username: document.getElementById('edit-name').value,
                     bio: document.getElementById('edit-bio').value,
                     webLink: document.getElementById('edit-web').value,
-                    avatarUrl: newAvatarUrl
+                    avatarUrl: updatedAvatarUrl
                 });
 
+                // Retour au profil après succès
                 window.location.href = "profil.html";
             } catch (err) {
                 console.error(err);
-                alert("Erreur lors de la mise à jour");
+                alert("Erreur de sauvegarde.");
                 saveBtn.disabled = false;
                 saveBtn.innerText = "Terminé";
             }
