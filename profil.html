@@ -69,11 +69,22 @@
             <button class="btn-premium" onclick="window.location.href='premium.html'">
                 Obtenir Floy Gold 🟠
             </button>
-            <button class="btn-edit" onclick="window.location.href='edit-profil.html'">
-                Modifier le profil
-            </button>
-        </div>
+            <button id="btn-edit-toggle" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:8px; margin-top:10px; cursor:pointer;">Modifier le profil</button>
+
+        <div id="edit-profile-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; padding:20px; box-sizing:border-box;">
+            <div style="background:#111; padding:25px; border-radius:20px; border:1px solid var(--orange);">
+                <h3>Modifier mes informations</h3>
+        
+        <label style="font-size:12px; color:#888;">Nouveau Nom d'utilisateur :</label>
+        <input type="text" id="edit-username" style="width:100%; padding:12px; margin:10px 0; background:#000; border:1px solid #333; color:white; border-radius:10px;">
+        
+        <label style="font-size:12px; color:#888;">Ma Bio :</label>
+        <textarea id="edit-bio" style="width:100%; padding:12px; margin:10px 0; background:#000; border:1px solid #333; color:white; border-radius:10px; height:80px;"></textarea>
+
+        <button onclick="sauvegarderModifications()" style="width:100%; background:var(--orange); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer; margin-top:15px;">Enregistrer les changements</button>
+        <p onclick="document.getElementById('edit-profile-modal').style.display='none'" style="text-align:center; color:#555; cursor:pointer; margin-top:20px;">Annuler</p>
     </div>
+</div>
 
     <div class="profile-grid" id="profile-grid">
         </div>
@@ -86,12 +97,18 @@
     </nav>
 
     <script type="module">
-        import { auth } from './firebase-config.js';
+        import { auth, db } from './firebase-config.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        onAuthStateChanged(auth, (user) => {
-        if (!user) {
-        // Si l'utilisateur n'est pas connecté, on l'envoie au login
+        let currentUserID = null;
+
+        // Vérification de la connexion permanente
+        onAuthStateChanged(auth, async (user) => {
+        if (user) {
+        currentUserID = user.uid;
+        chargerInfosProfil(currentUserID);
+        } else {
         window.location.href = "login.html";
     }
 });
@@ -146,6 +163,42 @@
                 grid.appendChild(div);
             });
         });
+        // Charger les données depuis Firestore
+async function chargerInfosProfil(uid) {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    if (userDoc.exists()) {
+        const data = userDoc.data();
+        document.getElementById('u-name').innerText = data.username;
+        document.getElementById('u-bio').innerText = data.bio || "Pas de bio encore.";
+        
+        // Pré-remplir les champs du modal
+        document.getElementById('edit-username').value = data.username;
+        document.getElementById('edit-bio').value = data.bio || "";
+    }
+}
+
+// Ouvrir le modal
+document.getElementById('btn-edit-toggle').onclick = () => {
+    document.getElementById('edit-profile-modal').style.display = 'block';
+};
+
+// SAUVEGARDE PERMANENTE
+window.sauvegarderModifications = async () => {
+    const newName = document.getElementById('edit-username').value;
+    const newBio = document.getElementById('edit-bio').value;
+
+    try {
+        await updateDoc(doc(db, "users", currentUserID), {
+            username: newName,
+            bio: newBio
+        });
+        
+        alert("Profil mis à jour !");
+        location.reload(); // Recharge la page pour voir les changements
+    } catch (e) {
+        alert("Erreur lors de la sauvegarde.");
+    }
+};
     </script>
 </body>
 </html>
