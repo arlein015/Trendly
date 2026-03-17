@@ -106,27 +106,38 @@
             }
         });
 
-        // 2. Charger les Stories (Simples cercles pour l'instant)
-        const qStories = query(collection(db, "users"), limit(10));
-        onSnapshot(qStories, (snap) => {
-            // Garder seulement le premier (Ta story) et ajouter les autres
-            const firstChild = storiesContainer.firstElementChild;
-            storiesContainer.innerHTML = "";
-            storiesContainer.appendChild(firstChild);
+        // Remplace la partie "Charger les Stories" par celle-ci
+        const qStories = query(collection(db, "stories"), orderBy("timestamp", "desc"));
 
-            snap.forEach(d => {
-                if(d.id !== MY_ID) {
-                    const u = d.data();
-                    const item = document.createElement('div');
-                    item.className = 'story-item';
-                    item.innerHTML = `
-                        <div class="story-ring"><img src="${u.avatarUrl || 'https://via.placeholder.com/60'}"></div>
-                        <div class="story-name">${u.username}</div>
-                    `;
-                    storiesContainer.appendChild(item);
-                }
-            });
-        });
+        onSnapshot(qStories, (snap) => {
+        // On réinitialise sauf "Ta story"
+        const firstChild = storiesContainer.firstElementChild;
+        storiesContainer.innerHTML = "";
+        storiesContainer.appendChild(firstChild);
+
+        const usersShown = new Set(); // Pour ne pas afficher deux fois le même utilisateur
+
+        snap.forEach(async (storyDoc) => {
+        const story = storyDoc.data();
+        if(!usersShown.has(story.userId)) {
+            usersShown.add(story.userId);
+            
+            // On récupère les infos de l'utilisateur qui a fait la story
+            const uSnap = await getDoc(doc(db, "users", story.userId));
+            if(uSnap.exists()) {
+                const u = uSnap.data();
+                const item = document.createElement('div');
+                item.className = 'story-item';
+                item.onclick = () => window.location.href = `story-view.html?u=${story.userId}`;
+                item.innerHTML = `
+                    <div class="story-ring"><img src="${u.avatarUrl}"></div>
+                    <div class="story-name">${u.username}</div>
+                `;
+                storiesContainer.appendChild(item);
+            }
+        }
+    });
+});
 
         // 3. Charger le Feed de Posts
         const qPosts = query(collection(db, "posts"), orderBy("timestamp", "desc"));
