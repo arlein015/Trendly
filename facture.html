@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Confirmation de Paiement</title>
+    <style>
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; }
+
+        .invoice-card {
+            background: var(--gris);
+            border: 1px solid var(--bordure);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            margin: 40px auto;
+            position: relative;
+        }
+
+        .status-badge {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .logo-floy { font-weight: bold; font-size: 24px; color: var(--orange); margin-bottom: 5px; }
+        .invoice-date { color: #888; font-size: 13px; margin-bottom: 30px; }
+
+        .item-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; }
+        .item-label { color: #aaa; }
+        .item-price { font-weight: bold; }
+
+        .total-row { display: flex; justify-content: space-between; padding: 20px 0; font-size: 20px; font-weight: bold; color: var(--orange); }
+
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .btn-print { background: white; color: black; }
+        .btn-back { background: transparent; color: #888; }
+
+        @media print {
+            .btn-action { display: none; }
+            body { background: white; color: black; }
+            .invoice-card { border: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="invoice-card">
+        <div class="status-badge">PAYÉ AVEC SUCCÈS</div>
+        <div class="logo-floy">FLOY PREMIUM</div>
+        <div class="invoice-date" id="date-facture">Date : --/--/----</div>
+
+        <div class="item-row">
+            <span class="item-label">Service</span>
+            <span class="item-price">Badge de Certification</span>
+        </div>
+        <div class="item-row">
+            <span class="item-label">Durée</span>
+            <span class="item-price">1 mois</span>
+        </div>
+        <div class="item-row">
+            <span class="item-label">ID Transaction</span>
+            <span class="item-price" id="trans-id">#FL-88291</span>
+        </div>
+
+        <div class="total-row">
+            <span>Total</span>
+            <span>10,00 $</span>
+        </div>
+
+        <button class="btn-action btn-print" onclick="window.print()">Imprimer la facture</button>
+        <button class="btn-action btn-back" onclick="window.location.href='profil.html'">Retour au profil</button>
+    </div>
+
+    <script>
+        // Génération automatique de la date et d'un ID de transaction
+        const now = new Date();
+        document.getElementById('date-facture').innerText = "Date : " + now.toLocaleDateString();
+        document.getElementById('trans-id').innerText = "#FL-" + Math.floor(Math.random() * 999999);
+    </script>
+
+</body>
+</html>
