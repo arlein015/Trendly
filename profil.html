@@ -3,133 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Profil Officiel</title>
+    <title>Floy - Profil</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; --gris: #8e8e8e; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
 
-        /* HEADER PROFIL */
-        .profile-header { padding: 20px 15px; border-bottom: 1px solid var(--bordure); }
-        .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        /* HEADER & MENU */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px; position: sticky; top: 0; background: black; z-index: 100; }
+        .username-title { font-weight: bold; font-size: 18px; }
+        .menu-right { display: flex; gap: 15px; }
+
+        /* PROFIL INFO */
+        .profile-container { padding: 10px 15px; }
+        .main-info { display: flex; align-items: center; gap: 25px; margin-bottom: 20px; }
         .profile-pic { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 2px solid var(--orange); }
         
-        .stats-container { display: flex; gap: 20px; text-align: center; flex-grow: 1; justify-content: center; }
+        .stats { display: flex; gap: 20px; flex-grow: 1; justify-content: center; text-align: center; }
         .stat-item { display: flex; flex-direction: column; }
         .stat-num { font-weight: bold; font-size: 18px; }
-        .stat-label { font-size: 13px; color: var(--gris); }
+        .stat-label { font-size: 12px; color: var(--gris); }
 
-        .profile-info { margin-bottom: 15px; }
-        .profile-name { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        .bio-section { margin-bottom: 20px; }
+        .display-name { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 5px; }
         .verify-badge { width: 16px; height: 16px; fill: var(--orange); }
-        .profile-bio { font-size: 14px; margin-top: 5px; color: #efefef; }
+        .bio-text { font-size: 14px; margin-top: 4px; color: #efefef; white-space: pre-wrap; }
 
-        /* BOUTON ÉDITER */
-        .edit-btn { 
-            width: 100%; background: #1a1a1a; border: 1px solid var(--bordure); 
-            color: white; padding: 8px; border-radius: 8px; font-weight: bold; 
-            font-size: 14px; cursor: pointer; transition: 0.2s;
-        }
-        .edit-btn:active { background: #333; }
+        /* BOUTONS ACTIONS */
+        .profile-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn { flex: 1; border: none; border-radius: 8px; padding: 10px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn-edit { background: #1a1a1a; color: white; border: 1px solid var(--bordure); }
+        .btn-follow { background: var(--orange); color: white; }
+        .btn-follow.following { background: #1a1a1a; color: white; border: 1px solid var(--bordure); }
 
         /* GRILLE DE POSTS */
-        .posts-tabs { display: flex; border-top: 1px solid var(--bordure); margin-top: 10px; }
-        .tab-item { flex: 1; padding: 12px; text-align: center; border-bottom: 2px solid transparent; }
-        .tab-item.active { border-bottom: 2px solid var(--orange); }
-        
-        .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
-        .grid-item { aspect-ratio: 1/1; background: #111; position: relative; cursor: pointer; }
+        .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-top: 1px solid var(--bordure); }
+        .grid-item { aspect-ratio: 1/1; background: #111; cursor: pointer; position: relative; }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
-        .grid-item .multi-icon { position: absolute; top: 5px; right: 5px; fill: white; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5)); }
 
-        /* NAV BAR */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-link { color: white; opacity: 0.6; }
-        .nav-link.active { opacity: 1; color: var(--orange); }
+        /* NAV BAR BAS */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
+        .nav-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
     </style>
 </head>
 <body>
 
-    <div class="profile-header">
-        <div class="top-row">
-            <img id="p-pic" class="profile-pic" src="https://via.placeholder.com/100">
-            <div class="stats-container">
+    <div class="top-nav">
+        <div class="username-title" id="top-username">Floy_User</div>
+        <div class="menu-right">
+            <button onclick="copyProfileLink()" style="background:none; border:none; color:white; cursor:pointer;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="main-info">
+            <img id="u-pic" class="profile-pic" src="https://via.placeholder.com/100">
+            <div class="stats">
                 <div class="stat-item"><span class="stat-num" id="count-posts">0</span><span class="stat-label">Posts</span></div>
                 <div class="stat-item"><span class="stat-num" id="count-followers">0</span><span class="stat-label">Abonnés</span></div>
                 <div class="stat-item"><span class="stat-num" id="count-following">0</span><span class="stat-label">Suivis</span></div>
             </div>
         </div>
-        
-        <div class="profile-info">
-            <div class="profile-name">
-                <span id="p-username">Chargement...</span>
-                <span id="p-badge"></span>
+
+        <div class="bio-section">
+            <div class="display-name">
+                <span id="u-name">Chargement...</span>
+                <span id="u-badge"></span>
             </div>
-            <div class="profile-bio" id="p-bio">Bienvenue sur mon profil Floy.</div>
+            <div class="bio-text" id="u-bio">Bio de l'utilisateur...</div>
         </div>
 
-        <button class="edit-btn" onclick="window.location.href='settings.html'">Modifier le profil</button>
-    </div>
-
-    <div class="posts-tabs">
-        <div class="tab-item active">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zM3 14h7v7H3v-7z"/></svg>
+        <div class="profile-actions">
+            <button class="btn btn-edit" id="btn-edit" onclick="window.location.href='edit-profil.html'">Modifier</button>
+            <button class="btn btn-follow" id="btn-follow" onclick="toggleFollow()">Suivre</button>
         </div>
     </div>
 
-    <div class="profile-grid" id="profile-grid">
-        </div>
+    <div class="profile-grid" id="profile-grid"></div>
 
     <nav class="nav-bar">
-        <a href="index.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
-        <a href="explore.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>
-        <a href="post.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"></svg></a>
-        <a href="profil.html" class="nav-link active"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></a>
+        <a href="index.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="white" opacity="0.6"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <a href="explore.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" opacity="0.6"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>
+        <a href="post.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" opacity="0.6"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"></svg></a>
+        <a href="profil.html"><img id="nav-avatar" class="nav-avatar" src="https://via.placeholder.com/30"></a>
     </nav>
 
     <script type="module">
         import { db } from './firebase-config.js';
-        import { doc, onSnapshot, collection, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { doc, onSnapshot, collection, query, where, orderBy, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const MY_ID = "User_Floy_Account"; // Ton ID unique
+        // Pour le test, on utilise ton ID. Dans la vraie version, utilise auth.currentUser.uid
+        const MY_ID = "User_Floy_Account"; 
 
-        // 1. Charger les infos du profil (Nom, Stats, Badge)
+        // 1. Charger les données en temps réel
         onSnapshot(doc(db, "users", MY_ID), (s) => {
-            if (s.exists()) {
+            if(s.exists()){
                 const u = s.data();
-                document.getElementById('p-username').innerText = u.username || "Utilisateur";
-                document.getElementById('p-pic').src = u.avatarUrl || "https://via.placeholder.com/100";
-                document.getElementById('p-bio').innerText = u.bio || "Pas encore de bio.";
+                document.getElementById('top-username').innerText = u.username || "Profil";
+                document.getElementById('u-name').innerText = u.username;
+                document.getElementById('u-pic').src = u.avatarUrl || "https://via.placeholder.com/100";
+                document.getElementById('nav-avatar').src = u.avatarUrl || "https://via.placeholder.com/30";
+                document.getElementById('u-bio').innerText = u.bio || "";
                 document.getElementById('count-followers').innerText = u.followersCount || 0;
                 document.getElementById('count-following').innerText = u.followingCount || 0;
                 
-                // Afficher le badge si certifié
                 if(u.isVerified) {
-                    document.getElementById('p-badge').innerHTML = `<svg class="verify-badge" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM10 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/></svg>`;
+                    document.getElementById('u-badge').innerHTML = `<svg class="verify-badge" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM10 17l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/></svg>`;
                 }
             }
         });
 
-        // 2. Charger les posts de l'utilisateur uniquement
+        // 2. Grille de Posts
         const q = query(collection(db, "posts"), where("userId", "==", MY_ID), orderBy("timestamp", "desc"));
         onSnapshot(q, (snaps) => {
             const grid = document.getElementById('profile-grid');
             grid.innerHTML = "";
             document.getElementById('count-posts').innerText = snaps.size;
-
             snaps.forEach(d => {
                 const p = d.data();
-                const firstImg = p.images[0]; // On prend la première image du tableau pour la grille
-                
-                const item = document.createElement('div');
-                item.className = 'grid-item';
-                item.onclick = () => window.location.href = `album.html?id=${d.id}`;
-                
-                let multiIcon = p.images.length > 1 ? `<svg class="multi-icon" width="18" height="18" viewBox="0 0 24 24"><path d="M19 2H9c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H9V4h10v10zM5 7H3v12c0 1.1.9 2 2 2h12v-2H5V7z"/></svg>` : "";
-                
-                item.innerHTML = `<img src="${firstImg}">${multiIcon}`;
-                grid.appendChild(item);
+                const div = document.createElement('div');
+                div.className = 'grid-item';
+                div.innerHTML = `<img src="${p.images[0]}">`;
+                div.onclick = () => window.location.href = `album.html?id=${d.id}`;
+                grid.appendChild(div);
             });
         });
+
+        // 3. Fonction Suivre (Toggle)
+        window.toggleFollow = async () => {
+            const btn = document.getElementById('btn-follow');
+            const isFollowing = btn.classList.contains('following');
+            
+            // Logique simplifiée pour ton test : met à jour le compteur dans Firestore
+            const userRef = doc(db, "users", MY_ID);
+            if(!isFollowing) {
+                await updateDoc(userRef, { followersCount: increment(1) });
+                btn.innerText = "Suivi(e)";
+                btn.classList.add('following');
+            } else {
+                await updateDoc(userRef, { followersCount: increment(-1) });
+                btn.innerText = "Suivre";
+                btn.classList.remove('following');
+            }
+        };
+
+        // 4. Partager / Copier le lien
+        window.copyProfileLink = () => {
+            const profileUrl = window.location.href;
+            navigator.clipboard.writeText(profileUrl).then(() => {
+                alert("Lien du profil copié !");
+            });
+        };
     </script>
 </body>
 </html>
