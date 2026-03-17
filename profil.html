@@ -3,52 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Mon Profil</title>
+    <title>Floy - Profil Elite</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; --gris-bouton: #363636; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
 
         header { padding: 15px; border-bottom: 1px solid var(--bordure); text-align: center; position: sticky; top: 0; background: black; z-index: 100; }
-        .username-display { font-weight: bold; }
+        .username-display { font-weight: bold; color: white; }
 
         /* INFOS PROFIL */
         .profile-header { padding: 20px 15px; }
         .stats-row { display: flex; align-items: center; gap: 20px; margin-bottom: 15px; }
-        .avatar { width: 80px; height: 80px; background: linear-gradient(45deg, #222, var(--orange)); border-radius: 50%; padding: 3px; }
-        .avatar-inner { width: 100%; height: 100%; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .avatar { width: 85px; height: 85px; background: linear-gradient(45deg, #222, var(--orange)); border-radius: 50%; padding: 3px; position: relative; }
+        .avatar-inner { width: 100%; height: 100%; background: #111; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .avatar-inner img { width: 100%; height: 100%; object-fit: cover; }
         
         .stats { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; }
         .stat-num { font-weight: bold; display: block; }
         .stat-label { font-size: 12px; color: #a8a8a8; }
 
         .bio-info { font-size: 14px; margin-bottom: 15px; }
-        .bio-name { font-weight: bold; display: block; }
-        .bio-link { color: #0095f6; text-decoration: none; display: block; margin-top: 5px; }
+        .bio-name { font-weight: bold; display: block; margin-bottom: 2px; }
+        /* LIENS EN ORANGE POUR ÊTRE UNIQUE */
+        .bio-link { color: var(--orange); text-decoration: none; font-weight: 500; display: block; margin-top: 5px; }
 
-        /* BOUTONS ACTIONS */
         .action-buttons { display: flex; gap: 10px; }
-        .btn { flex: 1; border: none; border-radius: 8px; padding: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
+        .btn { flex: 1; border: none; border-radius: 8px; padding: 10px; font-weight: bold; cursor: pointer; color: white; transition: 0.3s; }
         .btn-edit { background: var(--gris-bouton); }
         .btn-follow { background: var(--orange); }
+        .btn-follow.active { background: #fff; color: #000; }
 
         /* GRILLE PHOTOS */
         .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 20px; }
-        .grid-item { aspect-ratio: 1/1; background: #111; overflow: hidden; }
+        .grid-item { aspect-ratio: 1/1; background: #111; cursor: pointer; transition: opacity 0.2s; }
+        .grid-item:active { opacity: 0.7; }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* MODALE DE MODIFICATION */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background: #262626; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; }
-        .modal-content h3 { margin-top: 0; text-align: center; }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; font-size: 12px; color: #a8a8a8; margin-bottom: 5px; }
-        .modal-content input, .modal-content textarea { width: 100%; padding: 10px; background: #121212; border: 1px solid #363636; color: white; border-radius: 5px; box-sizing: border-box; }
-        .save-btn { width: 100%; background: var(--orange); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        /* LIGHTBOX (AGRANDISSEMENT) */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; }
+        .lightbox img { max-width: 95%; max-height: 80%; border-radius: 10px; }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
+
+        /* MODALE MODIFIER */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: #1c1c1c; width: 90%; max-width: 400px; padding: 25px; border-radius: 20px; border: 1px solid var(--bordure); }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; color: var(--orange); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; background: #000; border: 1px solid var(--bordure); color: white; border-radius: 10px; box-sizing: border-box; outline: none; }
+        .modal-content input:focus { border-color: var(--orange); }
+        .save-btn { width: 100%; background: var(--orange); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
         /* NAV BAR */
         .nav-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
-        .nav-link { color: white; opacity: 0.5; }
-        .nav-link.active { opacity: 1; color: var(--orange); }
     </style>
 </head>
 <body>
@@ -57,105 +63,130 @@
 
     <div class="profile-header">
         <div class="stats-row">
-            <div class="avatar"><div class="avatar-inner">📷</div></div>
+            <div class="avatar">
+                <div class="avatar-inner" id="profile-pic-container">
+                    <img id="display-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+                </div>
+            </div>
             <div class="stats">
                 <div><span class="stat-num" id="count-posts">0</span><span class="stat-label">Posts</span></div>
-                <div><span class="stat-num">0</span><span class="stat-label">Abonnés</span></div>
+                <div><span class="stat-num" id="count-followers">12.5k</span><span class="stat-label">Abonnés</span></div>
             </div>
         </div>
 
         <div class="bio-info">
-            <span class="bio-name" id="display-name">Nom de l'utilisateur</span>
+            <span class="bio-name" id="display-name">Chargement...</span>
             <span id="display-bio">Ma bio Floy...</span>
-            <a href="#" class="bio-link" id="display-web" target="_blank">www.lien.com</a>
+            <a href="#" class="bio-link" id="display-web" target="_blank">floy.app/monlien</a>
         </div>
 
         <div class="action-buttons">
             <button class="btn btn-edit" id="open-modal">Modifier</button>
-            <button class="btn btn-follow">Suivre</button>
+            <button class="btn btn-follow" id="follow-btn">Suivre</button>
         </div>
     </div>
 
     <div class="photo-grid" id="profile-gallery"></div>
 
+    <div class="lightbox" id="lightbox" onclick="this.style.display='none'">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="">
+    </div>
+
     <div class="modal" id="edit-modal">
         <div class="modal-content">
-            <h3>Modifier le profil</h3>
+            <h3 style="text-align:center; color:var(--orange)">ÉDITER FLOY</h3>
             <div class="input-group">
-                <label>Nom d'utilisateur (@)</label>
-                <input type="text" id="input-username" placeholder="ex: arlein015">
+                <label>URL Photo de Profil</label>
+                <input type="text" id="input-avatar" placeholder="Lien de l'image (Cloudinary...)">
             </div>
             <div class="input-group">
-                <label>Nom complet</label>
-                <input type="text" id="input-name" placeholder="Ton nom">
+                <label>Nom d'utilisateur</label>
+                <input type="text" id="input-username">
+            </div>
+            <div class="input-group">
+                <label>Nom Complet</label>
+                <input type="text" id="input-name">
             </div>
             <div class="input-group">
                 <label>Bio</label>
-                <textarea id="input-bio" rows="3" placeholder="Parle de toi..."></textarea>
+                <textarea id="input-bio" rows="2"></textarea>
             </div>
             <div class="input-group">
-                <label>Site Web</label>
-                <input type="text" id="input-web" placeholder="https://...">
+                <label>Lien Web</label>
+                <input type="text" id="input-web">
             </div>
-            <button class="save-btn" id="save-profile">Enregistrer</button>
-            <button style="background:none; border:none; color:#a8a8a8; width:100%; margin-top:10px; cursor:pointer;" id="close-modal">Annuler</button>
+            <button class="save-btn" id="save-profile">METTRE À JOUR</button>
+            <button style="background:none; border:none; color:#555; width:100%; margin-top:15px; cursor:pointer;" id="close-modal">ANNULER</button>
         </div>
     </div>
 
     <nav class="nav-bar">
-        <a href="index.html" class="nav-link">🏠</a>
-        <a href="post.html" class="nav-link">➕</a>
-        <a href="profil.html" class="nav-link active">👤</a>
+        <a href="index.html" style="text-decoration:none; font-size:24px;">🏠</a>
+        <a href="post.html" style="text-decoration:none; font-size:24px;">➕</a>
+        <a href="profil.html" style="text-decoration:none; font-size:24px; color:var(--orange)">👤</a>
     </nav>
 
     <script type="module">
         import { db } from './firebase-config.js';
         import { doc, setDoc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // IDENTIFIANT FIXE POUR TON PROFIL (À remplacer par l'ID auth plus tard)
-        const USER_ID = "User_Floy_Account";
+        const USER_ID = "User_Floy_Account"; // ID Unique
 
-        // --- 1. CHARGEMENT DES INFOS PROFIL ---
+        // --- 1. CHARGEMENT PROFIL ---
         onSnapshot(doc(db, "users", USER_ID), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 document.getElementById('top-username').innerText = "@" + (data.username || "username");
-                document.getElementById('display-name').innerText = data.name || "Ton Nom";
-                document.getElementById('display-bio').innerText = data.bio || "Pas de bio encore.";
+                document.getElementById('display-name').innerText = data.name || "Utilisateur Floy";
+                document.getElementById('display-bio').innerText = data.bio || "Bienvenue sur mon profil.";
                 document.getElementById('display-web').innerText = data.web || "";
                 document.getElementById('display-web').href = data.web || "#";
+                if(data.avatarUrl) document.getElementById('display-avatar').src = data.avatarUrl;
             }
         });
 
-        // --- 2. ENREGISTREMENT DES INFOS ---
+        // --- 2. LOGIQUE DU BOUTON SUIVRE ---
+        const followBtn = document.getElementById('follow-btn');
+        followBtn.onclick = () => {
+            followBtn.classList.toggle('active');
+            followBtn.innerText = followBtn.classList.contains('active') ? "Suivi(e)" : "Suivre";
+        };
+
+        // --- 3. MODALE & ENREGISTREMENT ---
         const modal = document.getElementById('edit-modal');
         document.getElementById('open-modal').onclick = () => modal.style.display = 'flex';
         document.getElementById('close-modal').onclick = () => modal.style.display = 'none';
 
         document.getElementById('save-profile').onclick = async () => {
             const profileData = {
+                avatarUrl: document.getElementById('input-avatar').value,
                 username: document.getElementById('input-username').value,
                 name: document.getElementById('input-name').value,
                 bio: document.getElementById('input-bio').value,
                 web: document.getElementById('input-web').value
             };
-
             await setDoc(doc(db, "users", USER_ID), profileData, { merge: true });
             modal.style.display = 'none';
-            alert("Profil mis à jour !");
         };
 
-        // --- 3. GRILLE DE PHOTOS ---
+        // --- 4. GRILLE & ZOOM PHOTO ---
         const q = query(collection(db, "posts"), where("username", "==", "User_Floy"));
         onSnapshot(q, (snapshot) => {
             const gallery = document.getElementById('profile-gallery');
             gallery.innerHTML = "";
             document.getElementById('count-posts').innerText = snapshot.size;
             snapshot.forEach(doc => {
-                const img = document.createElement('div');
-                img.className = 'grid-item';
-                img.innerHTML = `<img src="${doc.data().imageUrl}">`;
-                gallery.appendChild(img);
+                const imgUrl = doc.data().imageUrl;
+                const div = document.createElement('div');
+                div.className = 'grid-item';
+                div.innerHTML = `<img src="${imgUrl}">`;
+                // Quand on clique sur une photo de la grille
+                div.onclick = () => {
+                    document.getElementById('lightbox-img').src = imgUrl;
+                    document.getElementById('lightbox').style.display = 'flex';
+                };
+                gallery.appendChild(div);
             });
         });
     </script>
