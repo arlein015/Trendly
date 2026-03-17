@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Créer un Post</title>
+    <title>Floy - Créer un Album</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; padding-bottom: 80px; }
@@ -11,33 +11,32 @@
         /* HEADER */
         .header-post { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-cancel { color: white; text-decoration: none; font-size: 16px; }
-        .btn-share { color: var(--orange); background: none; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .btn-share:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-share { color: var(--orange); background: none; border: none; font-weight: bold; font-size: 18px; cursor: pointer; }
+        .btn-share:disabled { opacity: 0.3; }
 
-        /* ZONE D'UPLOAD MULTIPLE */
+        /* ZONE D'UPLOAD */
         .upload-area { 
-            width: 100%; min-height: 200px; border: 2px dashed var(--bordure); 
+            width: 100%; min-height: 250px; border: 2px dashed var(--bordure); 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            border-radius: 15px; overflow: hidden; position: relative; margin-bottom: 15px;
+            border-radius: 15px; overflow: hidden; margin-bottom: 15px; cursor: pointer;
         }
-        #preview-container { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; width: 100%; 
+        #preview-grid { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 15px; width: 100%; 
         }
-        .preview-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; border: 1px solid var(--bordure); }
+        .preview-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 10px; border: 1px solid var(--bordure); }
         
-        /* BARRE DE PROGRESSION */
-        .progress-container { width: 100%; background: #1a1a1a; height: 6px; border-radius: 10px; margin: 15px 0; display: none; overflow: hidden; }
+        /* PROGRESS BAR */
+        .progress-container { width: 100%; background: #1a1a1a; height: 8px; border-radius: 10px; margin: 15px 0; display: none; overflow: hidden; }
         #progress-bar { width: 0%; height: 100%; background: var(--orange); transition: width 0.3s; }
 
         .caption-area { 
             width: 100%; background: none; border: none; color: white; padding: 15px 0; 
-            font-size: 16px; outline: none; resize: none; border-bottom: 1px solid var(--bordure); 
+            font-size: 17px; outline: none; resize: none; border-bottom: 1px solid var(--bordure); 
         }
 
-        /* NAV BAR */
+        /* NAVIGATION */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
-        .nav-link { color: white; opacity: 0.6; }
-        .nav-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+        .nav-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -47,25 +46,25 @@
         <button class="btn-share" id="publish-btn">Partager</button>
     </div>
 
-    <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
-        <div id="placeholder-ui">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <p style="color: grey; font-size: 14px; margin-top: 10px;">Sélectionner une ou plusieurs photos</p>
+    <div class="upload-area" onclick="document.getElementById('file-input').click()">
+        <div id="placeholder">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <p style="color: #888; margin-top: 10px;">Ajouter des photos au post</p>
         </div>
-        <div id="preview-container"></div>
+        <div id="preview-grid"></div>
         <input type="file" id="file-input" style="display:none" accept="image/*" multiple>
     </div>
 
-    <div class="progress-container" id="prog-cont">
+    <div class="progress-container" id="prog-box">
         <div id="progress-bar"></div>
     </div>
 
-    <textarea class="caption-area" id="caption" placeholder="Écrire une légende pour tous les posts..."></textarea>
+    <textarea class="caption-area" id="caption" placeholder="Écris une légende..."></textarea>
 
     <nav class="nav-bar">
-        <a href="index.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
-        <a href="explore.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>
-        <a href="profil.html" class="nav-link"><img id="my-nav-pic" class="nav-avatar" src="https://via.placeholder.com/30"></a>
+        <a href="index.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
+        <a href="explore.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>
+        <a href="profil.html"><img id="nav-pic" class="nav-avatar" src="https://via.placeholder.com/30"></a>
     </nav>
 
     <script type="module">
@@ -73,93 +72,87 @@
         import { collection, addDoc, serverTimestamp, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const MY_ID = "User_Floy_Account";
-        const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/TON_CLOUD_NAME/image/upload";
-        const CLOUDINARY_PRESET = "TON_PRESET_NAME"; // Ton unsigned preset Cloudinary
+        const CLOUD_URL = "https://api.cloudinary.com/v1_1/TON_CLOUD_NAME/image/upload";
+        const PRESET = "TON_PRESET_NAME";
 
         const fileInput = document.getElementById('file-input');
-        const previewContainer = document.getElementById('preview-container');
-        const placeholder = document.getElementById('placeholder-ui');
+        const grid = document.getElementById('preview-grid');
         const publishBtn = document.getElementById('publish-btn');
-        const progressBar = document.getElementById('progress-bar');
-        const progCont = document.getElementById('prog-cont');
+        const bar = document.getElementById('progress-bar');
 
-        let selectedFiles = [];
+        let filesToUpload = [];
 
-        // 1. Prévisualisation multiple
+        // 1. Afficher les miniatures
         fileInput.onchange = (e) => {
-            selectedFiles = Array.from(e.target.files);
-            previewContainer.innerHTML = "";
-            
-            if (selectedFiles.length > 0) {
-                placeholder.style.display = "none";
-                selectedFiles.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const img = document.createElement('img');
-                        img.src = event.target.result;
-                        img.className = "preview-img";
-                        previewContainer.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-        };
+            filesToUpload = Array.from(e.target.files);
+            grid.innerHTML = "";
+            document.getElementById('placeholder').style.display = "none";
 
-        // 2. Publication en boucle avec Cloudinary
-        publishBtn.onclick = async () => {
-            const captionText = document.getElementById('caption').value;
-            if (selectedFiles.length === 0) return alert("Choisissez au moins une photo !");
-
-            publishBtn.disabled = true;
-            progCont.style.display = "block";
-
-            // Récupérer tes infos pour le post (Nom, Photo, Badge)
-            const userSnap = await onSnapshot(doc(db, "users", MY_ID), async (s) => {
-                const userData = s.data();
-                
-                for (let i = 0; i < selectedFiles.length; i++) {
-                    const file = selectedFiles[i];
-
-                    // A. Envoi à Cloudinary
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    formData.append('upload_preset', CLOUDINARY_PRESET);
-
-                    try {
-                        const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-                        const cloudData = await response.json();
-                        const imageUrl = cloudData.secure_url;
-
-                        // B. Envoi à Firebase
-                        await addDoc(collection(db, "posts"), {
-                            userId: MY_ID,
-                            username: userData.username || "Arlein",
-                            name: userData.name || "Arlein",
-                            userPhoto: userData.avatarUrl || "",
-                            isVerified: userData.isVerified || false,
-                            imageUrl: imageUrl,
-                            caption: captionText,
-                            likesCount: 0,
-                            timestamp: serverTimestamp()
-                        });
-
-                        // Mise à jour barre de progression
-                        const percent = ((i + 1) / selectedFiles.length) * 100;
-                        progressBar.style.width = percent + "%";
-
-                    } catch (err) {
-                        console.error("Erreur d'upload :", err);
-                    }
-                }
-
-                alert("Tous vos posts sont en ligne sur Floy !");
-                window.location.href = "index.html";
+            filesToUpload.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.className = "preview-img";
+                    grid.appendChild(img);
+                };
+                reader.readAsDataURL(file);
             });
         };
 
-        // 3. Photo Nav Bar
+        // 2. Publication Groupée (Structure Album)
+        publishBtn.onclick = async () => {
+            if (filesToUpload.length === 0) return alert("Choisis au moins une photo !");
+            
+            publishBtn.disabled = true;
+            document.getElementById('prog-box').style.display = "block";
+
+            let imagesTableau = [];
+
+            try {
+                // Étape A : Upload de chaque photo vers Cloudinary
+                for (let i = 0; i < filesToUpload.length; i++) {
+                    const fd = new FormData();
+                    fd.append('file', filesToUpload[i]);
+                    fd.append('upload_preset', PRESET);
+
+                    const res = await fetch(CLOUD_URL, { method: 'POST', body: fd });
+                    const data = await res.json();
+                    imagesTableau.push(data.secure_url);
+
+                    // Update barre
+                    bar.style.width = ((i + 1) / filesToUpload.length * 100) + "%";
+                }
+
+                // Étape B : Envoi d'UN SEUL post avec toutes les URLs
+                // On récupère tes infos via un snapshot rapide
+                onSnapshot(doc(db, "users", MY_ID), async (s) => {
+                    const u = s.data();
+                    
+                    await addDoc(collection(db, "posts"), {
+                        userId: MY_ID,
+                        username: u.username || "Arlein",
+                        name: u.name || "Arlein",
+                        userPhoto: u.avatarUrl || "",
+                        isVerified: u.isVerified || true,
+                        images: imagesTableau, // LE TABLEAU D'IMAGES POUR LE COLLAGE
+                        caption: document.getElementById('caption').value,
+                        likesCount: 0,
+                        timestamp: serverTimestamp()
+                    });
+
+                    window.location.href = "index.html";
+                });
+
+            } catch (err) {
+                console.error(err);
+                publishBtn.disabled = false;
+            }
+        };
+
+        // Photo de profil nav bar
         onSnapshot(doc(db, "users", MY_ID), s => { 
-            if(s.exists() && s.data().avatarUrl) document.getElementById('my-nav-pic').src = s.data().avatarUrl; 
+            if(s.exists()) document.getElementById('nav-pic').src = s.data().avatarUrl; 
         });
     </script>
 </body>
