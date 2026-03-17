@@ -3,149 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Fil d'actualité</title>
+    <title>Floy - Feed</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #222; }
-        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-top: 60px; padding-bottom: 60px; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 70px; }
 
-        /* BARRE DE NAVIGATION HAUTE */
-        .top-nav { 
-            position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.9);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
-            border-bottom: 1px solid var(--bordure); z-index: 1000; box-sizing: border-box;
-        }
-        .logo { font-size: 24px; font-weight: bold; color: var(--orange); letter-spacing: -1px; }
-        .search-box { display: flex; align-items: center; background: #1a1a1a; border-radius: 8px; padding: 5px 10px; width: 40%; }
-        .search-box input { background: none; border: none; color: white; margin-left: 5px; width: 100%; outline: none; }
+        /* HEADER */
+        .top-nav { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid var(--bordure); z-index: 1000; box-sizing: border-box; }
+        .logo { font-size: 24px; font-weight: bold; color: var(--orange); }
+        .search-bar { background: #1a1a1a; border-radius: 10px; padding: 8px 15px; width: 45%; display: flex; align-items: center; gap: 10px; }
+        .search-bar input { background: none; border: none; color: white; width: 100%; outline: none; font-size: 14px; }
 
-        /* POSTES */
-        .feed { max-width: 500px; margin: 0 auto; }
-        .post { border-bottom: 1px solid var(--bordure); margin-bottom: 10px; padding-bottom: 10px; }
-        .post-header { display: flex; align-items: center; padding: 10px; gap: 10px; }
-        .post-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
-        .post-username { font-weight: bold; font-size: 14px; }
-        
-        .post-image { width: 100%; display: block; background: #050505; }
-        
-        /* INTERACTIONS (SVG/ICONES) */
-        .post-actions { display: flex; gap: 18px; padding: 12px; font-size: 22px; }
-        .action-btn { cursor: pointer; transition: 0.2s; }
-        .action-btn:active { transform: scale(1.2); }
-        .fa-heart.liked { color: #ff3040; }
+        /* POSTS */
+        .post { margin-bottom: 20px; border-bottom: 1px solid #111; }
+        .post-header { display: flex; align-items: center; padding: 12px; gap: 10px; }
+        .post-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
+        .post-img { width: 100%; display: block; }
+        .post-actions { display: flex; gap: 15px; padding: 12px; }
+        .post-actions svg { width: 24px; height: 24px; fill: white; cursor: pointer; }
+        .liked { fill: #ff3040 !important; }
 
-        .post-info { padding: 0 12px; }
-        .likes-count { font-weight: bold; font-size: 14px; margin-bottom: 5px; display: block; }
-        .post-caption { font-size: 14px; line-height: 1.4; }
-        .post-caption b { margin-right: 5px; }
-
-        /* BARRE DE NAVIGATION BASSE */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--noir);
-            display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid var(--bordure); z-index: 1000;
-        }
-        .bottom-nav i { font-size: 24px; color: white; cursor: pointer; }
-        .active-nav { color: var(--orange) !important; }
+        /* MODDERN BOTTOM NAV SVG */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: var(--noir); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bordure); z-index: 2000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .nav-item svg { width: 26px; height: 26px; fill: #888; transition: 0.3s; }
+        .nav-item.active svg { fill: white; }
+        .plus-btn svg { fill: var(--orange) !important; width: 32px; height: 32px; }
     </style>
 </head>
 <body>
 
     <nav class="top-nav">
         <div class="logo">Floy</div>
-        <div class="search-box">
-            <i class="fas fa-search" style="color:#555; font-size: 14px;"></i>
+        <div class="search-bar">
+            <i class="fas fa-search" style="color:#555"></i>
             <input type="text" placeholder="Rechercher...">
         </div>
-        <div style="font-size: 20px;"><i class="far fa-heart"></i></div>
+        <i class="far fa-heart" style="font-size: 20px;"></i>
     </nav>
 
-    <div class="feed" id="main-feed">
+    <div id="main-feed" style="margin-top: 65px;">
         </div>
 
     <nav class="bottom-nav">
-        <i class="fas fa-home active-nav"></i>
-        <i class="fas fa-search"></i>
-        <i class="fas fa-plus-square" onclick="window.location.href='add-post.html'"></i>
-        <i class="fas fa-message"></i>
-        <i class="fas fa-user" onclick="window.location.href='profil.html'"></i>
+        <div class="nav-item active" onclick="location.href='index.html'">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </div>
+        <div class="nav-item" onclick="location.href='explore.html'">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        </div>
+        <div class="nav-item plus-btn" onclick="location.href='add-post.html'">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </div>
+        <div class="nav-item" onclick="location.href='messages.html'">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </div>
+        <div class="nav-item" onclick="location.href='profil.html'">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
     </nav>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { collection, query, orderBy, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        let currentUID = null;
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUID = user.uid;
-                loadFeed();
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-
-        function loadFeed() {
-            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-            
-            onSnapshot(q, (snapshot) => {
-                const feed = document.getElementById('main-feed');
-                feed.innerHTML = "";
-                
-                snapshot.forEach((postDoc) => {
-                    const post = postDoc.data();
-                    const postID = postDoc.id;
-                    const isLiked = post.likes && post.likes.includes(currentUID);
-
-                    const postHTML = `
-                        <div class="post">
-                            <div class="post-header">
-                                <img src="${post.userAvatar || 'https://via.placeholder.com/50'}" class="post-avatar">
-                                <span class="post-username">${post.username}</span>
-                                ${post.isVerified ? '<i class="fas fa-check-circle" style="color:#FF7A1A; font-size:12px;"></i>' : ''}
-                            </div>
-                            
-                            <img src="${post.imageUrl}" class="post-image" ondblclick="toggleLike('${postID}', ${isLiked})">
-                            
-                            <div class="post-actions">
-                                <i class="${isLiked ? 'fas fa-heart liked' : 'far fa-heart'} action-btn" onclick="toggleLike('${postID}', ${isLiked})"></i>
-                                <i class="far fa-comment action-btn" onclick="openComments('${postID}')"></i>
-                                <i class="far fa-paper-plane action-btn" onclick="sharePost('${post.imageUrl}')"></i>
-                            </div>
-                            
-                            <div class="post-info">
-                                <span class="likes-count">${post.likes ? post.likes.length : 0} J'aime</span>
-                                <div class="post-caption"><b>${post.username}</b> ${post.caption}</div>
-                                <div style="color:#555; font-size:12px; margin-top:5px; cursor:pointer;" onclick="openComments('${postID}')">
-                                    Voir les commentaires...
-                                </div>
-                            </div>
+        import { collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), (snap) => {
+            const feed = document.getElementById('main-feed');
+            feed.innerHTML = "";
+            snap.forEach(doc => {
+                const p = doc.data();
+                feed.innerHTML += `
+                    <div class="post">
+                        <div class="post-header">
+                            <img src="${p.userAvatar}" class="post-avatar">
+                            <b>${p.username}</b>
                         </div>
-                    `;
-                    feed.insertAdjacentHTML('beforeend', postHTML);
-                });
+                        <img src="${p.imageUrl}" class="post-img">
+                        <div class="post-actions">
+                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                    </div>`;
             });
-        }
-
-        // FONCTION LIKE (Gère les likes en temps réel)
-        window.toggleLike = async (id, alreadyLiked) => {
-            const postRef = doc(db, "posts", id);
-            if (alreadyLiked) {
-                await updateDoc(postRef, { likes: arrayRemove(currentUID) });
-            } else {
-                await updateDoc(postRef, { likes: arrayUnion(currentUID) });
-            }
-        };
-
-        window.sharePost = (url) => {
-            navigator.share({ title: 'Floy Post', url: url });
-        };
-
-        window.openComments = (id) => {
-            alert("Ouverture des commentaires pour le post : " + id);
-        };
+        });
     </script>
 </body>
 </html>
