@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Floy Admin - Gestion des paiements</title>
+    <style>
+        body { background: #111; color: white; font-family: sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1a1a1a; }
+        th, td { border: 1px solid #333; padding: 12px; text-align: left; }
+        th { background: #FF7A1A; color: black; }
+        .status-pending { color: #FFA500; font-weight: bold; }
+        .status-paid { color: #00FF00; font-weight: bold; }
+        .btn-validate { background: #4CAF50; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>📊 Journal des Paiements Binance</h2>
+    <p>Tous les clics sur "J'ai payé" s'affichent ici en temps réel.</p>
+
+    <table id="payments-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Utilisateur (ID)</th>
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            </tbody>
+    </table>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, query, orderBy, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const tableBody = document.getElementById('table-body');
+
+        // Charger les paiements en temps réel
+        const q = query(collection(db, "payments_logs"), orderBy("timestamp", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            tableBody.innerHTML = "";
+            snapshot.forEach((pDoc) => {
+                const p = pDoc.data();
+                const date = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleString() : "En cours...";
+                
+                const row = `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${p.userId}</td>
+                        <td>${p.amount}</td>
+                        <td class="${p.status === 'En attente' ? 'status-pending' : 'status-paid'}">${p.status}</td>
+                        <td>
+                            ${p.status === 'En attente' ? `<button class="btn-validate" onclick="validerPaiement('${pDoc.id}', '${p.userId}')">Valider & Certifier</button>` : '✅ Terminé'}
+                        </td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        });
+
+        // Fonction pour valider le paiement et donner le badge
+        window.validerPaiement = async (logId, userId) => {
+            if(confirm("As-tu bien reçu les USDT sur ton Binance ?")) {
+                // 1. On met à jour le log de paiement
+                await updateDoc(doc(db, "payments_logs", logId), { status: "Payé" });
+                
+                // 2. On active le badge sur le profil de l'utilisateur
+                await updateDoc(doc(db, "users", userId), { 
+                    isVerified: true,
+                    verifiedUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // +30 jours
+                });
+
+                alert("Utilisateur certifié avec succès ! 🟠");
+            }
+        };
+    </script>
+</body>
+</html>
