@@ -59,30 +59,35 @@
     </div>
 
     <div class="offers-container">
-        <div class="card active">
-            <div class="badge-popular">TOP</div>
-            <div class="card-title">Badge de Certification 🟠</div>
-            <div class="card-price">10$ <span>/ mois</span></div>
-            <ul class="features-list">
-                <li><span class="check-icon">✓</span> Badge orange sur ton profil</li>
-                <li><span class="check-icon">✓</span> Crédibilité maximale</li>
-                <li><span class="check-icon">✓</span> Support prioritaire</li>
-                <li><span class="check-icon">✓</span> Pas de publicité</li>
-            </ul>
-            <button class="btn-subscribe" onclick="handlePayment('badge')">Obtenir mon badge</button>
-        </div>
-
-        <div class="card">
-            <div class="card-title">Boost de Post ⚡</div>
-            <div class="card-price">3$ <span>/ 24 heures</span></div>
-            <ul class="features-list">
-                <li><span class="check-icon">✓</span> Ton post tout en haut du feed</li>
-                <li><span class="check-icon">✓</span> 5x plus de likes et vues</li>
-                <li><span class="check-icon">✓</span> Badge "Boosté" sur l'image</li>
-            </ul>
-            <button class="btn-subscribe" style="background:#333;" onclick="handlePayment('boost')">Booster un post</button>
-        </div>
+    <div class="card active">
+        <div class="badge-popular">RECOMMANDÉ</div>
+        <div class="card-title">Badge Floy Gold 🟠</div>
+        <div class="card-price">10 USDT <span>/ mois</span></div>
+        <p style="font-size: 12px; color: #aaa;">Paiement sécurisé via Binance Pay</p>
+        <ul class="features-list">
+            <li><span class="check-icon">✓</span> Badge de certification orange</li>
+            <li><span class="check-icon">✓</span> Crédibilité augmentée</li>
+            <li><span class="check-icon">✓</span> Priorité dans l'algorithme</li>
+        </ul>
+        <button class="btn-subscribe" onclick="openBinance('badge')">Payer avec Binance</button>
     </div>
+</div>
+
+<div id="payment-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; padding:20px; box-sizing:border-box; text-align:center;">
+    <h2 style="color:var(--orange);">Binance Pay</h2>
+    <p>Transférez exactement <span id="pay-amount" style="font-weight:bold; color:white;"></span> USDT à l'ID ci-dessous :</p>
+    
+    <div style="background:#222; padding:20px; border-radius:15px; margin:20px 0; border:1px dashed var(--orange);">
+        <p style="margin:0; color:#888; font-size:12px;">MON ID BINANCE</p>
+        <h3 id="binance-id" style="font-size:24px; letter-spacing:2px; margin:10px 0;">123456789</h3>
+        <button onclick="copyID()" style="background:var(--orange); border:none; color:black; padding:5px 15px; border-radius:5px; font-weight:bold;">Copier l'ID</button>
+    </div>
+
+    <p style="font-size:14px; color:#ccc;">Une fois le transfert effectué, envoyez la capture d'écran à l'admin.</p>
+    
+    <button onclick="goToChat()" style="width:100%; background:white; color:black; border:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:20px;">J'ai envoyé le paiement ✅</button>
+    <p onclick="closeModal()" style="margin-top:20px; color:#666; cursor:pointer;">Annuler</p>
+</div>
 
     <div class="footer-note">
         En souscrivant, tu acceptes les conditions d'utilisation de Floy. <br>
@@ -98,6 +103,25 @@
                 window.location.href = "profil.html";
             }
         }
+        function openBinance(type) {
+        document.getElementById('pay-amount').innerText = (type === 'badge') ? "10" : "3";
+        document.getElementById('payment-modal').style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById('payment-modal').style.display = "none";
+    }
+
+    function copyID() {
+        const id = document.getElementById('binance-id').innerText;
+        navigator.clipboard.writeText(id);
+        alert("ID Binance copié !");
+    }
+
+    function goToChat() {
+        // Redirige vers la messagerie pour envoyer la preuve
+        window.location.href = "messages.html";
+    }
     </script>
 </body>
 </html>
