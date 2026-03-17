@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Nouveau Post</title>
+    <title>Floy - Nouveau Post Album</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; padding-bottom: 80px; }
         
+        /* HEADER */
         .header-post { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-cancel { color: white; text-decoration: none; font-size: 16px; }
         .btn-share { color: var(--orange); background: none; border: none; font-weight: bold; font-size: 18px; cursor: pointer; }
-        .btn-share:disabled { opacity: 0.3; }
+        .btn-share:disabled { opacity: 0.3; cursor: not-allowed; }
 
+        /* ZONE D'UPLOAD */
         .upload-area { 
             width: 100%; min-height: 200px; border: 2px dashed var(--bordure); 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -21,11 +23,16 @@
         #preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; width: 100%; }
         .preview-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; border: 1px solid var(--bordure); }
         
+        /* BARRE DE PROGRESSION */
         .progress-container { width: 100%; background: #1a1a1a; height: 8px; border-radius: 10px; margin: 15px 0; display: none; overflow: hidden; }
         #progress-bar { width: 0%; height: 100%; background: var(--orange); transition: width 0.3s; }
 
-        .caption-area { width: 100%; background: none; border: none; color: white; padding: 15px 0; font-size: 17px; outline: none; resize: none; border-bottom: 1px solid var(--bordure); }
+        .caption-area { 
+            width: 100%; background: none; border: none; color: white; padding: 15px 0; 
+            font-size: 17px; outline: none; resize: none; border-bottom: 1px solid var(--bordure); 
+        }
 
+        /* NAV BAR */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
         .nav-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
     </style>
@@ -40,7 +47,7 @@
     <div class="upload-area" onclick="document.getElementById('file-input').click()">
         <div id="placeholder">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <p style="color: #888; font-size: 14px; margin-top: 10px;">Ajouter des photos</p>
+            <p style="color: #888; font-size: 14px; margin-top: 10px;">Clique ici pour ajouter des photos</p>
         </div>
         <div id="preview-grid"></div>
         <input type="file" id="file-input" style="display:none" accept="image/*" multiple>
@@ -50,7 +57,7 @@
         <div id="progress-bar"></div>
     </div>
 
-    <textarea class="caption-area" id="caption" placeholder="Écris une légende..."></textarea>
+    <textarea class="caption-area" id="caption" placeholder="Écris une légende pour ton album..."></textarea>
 
     <nav class="nav-bar">
         <a href="index.html"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
@@ -62,13 +69,11 @@
         import { db } from './firebase-config.js';
         import { collection, addDoc, serverTimestamp, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // CONFIGURATION CLOUDINARY (TES INFOS)
         const CLOUD_URL = "https://api.cloudinary.com/v1_1/ds79k3f9g/image/upload";
-        const PRESET = "floy_preset";
-        
-        const MY_ID = "User_Floy_Account";
-        // --- REMPLACE CES DEUX LIGNES PAR TES INFOS CLOUDINARY ---
-        const CLOUD_URL = "https://api.cloudinary.com/v1_1/TON_CLOUD_NAME/image/upload";
-        const PRESET = "floy_preset";
+        const PRESET = "floy_preset"; 
+        const MY_ID = "User_Floy_Account"; // Remplace par ta logique d'ID utilisateur si besoin
+
         const fileInput = document.getElementById('file-input');
         const grid = document.getElementById('preview-grid');
         const publishBtn = document.getElementById('publish-btn');
@@ -77,62 +82,69 @@
 
         let filesToUpload = [];
 
-        // Prévisualisation
+        // 1. Prévisualisation des images
         fileInput.onchange = (e) => {
             filesToUpload = Array.from(e.target.files);
             grid.innerHTML = "";
-            document.getElementById('placeholder').style.display = "none";
-            filesToUpload.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    const img = document.createElement('img');
-                    img.src = ev.target.result;
-                    img.className = "preview-img";
-                    grid.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
+            if(filesToUpload.length > 0) {
+                document.getElementById('placeholder').style.display = "none";
+                filesToUpload.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const img = document.createElement('img');
+                        img.src = ev.target.result;
+                        img.className = "preview-img";
+                        grid.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
         };
 
-        // Publication
+        // 2. Fonction de publication
         publishBtn.onclick = async () => {
             if (filesToUpload.length === 0) return alert("Choisis au moins une photo !");
             
             publishBtn.disabled = true;
-            publishBtn.innerText = "Envoi...";
+            publishBtn.innerText = "Envoi en cours...";
             progBox.style.display = "block";
 
             let imagesTableau = [];
 
             try {
-                // 1. Upload Cloudinary
+                // A. Upload vers Cloudinary
                 for (let i = 0; i < filesToUpload.length; i++) {
                     const fd = new FormData();
                     fd.append('file', filesToUpload[i]);
                     fd.append('upload_preset', PRESET);
 
                     const res = await fetch(CLOUD_URL, { method: 'POST', body: fd });
-                    if(!res.ok) throw new Error("Erreur Cloudinary : vérifie ton Preset et Cloud Name");
+                    
+                    if(!res.ok) {
+                        const errorData = await res.json();
+                        throw new Error(errorData.error.message || "Erreur Cloudinary");
+                    }
                     
                     const data = await res.json();
                     imagesTableau.push(data.secure_url);
 
+                    // Mise à jour de la barre orange
                     bar.style.width = ((i + 1) / filesToUpload.length * 100) + "%";
                 }
 
-                // 2. Récupération Infos User (Directe, sans snapshot bloquant)
+                // B. Récupération de tes infos profil (Nom, Badge, Photo)
                 const userRef = doc(db, "users", MY_ID);
                 const userSnap = await getDoc(userRef);
                 const u = userSnap.exists() ? userSnap.data() : {};
 
-                // 3. Création du Post
+                // C. Enregistrement du post album dans Firestore
                 await addDoc(collection(db, "posts"), {
                     userId: MY_ID,
-                    username: u.username || "Arlein",
-                    name: u.name || "Arlein",
-                    userPhoto: u.avatarUrl || "",
-                    isVerified: u.isVerified || true,
-                    images: imagesTableau,
+                    username: u.username || "Utilisateur Floy",
+                    name: u.name || "Membre Floy",
+                    userPhoto: u.avatarUrl || "https://via.placeholder.com/50",
+                    isVerified: u.isVerified || true, // Badge orange par défaut
+                    images: imagesTableau, // Le tableau pour le collage
                     caption: document.getElementById('caption').value,
                     likesCount: 0,
                     timestamp: serverTimestamp()
@@ -141,16 +153,16 @@
                 window.location.href = "index.html";
 
             } catch (err) {
-                console.error(err);
-                alert("Erreur : " + err.message);
+                console.error("ERREUR :", err);
+                alert("Oups ! " + err.message);
                 publishBtn.disabled = false;
                 publishBtn.innerText = "Partager";
             }
         };
 
-        // Photo de profil nav
+        // Charger ta photo de profil dans la nav bar
         onSnapshot(doc(db, "users", MY_ID), s => { 
-            if(s.exists()) document.getElementById('nav-pic').src = s.data().avatarUrl; 
+            if(s.exists() && s.data().avatarUrl) document.getElementById('nav-pic').src = s.data().avatarUrl; 
         });
     </script>
 </body>
