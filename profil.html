@@ -86,11 +86,19 @@
     </nav>
 
     <script type="module">
-        import { db } from './firebase-config.js';
-        import { doc, onSnapshot, collection, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const MY_ID = "User_Floy_Account"; // Ton ID dans Firebase
-
+        onAuthStateChanged(auth, (user) => {
+        if (user) {
+        // L'utilisateur est connecté, on utilise son UID réel !
+        const MY_ID = user.uid;
+        chargerProfil(MY_ID); // Appelle tes fonctions de chargement avec cet ID
+        } else {
+        // Personne n'est connecté, on renvoie vers la page de login
+        window.location.href = "login.html";
+    }
+});
         // 1. Charger les données du profil (Nom, Bio, Badge)
         onSnapshot(doc(db, "users", MY_ID), (docSnap) => {
             if(docSnap.exists()){
