@@ -3,24 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Publier</title>
+    <title>Floy - Créer un Post</title>
     <style>
         :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; }
-        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; }
+        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; padding-bottom: 80px; }
         
+        /* HEADER */
         .header-post { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-cancel { color: white; text-decoration: none; font-size: 16px; }
         .btn-share { color: var(--orange); background: none; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-share:disabled { opacity: 0.3; cursor: not-allowed; }
 
+        /* ZONE D'UPLOAD MULTIPLE */
         .upload-area { 
-            width: 100%; aspect-ratio: 1/1; border: 2px dashed var(--bordure); 
+            width: 100%; min-height: 200px; border: 2px dashed var(--bordure); 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            border-radius: 15px; overflow: hidden; position: relative;
+            border-radius: 15px; overflow: hidden; position: relative; margin-bottom: 15px;
         }
-        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .upload-icon { width: 50px; opacity: 0.5; }
+        #preview-container { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; width: 100%; 
+        }
+        .preview-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; border: 1px solid var(--bordure); }
+        
+        /* BARRE DE PROGRESSION */
+        .progress-container { width: 100%; background: #1a1a1a; height: 6px; border-radius: 10px; margin: 15px 0; display: none; overflow: hidden; }
+        #progress-bar { width: 0%; height: 100%; background: var(--orange); transition: width 0.3s; }
 
-        .caption-area { width: 100%; background: none; border: none; color: white; padding: 15px 0; font-size: 16px; outline: none; resize: none; border-bottom: 1px solid var(--bordure); margin-top: 10px; }
+        .caption-area { 
+            width: 100%; background: none; border: none; color: white; padding: 15px 0; 
+            font-size: 16px; outline: none; resize: none; border-bottom: 1px solid var(--bordure); 
+        }
 
         /* NAV BAR */
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: black; border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
@@ -35,16 +47,20 @@
         <button class="btn-share" id="publish-btn">Partager</button>
     </div>
 
-    <div class="upload-area" onclick="document.getElementById('file-input').click()">
-        <img id="preview-img" src="">
+    <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
         <div id="placeholder-ui">
-            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <p style="color: grey; font-size: 14px;">Cliquez pour choisir une photo</p>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <p style="color: grey; font-size: 14px; margin-top: 10px;">Sélectionner une ou plusieurs photos</p>
         </div>
-        <input type="file" id="file-input" style="display:none" accept="image/*">
+        <div id="preview-container"></div>
+        <input type="file" id="file-input" style="display:none" accept="image/*" multiple>
     </div>
 
-    <textarea class="caption-area" id="caption" placeholder="Écrire une légende..."></textarea>
+    <div class="progress-container" id="prog-cont">
+        <div id="progress-bar"></div>
+    </div>
+
+    <textarea class="caption-area" id="caption" placeholder="Écrire une légende pour tous les posts..."></textarea>
 
     <nav class="nav-bar">
         <a href="index.html" class="nav-link"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
@@ -56,57 +72,92 @@
         import { db } from './firebase-config.js';
         import { collection, addDoc, serverTimestamp, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const MY_ID = "User_Floy_Account"; // Ton ID permanent
-        let base64Image = "";
+        const MY_ID = "User_Floy_Account";
+        const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/TON_CLOUD_NAME/image/upload";
+        const CLOUDINARY_PRESET = "TON_PRESET_NAME"; // Ton unsigned preset Cloudinary
 
-        // 1. Gérer la prévisualisation de l'image
-        document.getElementById('file-input').onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    base64Image = event.target.result;
-                    document.getElementById('preview-img').src = base64Image;
-                    document.getElementById('preview-img').style.display = "block";
-                    document.getElementById('placeholder-ui').style.display = "none";
-                };
-                reader.readAsDataURL(file);
-            }
-        };
+        const fileInput = document.getElementById('file-input');
+        const previewContainer = document.getElementById('preview-container');
+        const placeholder = document.getElementById('placeholder-ui');
+        const publishBtn = document.getElementById('publish-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progCont = document.getElementById('prog-cont');
 
-        // 2. Publier sur Firebase
-        document.getElementById('publish-btn').onclick = async () => {
-            const captionText = document.getElementById('caption').value;
+        let selectedFiles = [];
 
-            if (!base64Image) {
-                alert("Veuillez choisir une image d'abord !");
-                return;
-            }
-
-            try {
-                // On récupère tes infos actuelles (nom et photo) pour le post
-                onSnapshot(doc(db, "users", MY_ID), async (s) => {
-                    const userData = s.data();
-                    
-                    await addDoc(collection(db, "posts"), {
-                        userId: MY_ID, // Liaison cruciale
-                        username: userData.username || "Anonyme",
-                        userPhoto: userData.avatarUrl || "",
-                        imageUrl: base64Image, // Utilisation de Cloudinary recommandée pour plus de 100 utilisateurs
-                        caption: captionText,
-                        likesCount: 0,
-                        timestamp: serverTimestamp()
-                    });
-
-                    alert("Post publié !");
-                    window.location.href = "index.html";
+        // 1. Prévisualisation multiple
+        fileInput.onchange = (e) => {
+            selectedFiles = Array.from(e.target.files);
+            previewContainer.innerHTML = "";
+            
+            if (selectedFiles.length > 0) {
+                placeholder.style.display = "none";
+                selectedFiles.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = document.createElement('img');
+                        img.src = event.target.result;
+                        img.className = "preview-img";
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
                 });
-            } catch (error) {
-                console.error("Erreur lors de la publication :", error);
             }
         };
 
-        // 3. Photo de la nav bar
+        // 2. Publication en boucle avec Cloudinary
+        publishBtn.onclick = async () => {
+            const captionText = document.getElementById('caption').value;
+            if (selectedFiles.length === 0) return alert("Choisissez au moins une photo !");
+
+            publishBtn.disabled = true;
+            progCont.style.display = "block";
+
+            // Récupérer tes infos pour le post (Nom, Photo, Badge)
+            const userSnap = await onSnapshot(doc(db, "users", MY_ID), async (s) => {
+                const userData = s.data();
+                
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles[i];
+
+                    // A. Envoi à Cloudinary
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', CLOUDINARY_PRESET);
+
+                    try {
+                        const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+                        const cloudData = await response.json();
+                        const imageUrl = cloudData.secure_url;
+
+                        // B. Envoi à Firebase
+                        await addDoc(collection(db, "posts"), {
+                            userId: MY_ID,
+                            username: userData.username || "Arlein",
+                            name: userData.name || "Arlein",
+                            userPhoto: userData.avatarUrl || "",
+                            isVerified: userData.isVerified || false,
+                            imageUrl: imageUrl,
+                            caption: captionText,
+                            likesCount: 0,
+                            timestamp: serverTimestamp()
+                        });
+
+                        // Mise à jour barre de progression
+                        const percent = ((i + 1) / selectedFiles.length) * 100;
+                        progressBar.style.width = percent + "%";
+
+                    } catch (err) {
+                        console.error("Erreur d'upload :", err);
+                    }
+                }
+
+                alert("Tous vos posts sont en ligne sur Floy !");
+                window.location.href = "index.html";
+            });
+        };
+
+        // 3. Photo Nav Bar
         onSnapshot(doc(db, "users", MY_ID), s => { 
             if(s.exists() && s.data().avatarUrl) document.getElementById('my-nav-pic').src = s.data().avatarUrl; 
         });
