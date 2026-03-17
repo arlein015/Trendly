@@ -3,147 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Premium</title>
+    <title>Floy - Premium & Certification</title>
     <style>
-        :root { --orange: #FF7A1A; --orange-dark: #cc5f10; --noir: #000; --gris-fonce: #1a1a1a; }
+        :root { --orange: #FF7A1A; --noir: #000; --gris: #1a1a1a; --bordure: #333; }
         body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 40px; }
 
-        .header { padding: 20px; display: flex; align-items: center; gap: 15px; }
-        .btn-back { color: white; text-decoration: none; font-size: 24px; }
+        /* HEADER */
+        .header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--bordure); }
+        .btn-back { color: white; text-decoration: none; font-size: 24px; cursor: pointer; }
 
-        .hero { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, rgba(255,122,26,0.2) 0%, rgba(0,0,0,1) 100%); }
-        .hero h1 { font-size: 32px; margin: 0; color: var(--orange); }
-        .hero p { color: #ccc; margin-top: 10px; font-size: 16px; }
+        .hero { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, rgba(255,122,26,0.15) 0%, rgba(0,0,0,1) 100%); }
+        .hero h1 { font-size: 28px; margin: 0; color: var(--orange); }
 
-        /* CARTES D'OFFRES */
+        /* CARTES OFFRES */
         .offers-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
         .card { 
-            background: var(--gris-fonce); border: 1px solid #333; border-radius: 20px; padding: 20px; 
-            position: relative; overflow: hidden; transition: transform 0.2s;
+            background: var(--gris); border: 1px solid var(--bordure); border-radius: 20px; padding: 25px; 
+            position: relative; overflow: hidden;
         }
         .card.active { border: 2px solid var(--orange); }
         .badge-popular { 
             position: absolute; top: 10px; right: -30px; background: var(--orange); 
-            color: black; font-weight: bold; font-size: 12px; padding: 5px 40px; 
-            transform: rotate(45deg); 
+            color: black; font-weight: bold; font-size: 11px; padding: 5px 40px; transform: rotate(45deg); 
         }
 
-        .card-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .card-price { font-size: 28px; font-weight: bold; margin-bottom: 15px; }
+        .card-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .card-price { font-size: 32px; font-weight: bold; margin-bottom: 15px; }
         .card-price span { font-size: 14px; color: #888; }
 
-        .features-list { list-style: none; padding: 0; margin: 0; }
-        .features-list li { margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
-        .check-icon { color: var(--orange); font-weight: bold; }
+        .features { list-style: none; padding: 0; margin: 20px 0; }
+        .features li { margin-bottom: 12px; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+        .check { color: var(--orange); font-weight: bold; }
 
-        .btn-subscribe { 
+        .btn-pay { 
             width: 100%; background: var(--orange); color: white; border: none; 
-            padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; 
-            margin-top: 20px; cursor: pointer; 
+            padding: 16px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;
         }
-        .btn-subscribe:active { background: var(--orange-dark); }
 
-        .footer-note { text-align: center; font-size: 12px; color: #666; padding: 20px; }
+        /* MODAL BINANCE */
+        #modal-binance {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000; padding: 30px 20px; box-sizing: border-box; text-align: center;
+        }
+        .modal-content { background: #111; padding: 25px; border-radius: 25px; border: 1px solid var(--orange); }
+        .binance-id-box { background: #000; padding: 15px; border-radius: 12px; margin: 20px 0; border: 1px dashed #555; }
+        .btn-copy { background: #333; color: var(--orange); border: none; padding: 8px 15px; border-radius: 6px; font-size: 12px; margin-top: 10px; cursor: pointer; }
+        .btn-confirm { width: 100%; background: white; color: black; border: none; padding: 15px; border-radius: 12px; font-weight: bold; margin-top: 25px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="profil.html" class="btn-back">✕</a>
-        <span style="font-weight:bold; font-size:18px;">Floy Gold</span>
+        <div class="btn-back" onclick="window.history.back()">✕</div>
+        <span style="font-weight:bold;">Floy Gold & Certification</span>
     </div>
 
     <div class="hero">
-        <h1>Passe au niveau supérieur</h1>
-        <p>Rejoins la communauté certifiée de Floy et booste ta visibilité.</p>
+        <h1>Deviens Certifié 🟠</h1>
+        <p style="color:#888;">Augmente ta crédibilité et ta visibilité sur Floy.</p>
     </div>
 
     <div class="offers-container">
-    <div class="card active">
-        <div class="badge-popular">RECOMMANDÉ</div>
-        <div class="card-title">Badge Floy Gold 🟠</div>
-        <div class="card-price">10 USDT <span>/ mois</span></div>
-        <p style="font-size: 12px; color: #aaa;">Paiement sécurisé via Binance Pay</p>
-        <ul class="features-list">
-            <li><span class="check-icon">✓</span> Badge de certification orange</li>
-            <li><span class="check-icon">✓</span> Crédibilité augmentée</li>
-            <li><span class="check-icon">✓</span> Priorité dans l'algorithme</li>
-        </ul>
-        <button class="btn-subscribe" onclick="openBinance('badge')">Payer avec Binance</button>
-    </div>
-</div>
-
-<div id="payment-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; padding:20px; box-sizing:border-box; text-align:center;">
-    <h2 style="color:var(--orange);">Binance Pay</h2>
-    <p>Transférez exactement <span id="pay-amount" style="font-weight:bold; color:white;"></span> USDT à l'ID ci-dessous :</p>
-    
-    <div style="background:#222; padding:20px; border-radius:15px; margin:20px 0; border:1px dashed var(--orange);">
-        <p style="margin:0; color:#888; font-size:12px;">MON ID BINANCE</p>
-        <h3 id="binance-id" style="font-size:24px; letter-spacing:2px; margin:10px 0;">123456789</h3>
-        <button onclick="copyID()" style="background:var(--orange); border:none; color:black; padding:5px 15px; border-radius:5px; font-weight:bold;">Copier l'ID</button>
+        <div class="card active">
+            <div class="badge-popular">RECOMMANDÉ</div>
+            <div class="card-title">Abonnement Mensuel</div>
+            <div class="card-price" id="price-val">10 USDT <span>/ mois</span></div>
+            <ul class="features">
+                <li><span class="check">✓</span> Badge orange sur le profil</li>
+                <li><span class="check">✓</span> Boost de tes posts dans le feed</li>
+                <li><span class="check">✓</span> Support prioritaire 24h/7j</li>
+            </ul>
+            <button class="btn-pay" onclick="showBinance('badge', 10)">Payer avec Binance Pay</button>
+        </div>
     </div>
 
-    <p style="font-size:14px; color:#ccc;">Une fois le transfert effectué, envoyez la capture d'écran à l'admin.</p>
-    
-    <button onclick="goToChat()" style="width:100%; background:white; color:black; border:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:20px;">J'ai envoyé le paiement ✅</button>
-    <p onclick="closeModal()" style="margin-top:20px; color:#666; cursor:pointer;">Annuler</p>
-</div>
+    <div id="modal-binance">
+        <div class="modal-content">
+            <h2 style="color:var(--orange); margin-top:0;">Binance Pay</h2>
+            <p style="font-size:14px; color:#ccc;">Envoie exactement <b id="amount-display">10</b> USDT à l'ID suivant :</p>
+            
+            <div class="binance-id-box">
+                <span style="color:#666; font-size:12px;">MON BINANCE ID</span><br>
+                <span id="my-binance-id" style="font-size:22px; font-weight:bold; letter-spacing:1px;">123456789</span><br>
+                <button class="btn-copy" onclick="copyID()">Copier l'ID</button>
+            </div>
 
-    <div class="footer-note">
-        En souscrivant, tu acceptes les conditions d'utilisation de Floy. <br>
-        L'abonnement est sans engagement.
+            <p style="font-size:13px; color:#888;">Après le transfert, clique sur le bouton ci-dessous pour nous informer du paiement.</p>
+            
+            <button class="btn-confirm" onclick="enregistrerPaiement()">J'ai effectué le transfert ✅</button>
+            <p onclick="document.getElementById('modal-binance').style.display='none'" style="margin-top:20px; color:#555; cursor:pointer;">Annuler</p>
+        </div>
     </div>
 
-    <script>
-        function handlePayment(type) {
-            if(type === 'badge') {
-                alert("Redirection vers le paiement (Stripe/PayPal)... \nUne fois payé, Arlein activera ton badge sur Firebase !");
-            } else {
-                alert("Choisis le post que tu souhaites booster dans ton profil.");
-                window.location.href = "profil.html";
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { addDoc, collection, serverTimestamp, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // CONFIGURATION
+        const MY_ID = "User_Floy_Account"; // Ton ID actuel
+        const MON_ID_BINANCE = "123456789"; // REMPLACE PAR TON VRAI ID BINANCE
+        let currentAmount = 0;
+        let currentType = "";
+
+        // 1. Ouvrir le modal
+        window.showBinance = (type, montant) => {
+            currentAmount = montant;
+            currentType = type;
+            document.getElementById('amount-display').innerText = montant;
+            document.getElementById('my-binance-id').innerText = MON_ID_BINANCE;
+            document.getElementById('modal-binance').style.display = 'block';
+        };
+
+        // 2. Copier l'ID Binance
+        window.copyID = () => {
+            const idText = document.getElementById('my-binance-id').innerText;
+            navigator.clipboard.writeText(idText);
+            alert("ID Binance copié !");
+        };
+
+        // 3. ENREGISTRER DANS FIREBASE (Ton tableau Excel automatique)
+        window.enregistrerPaiement = async () => {
+            try {
+                // Création de la ligne dans la collection "payments_logs"
+                await addDoc(collection(db, "payments_logs"), {
+                    userId: MY_ID,
+                    type: currentType,
+                    amount: currentAmount + " USDT",
+                    status: "En attente",
+                    method: "Binance Pay",
+                    timestamp: serverTimestamp()
+                });
+
+                alert("Merci ! Ton paiement est en attente de validation. Envoie la capture d'écran sur la messagerie.");
+                window.location.href = "messages.html";
+            } catch (e) {
+                console.error("Erreur d'enregistrement : ", e);
+                alert("Erreur système. Contacte l'admin directement.");
             }
-        }
-        function openBinance(type) {
-        document.getElementById('pay-amount').innerText = (type === 'badge') ? "10" : "3";
-        document.getElementById('payment-modal').style.display = "block";
-    }
-
-    function closeModal() {
-        document.getElementById('payment-modal').style.display = "none";
-    }
-
-    function copyID() {
-        const id = document.getElementById('binance-id').innerText;
-        navigator.clipboard.writeText(id);
-        alert("ID Binance copié !");
-    }
-
-    // On ajoute l'importation nécessaire au début de ton script
-import { addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-async function goToChat() {
-    const amount = document.getElementById('pay-amount').innerText;
-    const binanceID = document.getElementById('binance-id').innerText;
-    
-    try {
-        // Enregistrement automatique dans Firestore (comme un Google Sheet)
-        await addDoc(collection(db, "payments_logs"), {
-            userId: MY_ID,
-            username: "Arlein", // Idéalement récupéré dynamiquement
-            amount: amount + " USDT",
-            status: "En attente", // Pour que tu puisses valider plus tard
-            method: "Binance Pay",
-            timestamp: serverTimestamp()
-        });
-
-        alert("Paiement enregistré ! Redirection vers la messagerie pour envoyer ta preuve.");
-        window.location.href = "messages.html";
-        
-    } catch (e) {
-        console.error("Erreur lors de l'enregistrement: ", e);
-        window.location.href = "messages.html";
-    }
-}
+        };
     </script>
 </body>
 </html>
