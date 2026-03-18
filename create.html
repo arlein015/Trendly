@@ -173,6 +173,30 @@
             loader.style.display = 'none';
         }
     };
+        window.handleFile = () => {
+    const fileInput = document.getElementById('file-input');
+    const previewImg = document.getElementById('preview-img');
+    const cameraIcon = document.getElementById('camera-icon');
+    const btnNext = document.getElementById('btn-next');
+
+    // On vérifie qu'un fichier a bien été sélectionné
+    if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        
+        // 1. Créer l'URL temporaire
+        const imageURL = URL.createObjectURL(file);
+        
+        // 2. L'injecter dans la balise <img>
+        previewImg.src = imageURL;
+        
+        // 3. AFFICHAGE : C'est ici que ça se joue !
+        previewImg.style.display = 'block'; // On montre l'image
+        cameraIcon.style.display = 'none';   // On cache l'icône caméra
+        
+        // 4. Montrer le bouton "Suivant" en bleu
+        if(btnNext) btnNext.style.display = 'block';
+    }
+};
 </script>
 </body>
 </html>
