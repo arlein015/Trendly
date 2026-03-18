@@ -7,30 +7,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background-color: #000; color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 70px; }
-        
-        /* Header */
         .top-nav { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; position: sticky; top: 0; background: #000; border-bottom: 1px solid #121212; z-index: 100; }
         .logo { font-size: 24px; font-weight: bold; font-style: italic; color: #FF7A1A; }
-
-        /* Conteneur des posts */
         #feed { max-width: 500px; margin: 0 auto; }
-        .fa-heart.active {
-    color: #ed4956; /* Le rouge Instagram */
-    transform: scale(1.1);
-    transition: transform 0.1s ease;
-}
-
-        /* Style d'un Post */
         .post-card { border-bottom: 1px solid #121212; margin-bottom: 10px; }
         .post-header { padding: 10px; display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 32px; height: 32px; background: #333; border-radius: 50%; object-fit: cover; }
+        .user-avatar { width: 32px; height: 32px; background: #333; border-radius: 50%; }
         .post-img { width: 100%; display: block; background: #050505; }
+        
+        /* Actions */
         .post-actions { padding: 10px; display: flex; gap: 15px; font-size: 22px; }
+        .fa-heart.active { color: #ed4956; } /* Couleur rouge pour le like */
+        
         .post-info { padding: 0 10px 15px 10px; line-height: 1.4; }
-
+        
         /* Menu du bas */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid #121212; display: flex; justify-content: space-around; align-items: center; font-size: 22px; }
-        .bottom-nav i { cursor: pointer; color: white; }
     </style>
 </head>
 <body>
@@ -44,7 +36,7 @@
     </nav>
 
     <div id="feed">
-        <p style="text-align: center; color: #555; margin-top: 50px;">Chargement du fil...</p>
+        <p style="text-align: center; color: #555; margin-top: 50px;">Chargement...</p>
     </div>
 
     <nav class="bottom-nav">
@@ -56,72 +48,50 @@
     </nav>
 
     <script type="module">
-    import { db } from './firebase-config.js'; 
-    // On ajoute doc, updateDoc, arrayUnion et arrayRemove pour manipuler les données
-    import { doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { db } from './firebase-config.js'; 
+        import { collection, query, orderBy, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const auth = getAuth();
+        const auth = getAuth();
+        const feedContainer = document.getElementById('feed');
 
-    // Cette fonction sera appelée au clic sur l'icône coeur
-    window.toggleLike = async (postId, isLiked) => {
-        const user = auth.currentUser;
-
-        // Sécurité : Il faut être connecté pour liker
-        if (!user) {
-            alert("Tu dois être connecté pour liker ce post !");
-            return;
-        }
-        
-        const postRef = doc(db, "posts", postId);
-
-        try {
-            if (isLiked) {
-                // Si déjà liké, on retire l'ID de l'utilisateur de la liste
+        // Fonction pour gérer le Like
+        window.toggleLike = async (postId, isLiked) => {
+            const user = auth.currentUser;
+            if (!user) return alert("Connectez-vous pour liker !");
+            
+            const postRef = doc(db, "posts", postId);
+            try {
                 await updateDoc(postRef, {
-                    likes: arrayRemove(user.uid)
+                    likes: isLiked ? arrayRemove(user.uid) : arrayUnion(user.uid)
                 });
-                console.log("Like retiré");
-            } else {
-                // Sinon, on ajoute l'ID de l'utilisateur dans la liste
-                await updateDoc(postRef, {
-                    likes: arrayUnion(user.uid)
-                });
-                console.log("Like ajouté");
+            } catch (e) { console.error("Erreur Like:", e); }
+        };
+
+        // Fonction pour ouvrir les commentaires (simulation simple pour l'instant)
+        window.openComments = (postId) => {
+            const comment = prompt("Ajouter un commentaire :");
+            if (comment) {
+                alert("Commentaire envoyé : " + comment);
+                // On pourra ajouter la logique Firebase ici après
             }
-        } catch (error) {
-            console.error("Erreur lors du Like :", error);
-        }
-    };
+        };
 
-        // Création de la requête : On trie par date de création (du plus récent au plus ancien)
         const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
 
-        // Écoute en temps réel de la base de données
         onSnapshot(q, (snapshot) => {
             if (!feedContainer) return;
-            
-            feedContainer.innerHTML = ""; // On vide la zone pour rafraîchir
+            feedContainer.innerHTML = ""; 
 
-            if (snapshot.empty) {
-                feedContainer.innerHTML = `<p style="text-align:center; color:#888; margin-top:50px;">Aucun post pour le moment.</p>`;
-                return;
-            }
-
-            snapshot.forEach((doc) => {
-                const post = doc.data();
-                // On calcule si l'utilisateur actuel est dans la liste des likes
+            snapshot.forEach((snapshotDoc) => {
+                const post = snapshotDoc.data();
+                const postId = snapshotDoc.id;
+                const user = auth.currentUser;
+                
+                // On vérifie si l'utilisateur actuel a déjà liké
                 const isLiked = user && post.likes && post.likes.includes(user.uid);
-
-                // On change la classe CSS selon le résultat
                 const likeClass = isLiked ? "fas fa-heart active" : "far fa-heart";
 
-                // On ajoute l'événement onclick qui appelle la fonction ci-dessus
-                feedContainer.innerHTML += `
-                <i class="${likeClass}" onclick="toggleLike('${postId}', ${isLiked})"></i>
-        `;
-                
-                // Génération du code HTML pour chaque photo
                 const postElement = `
                     <div class="post-card">
                         <div class="post-header">
@@ -129,24 +99,22 @@
                             <b>${post.username || "Utilisateur"}</b>
                         </div>
                         
-                        <img src="${post.imageUrl}" class="post-img">
+                        <img src="${post.imageUrl}" class="post-img" ondblclick="toggleLike('${postId}', ${isLiked})">
                         
                         <div class="post-actions">
-                            <i class="far fa-heart"></i>
-                            <i class="far fa-comment"></i>
+                            <i class="${likeClass}" onclick="toggleLike('${postId}', ${isLiked})"></i>
+                            <i class="far fa-comment" onclick="openComments('${postId}')"></i>
                             <i class="far fa-paper-plane"></i>
                         </div>
                         
                         <div class="post-info">
+                            <div style="font-weight:bold; margin-bottom:5px;">${(post.likes ? post.likes.length : 0)} J'aime</div>
                             <b>${post.username || "Utilisateur"}</b> ${post.caption || ""}
                         </div>
                     </div>
                 `;
                 feedContainer.innerHTML += postElement;
             });
-        }, (error) => {
-            console.error("Erreur de lecture :", error);
-            feedContainer.innerHTML = `<p style="color:red; text-align:center;">Erreur de chargement des posts.</p>`;
         });
     </script>
 </body>
