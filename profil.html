@@ -6,175 +6,150 @@
     <title>Profil - Floy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --bg: #000; --card: #121212; }
-        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
+        :root { --orange: #FF7A1A; --bg: #000; --card: #121212; --text-gray: #a8a8a8; }
+        body { background: var(--bg); color: white; font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
 
-        /* Header & Top Bar */
-        .top-bar { padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 18px; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+        /* Header */
+        .top-bar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 1000; backdrop-filter: blur(10px); }
+        .username-header { font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
+
+        /* Profile Section */
+        .profile-container { padding: 10px 20px; }
+        .stats-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         
-        /* Stats Section */
-        .profile-main { padding: 0 15px; }
-        .stats-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .profile-pic { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 2px solid #222; background: #111; }
-        .stats-box { flex: 1; display: flex; justify-content: space-around; text-align: center; }
-        .stat-num { font-weight: bold; font-size: 17px; display: block; }
-        .stat-txt { font-size: 12px; color: #888; }
+        /* Photo de profil fluide */
+        .profile-pic-container { position: relative; width: 86px; height: 86px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, var(--orange), #ffcd3c); }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #111; border: 2px solid black; transition: opacity 0.3s ease; }
+        
+        .stats-box { flex: 1; display: flex; justify-content: space-around; margin-left: 20px; }
+        .stat-item { text-align: center; }
+        .stat-num { font-weight: 800; font-size: 18px; display: block; }
+        .stat-label { font-size: 12px; color: var(--text-gray); }
 
         /* Bio & Badge */
-        .profile-info { margin-bottom: 20px; }
-        .name-container { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-        .name-container b { font-size: 16px; }
-        .bio-text { font-size: 14px; margin: 0; color: #efefef; white-space: pre-wrap; }
+        .user-info { margin-bottom: 20px; }
+        .name-badge { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .name-badge b { font-size: 15px; font-weight: 700; }
+        .bio-text { font-size: 14px; margin: 0; line-height: 1.4; color: #efefef; }
 
         /* Boutons d'action */
         .action-btns { display: flex; gap: 8px; margin-top: 15px; }
-        .btn { flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; border: none; cursor: pointer; transition: 0.2s; text-align: center; text-decoration: none; }
-        .btn-edit { background: #262626; color: white; }
-        .btn-msg { background: #262626; color: white; }
-        .btn:active { opacity: 0.6; }
+        .btn { flex: 1; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 13px; border: none; cursor: pointer; text-align: center; text-decoration: none; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.96); }
+        .btn-follow { background: var(--orange); color: white; }
+        .btn-gray { background: #262626; color: white; }
 
-        /* Onglets (Photos / Vidéos) */
-        .tabs { display: flex; border-top: 1px solid #222; margin-top: 20px; }
-        .tab-item { flex: 1; text-align: center; padding: 12px; color: #888; font-size: 20px; cursor: pointer; }
-        .tab-item.active { color: white; border-top: 2px solid white; }
-
-        /* Grille de médias */
+        /* Grille & Onglets */
+        .tabs { display: flex; border-top: 1px solid #262626; margin-top: 10px; }
+        .tab { flex: 1; text-align: center; padding: 12px; color: var(--text-gray); font-size: 22px; cursor: pointer; }
+        .tab.active { color: white; border-top: 2px solid white; }
+        
         .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-        .media-item { width: 100%; aspect-ratio: 1/1; position: relative; background: #111; overflow: hidden; }
-        .media-item img, .media-item video { width: 100%; height: 100%; object-fit: cover; }
-        .video-icon { position: absolute; top: 8px; right: 8px; color: white; font-size: 14px; text-shadow: 0 0 3px rgba(0,0,0,0.5); }
+        .grid-item { aspect-ratio: 1/1; background: #111; position: relative; }
+        .grid-item img, .grid-item video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* NAV BAR SVG (Style Index) */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-icon { width: 26px; height: 26px; fill: white; cursor: pointer; }
+        .nav-icon.active { fill: var(--orange); }
 
         /* Modal Message */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card); width: 85%; padding: 20px; border-radius: 15px; text-align: center; }
-        .modal-content textarea { width: 100%; background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 10px; margin: 15px 0; outline: none; box-sizing: border-box; }
-        .btn-send { background: var(--orange); color: white; padding: 12px; width: 100%; border-radius: 10px; font-weight: bold; border: none; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: #1c1c1c; width: 100%; max-width: 350px; padding: 25px; border-radius: 20px; text-align: center; }
+        .modal-content textarea { width: 100%; background: #000; border: 1px solid #333; color: white; padding: 15px; border-radius: 12px; margin: 15px 0; outline: none; resize: none; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <span id="header-username">Profil</span>
+        <span class="username-header" id="header-user">Chargement...</span>
         <i class="fas fa-bars" onclick="location.href='side-menu.html'"></i>
     </div>
 
-    <div class="profile-main">
+    <div class="profile-container">
         <div class="stats-row">
-            <img id="profile-img" class="profile-pic" src="https://via.placeholder.com/150">
+            <div class="profile-pic-container">
+                <img id="profile-img" class="profile-pic" src="">
+            </div>
             <div class="stats-box">
-                <div><span class="stat-num" id="count-posts">0</span><span class="stat-txt">Posts</span></div>
-                <div><span class="stat-num">0</span><span class="stat-txt">Abonnés</span></div>
-                <div><span class="stat-num">0</span><span class="stat-txt">Suivis</span></div>
+                <div class="stat-item"><span class="stat-num" id="post-count">0</span><span class="stat-label">Posts</span></div>
+                <div class="stat-item"><span class="stat-num" id="follower-count">0</span><span class="stat-label">Abonnés</span></div>
+                <div class="stat-item"><span class="stat-num" id="following-count">0</span><span class="stat-label">Suivis</span></div>
             </div>
         </div>
 
-        <div class="profile-info">
-            <div class="name-container">
-                <b id="full-name">Chargement...</b>
-                <i id="verified-badge" class="fas fa-check-circle" style="color: #0095f6; display: none;"></i>
+        <div class="user-info">
+            <div class="name-badge">
+                <b id="display-name">...</b>
+                <i id="v-badge" class="fas fa-check-circle" style="color:#0095f6; display:none; font-size:13px;"></i>
             </div>
-            <p id="user-bio-text" class="bio-text">...</p>
-
+            <p id="bio" class="bio-text">Chargement de la bio...</p>
+            
             <div class="action-btns">
-                <a href="edit-profil.html" class="btn btn-edit">Modifier le profil</a>
-                <button class="btn btn-msg" id="open-msg-btn">Message</button>
+                <button class="btn btn-follow" id="btn-follow">Suivre</button>
+                <button class="btn btn-gray" id="btn-open-msg">Message</button>
+                <a href="edit-profil.html" class="btn btn-gray"><i class="fas fa-cog"></i></a>
             </div>
         </div>
     </div>
 
     <div class="tabs">
-        <div class="tab-item active" id="tab-pics"><i class="fas fa-th"></i></div>
-        <div class="tab-item" id="tab-vids"><i class="fas fa-play-circle"></i></div>
+        <div class="tab active"><i class="fas fa-th"></i></div>
+        <div class="tab"><i class="fas fa-play-circle"></i></div>
     </div>
 
-    <div class="media-grid" id="grid-container">
-        </div>
+    <div class="media-grid" id="grid"></div>
+
+    <div class="nav-bar">
+        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='index.html'"><path d="M12 2.099l-9 8.165v11.736h6v-6h6v6h6v-11.736l-9-8.165z"/></svg>
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='create.html'"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/></svg>
+        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='messages.html'"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <svg class="nav-icon active" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </div>
 
     <div id="msgModal" class="modal">
         <div class="modal-content">
-            <h3 style="margin:0;">Nouveau message</h3>
-            <textarea id="msg-text" rows="4" placeholder="Écris quelque chose..."></textarea>
-            <button id="send-btn" class="btn-send">Envoyer</button>
-            <p style="color: #888; margin-top: 15px; cursor: pointer;" onclick="closeModal()">Annuler</p>
+            <h3 style="margin:0">Envoyer un message</h3>
+            <textarea id="msg-input" rows="4" placeholder="Écris ici..."></textarea>
+            <button class="btn btn-follow" style="width:100%" id="send-btn">Envoyer</button>
+            <p style="color:gray; font-size:12px; margin-top:15px; cursor:pointer" onclick="document.getElementById('msgModal').style.display='none'">Fermer</p>
         </div>
     </div>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { doc, onSnapshot, collection, query, where, orderBy, getDocs, addDoc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { doc, onSnapshot, collection, query, where, getDocs, addDoc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                // 1. Infos utilisateur en temps réel
+                // FLUIDITÉ : Utilisation de onSnapshot pour les infos profil
                 onSnapshot(doc(db, "users", user.uid), (snap) => {
                     if (snap.exists()) {
-                        const data = snap.data();
-                        document.getElementById('header-username').innerText = data.username || "Profil";
-                        document.getElementById('full-name').innerText = data.username || "Sans nom";
-                        document.getElementById('user-bio-text').innerText = data.bio || "Aucune bio ajoutée.";
-                        if (data.avatarUrl) document.getElementById('profile-img').src = data.avatarUrl;
-                        document.getElementById('verified-badge').style.display = data.isVerified ? "inline-block" : "none";
+                        const d = snap.data();
+                        document.getElementById('header-user').innerText = d.username || "Profil";
+                        document.getElementById('display-name').innerText = d.username || "Sans nom";
+                        document.getElementById('bio').innerText = d.bio || "Aucune bio.";
+                        document.getElementById('v-badge').style.display = d.isVerified ? "inline-block" : "none";
+                        if (d.avatarUrl) {
+                            const img = document.getElementById('profile-img');
+                            img.style.opacity = '0'; // Petit effet de fondu
+                            img.src = d.avatarUrl;
+                            img.onload = () => img.style.opacity = '1';
+                        }
                     }
                 });
 
-                // 2. Charger la grille (Photos par défaut)
-                loadMedia(user.uid, "image");
+                // Chargement des posts
+                loadPosts(user.uid);
 
-                // 3. Gestion de la fenêtre message
-                const modal = document.getElementById('msgModal');
-                document.getElementById('open-msg-btn').onclick = () => modal.style.display = "flex";
-
-                document.getElementById('send-btn').onclick = async () => {
-                    const txt = document.getElementById('msg-text').value;
-                    if(!txt.trim()) return;
-                    
-                    const chatId = "admin_" + user.uid; // Exemple simple de chat ID
-                    await setDoc(doc(db, "chats", chatId), { lastMessage: txt, lastUpdate: serverTimestamp(), users: [user.uid, "admin"] }, {merge:true});
-                    await addDoc(collection(db, "chats", chatId, "messages"), { senderId: user.uid, text: txt, createdAt: serverTimestamp() });
-                    
-                    alert("Envoyé !");
-                    closeModal();
-                };
-            } else {
-                window.location.href = "connexion.html";
-            }
-        });
-
-        async function loadMedia(uid, type) {
-            const q = query(collection(db, "posts"), where("userId", "==", uid), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
-            const container = document.getElementById('grid-container');
-            container.innerHTML = "";
-            document.getElementById('count-posts').innerText = snap.size;
-
-            snap.forEach(doc => {
-                const data = doc.data();
-                // Vérifier si c'est une vidéo ou une image
-                const isVideo = data.imageUrl.includes(".mp4") || data.type === "video";
+                // Modal Message
+                document.getElementById('btn-open-msg').onclick = () => document.getElementById('msgModal').style.display = 'flex';
                 
-                if (type === "image" && !isVideo) {
-                    container.innerHTML += `<div class="media-item"><img src="${data.imageUrl}"></div>`;
-                } else if (type === "video" && isVideo) {
-                    container.innerHTML += `<div class="media-item">
-                        <video src="${data.imageUrl}"></video>
-                        <i class="fas fa-play video-icon"></i>
-                    </div>`;
-                }
-            });
-        }
-
-        // Changement d'onglets
-        document.getElementById('tab-pics').onclick = function() {
-            this.classList.add('active'); document.getElementById('tab-vids').classList.remove('active');
-            loadMedia(auth.currentUser.uid, "image");
-        };
-        document.getElementById('tab-vids').onclick = function() {
-            this.classList.add('active'); document.getElementById('tab-pics').classList.remove('active');
-            loadMedia(auth.currentUser.uid, "video");
-        };
-
-        window.closeModal = () => document.getElementById('msgModal').style.display = "none";
-    </script>
-</body>
-</html>
+                document.getElementById('send-btn').onclick = async () => {
+                    const txt = document.getElementById('msg-input').value;
+                    if(!txt.trim()) return;
+                    const chatId = user.uid < "admin" ? user.uid+"_admin" : "admin_"+user.uid;
+                    await setDoc(doc(db, "chats", chatId), { users:[user.uid, "admin"], lastMessage: txt, lastUpdate: serverTimestamp() }, {merge:true});
+                    await addDoc(collection(db, "chats", chatId,
