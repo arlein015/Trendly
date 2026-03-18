@@ -3,59 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floy - Messages</title>
+    <title>Messages - Floy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; }
-        body { background: var(--noir); color: white; font-family: sans-serif; margin: 0; padding-bottom: 80px; }
-        .header { padding: 20px; border-bottom: 1px solid #1a1a1a; font-weight: 900; font-size: 20px; }
-        
-        /* Conteneur de la liste */
-        .chat-container { display: flex; flex-direction: column; }
+        :root { --orange: #FF7A1A; --bg: #000; --card: #121212; }
+        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 70px; }
 
-        /* Bloc de discussion cliquable */
-        .chat-row { 
-            display: flex; align-items: center; padding: 15px; 
-            border-bottom: 1px solid #111; text-decoration: none; color: white;
-            cursor: pointer;
+        /* Header */
+        .header { padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; background: #000; z-index: 10; }
+        .header h2 { margin: 0; font-size: 20px; flex: 1; text-align: center; margin-right: 25px; }
+
+        /* Liste des discussions */
+        .chat-list { padding: 5px 0; }
+        .chat-item { 
+            display: flex; align-items: center; padding: 12px 15px; 
+            text-decoration: none; color: white; transition: 0.2s;
         }
-        .chat-row:active { background: #111; }
+        .chat-item:active { background: #1a1a1a; }
+        
+        .user-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #222; margin-right: 15px; border: 1px solid #333; }
+        
+        .chat-info { flex: 1; border-bottom: 0.5px solid #1a1a1a; padding-bottom: 12px; min-width: 0; }
+        .chat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .chat-name { font-weight: bold; font-size: 15px; }
+        .chat-time { font-size: 11px; color: #666; }
+        
+        .chat-preview { font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .unread-dot { width: 10px; height: 10px; background: var(--orange); border-radius: 50%; margin-left: 10px; }
 
-        .img-profile { width: 50px; height: 50px; border-radius: 50%; background: #222; margin-right: 15px; }
-        .info { flex: 1; }
-        .name { font-weight: bold; display: block; margin-bottom: 2px; }
-        .msg-text { font-size: 13px; color: #777; }
+        /* Barre de navigation (Style Index) */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; align-items: center; }
+        .nav-icon { width: 24px; height: 24px; fill: white; }
+        .nav-icon.active { fill: var(--orange); }
     </style>
 </head>
 <body>
 
-    <div class="header">MESSAGES</div>
-
-    <div class="chat-container">
-        <div class="chat-row" onclick="location.href='chat.html'">
-            <img src="https://picsum.photos/100?random=1" class="img-profile">
-            <div class="info">
-                <span class="name">Alexandre Dupont</span>
-                <span class="msg-text">On se capte pour le projet ?</span>
-            </div>
-        </div>
-
-        <div class="chat-row" onclick="location.href='chat-with-admin.html'">
-            <img src="https://picsum.photos/100?random=2" class="img-profile">
-            <div class="info">
-                <span class="name" style="color:var(--orange)">Admin Floy 🛡️</span>
-                <span class="msg-text">Bienvenue sur l'application !</span>
-            </div>
-        </div>
-
-        <div class="chat-row" onclick="location.href='group-chat.html'">
-            <img src="https://picsum.photos/100?random=3" class="img-profile">
-            <div class="info">
-                <span class="name">Groupe Dev Python</span>
-                <span class="msg-text">Sami: Quelqu'un a fini le module ?</span>
-            </div>
-        </div>
+    <div class="header">
+        <i class="fas fa-arrow-left" onclick="history.back()"></i>
+        <h2>Messages</h2>
     </div>
 
-    <script src="navbar.js"></script>
+    <div id="conversations-container" class="chat-list">
+        <p style="text-align: center; color: #444; margin-top: 50px;">Chargement de vos discussions...</p>
+    </div>
+
+    <div class="nav-bar">
+        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='index.html'"><path d="M12 2.099l-9 8.165v11.736h6v-6h6v6h6v-11.736l-9-8.165z"/></svg>
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='create.html'"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/></svg>
+        <svg class="nav-icon active" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='profil.html'"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { collection, query, where, orderBy, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Requête pour trouver les discussions où l'utilisateur est présent
+                const q = query(
+                    collection(db, "chats"),
+                    where("users", "array-contains", user.uid),
+                    orderBy("lastUpdate", "desc")
+                );
+
+                onSnapshot(q, async (snapshot) => {
+                    const container = document.getElementById('conversations-container');
+                    container.innerHTML = "";
+
+                    if (snapshot.empty) {
+                        container.innerHTML = "<p style='text-align:center; color:#555; margin-top:50px;'>Aucun message pour le moment.</p>";
+                        return;
+                    }
+
+                    // On boucle sur chaque discussion trouvée
+                    snapshot.forEach(async (docSnap) => {
+                        const chat = docSnap.data();
+                        const chatId = docSnap.id;
+                        
+                        // Identifier l'autre personne
+                        const otherUserId = chat.users.find(id => id !== user.uid);
+                        
+                        // Créer l'élément HTML (on met des placeholders pendant le chargement des infos user)
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-item';
+                        chatItem.id = `chat-${chatId}`;
+                        chatItem.onclick = () => location.href = `chat.html?id=${chatId}`;
+                        
+                        chatItem.innerHTML = `
+                            <img src="https://via.placeholder.com/150" class="user-avatar" id="img-${chatId}">
+                            <div class="chat-info">
+                                <div class="chat-top">
+                                    <span class="chat-name" id="name-${chatId}">Utilisateur Floy</span>
+                                    <span class="chat-time">Maintenant</span>
+                                </div>
+                                <div class="chat-preview">${chat.lastMessage || "Nouveau message..."}</div>
+                            </div>
+                        `;
+                        container.appendChild(chatItem);
+
+                        // Récupérer les infos (Nom/Photo) de l'autre personne dans la collection "users"
+                        const userRef = doc(db, "users", otherUserId);
+                        const userSnap = await getDoc(userRef);
+                        if (userSnap.exists()) {
+                            const userData = userSnap.data();
+                            document.getElementById(`name-${chatId}`).innerText = userData.username || "Anonyme";
+                            if (userData.avatarUrl) {
+                                document.getElementById(`img-${chatId}`).src = userData.avatarUrl;
+                            }
+                        }
+                    });
+                }, (error) => {
+                    console.error("Erreur d'index ou de droits : ", error);
+                    // Si tu vois cette erreur dans la console F12, clique sur le lien pour créer l'index !
+                });
+            } else {
+                window.location.href = "connexion.html";
+            }
+        });
+    </script>
 </body>
 </html>
