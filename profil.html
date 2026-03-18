@@ -105,24 +105,46 @@
                 });
 
                 // Gestion de la fenêtre de message
-                document.getElementById('open-msg').onclick = () => modal.style.display = "flex";
-                
-                document.getElementById('send-msg-btn').onclick = async () => {
-                    const text = document.getElementById('quick-msg-text').value;
-                    if (!text.trim()) return;
+               document.getElementById('send-msg-btn').onclick = async () => {
+    const text = document.getElementById('quick-msg-text').value;
+    const currentUser = auth.currentUser;
+    const profileUserId = user.uid; // L'ID du profil que tu visites
 
-                    try {
-                        await addDoc(collection(db, "messages"), {
-                            senderId: user.uid,
-                            text: text,
-                            createdAt: serverTimestamp()
-                        });
-                        alert("Message envoyé !");
-                        closeModal();
-                    } catch (e) { alert("Erreur d'envoi"); }
-                };
+    if (!text.trim()) return;
+
+    // Création d'un ID unique pour la discussion (ex: "userA_userB")
+    const chatId = currentUser.uid < profileUserId 
+        ? `${currentUser.uid}_${profileUserId}` 
+        : `${profileUserId}_${currentUser.uid}`;
+
+    try {
+        // A. Crée la discussion dans la liste (pour messages.html)
+        await setDoc(doc(db, "chats", chatId), {
+            users: [currentUser.uid, profileUserId],
+            lastMessage: text,
+            lastUpdate: serverTimestamp(),
+            names: {
+                [currentUser.uid]: currentUser.displayName,
+                [profileUserId]: document.getElementById('full-name').innerText
             }
+        }, { merge: true });
+
+        // B. Ajoute la bulle de texte (pour chat.html)
+        await addDoc(collection(db, "chats", chatId, "messages"), {
+            senderId: currentUser.uid,
+            text: text,
+            createdAt: serverTimestamp()
         });
+
+        alert("Message envoyé !");
+        closeModal();
+        // Optionnel : Rediriger directement vers la discussion
+        // location.href = `chat.html?id=${chatId}`;
+    } catch (e) {
+        console.error(e);
+        alert("Erreur d'envoi");
+    }
+};
 
         window.closeModal = () => {
             modal.style.display = "none";
