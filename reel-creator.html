@@ -80,23 +80,23 @@
 
         // 🖼️ Prévisualisation Vidéo Réelle
         window.handleReelPreviewReal = () => {
-            const file = document.getElementById('file-in-reel').files[0];
-            if (file) {
-                // Vérification du type (sécurité enfant)
-                if (!file.type.startsWith('video/')) { alert("S'il te plaît, choisis une vidéo."); return; }
-                
-                videoFile = file;
-                const url = URL.createObjectURL(file);
-                const video = document.getElementById('preview-video');
-                
-                video.src = url;
-                video.style.display = 'block';
-                document.getElementById('placeholder').style.display = 'none';
-                document.getElementById('btn-post').style.display = 'block';
-                document.getElementById('footer-reel').style.display = 'block';
-                video.play();
-            }
-        };
+    const file = document.getElementById('file-in-reel').files[0];
+    if (file) {
+        videoFile = file;
+        const url = URL.createObjectURL(file);
+        const video = document.getElementById('preview-video');
+        
+        video.src = url;
+        video.style.display = 'block';
+        
+        // Force l'affichage des éléments UI
+        document.getElementById('placeholder').style.display = 'none';
+        document.getElementById('btn-post').style.display = 'block'; // Le bouton de partage
+        document.getElementById('footer-reel').style.display = 'block'; // La zone de texte
+        
+        video.play();
+    }
+};
 
         // ☁️ Publication Vidéo Réelle (Cloudinary Vidéo + Firebase)
         window.uploadReelReal = async () => {
