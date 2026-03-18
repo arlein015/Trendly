@@ -6,221 +6,137 @@
     <title>Profil - Floy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --bg: #000; --card: #121212; --text-gray: #a8a8a8; }
-        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
-
-        /* Header */
-        .top-bar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 1000; backdrop-filter: blur(10px); }
-        .username-header { font-weight: 800; font-size: 19px; letter-spacing: -0.5px; }
-
-        /* Profile Section */
-        .profile-container { padding: 10px 20px; }
-        .stats-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        :root { --orange: #FF7A1A; --bg: #000; }
+        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
         
-        .profile-pic-container { position: relative; width: 86px; height: 86px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, var(--orange), #ffcd3c); }
-        .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #111; border: 2px solid black; transition: opacity 0.3s ease; }
+        /* Header & Profile */
+        .top-bar { padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #111; }
+        .profile-header { padding: 20px; display: flex; align-items: center; gap: 20px; }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: #222; border: 2px solid var(--orange); }
         
-        .stats-box { flex: 1; display: flex; justify-content: space-around; margin-left: 15px; }
-        .stat-item { text-align: center; }
-        .stat-num { font-weight: 800; font-size: 17px; display: block; }
-        .stat-label { font-size: 12px; color: var(--text-gray); }
+        .stats { flex: 1; display: flex; justify-content: space-around; text-align: center; }
+        .stat-num { display: block; font-weight: bold; font-size: 18px; }
+        .stat-label { font-size: 12px; color: #888; }
 
-        /* Bio & Badge */
-        .user-info { margin-bottom: 20px; }
-        .name-badge { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-        .name-badge b { font-size: 15px; font-weight: 700; }
-        .bio-text { font-size: 14px; margin: 0; line-height: 1.4; color: #efefef; }
+        .user-details { padding: 0 20px; }
+        .username { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .bio { font-size: 14px; color: #ddd; margin-bottom: 15px; }
 
-        /* Boutons d'action */
-        .action-btns { display: flex; gap: 8px; margin-top: 15px; }
-        .btn { flex: 1; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 13px; border: none; cursor: pointer; text-align: center; text-decoration: none; transition: transform 0.1s; color: white; }
-        .btn:active { transform: scale(0.96); }
+        /* Boutons */
+        .btn-row { display: flex; gap: 10px; padding: 0 20px; }
+        .btn { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; text-align: center; color: white; }
+        .btn-msg { background: #262626; }
         .btn-follow { background: var(--orange); }
-        .btn-following { background: #262626; color: #fff; }
-        .btn-gray { background: #262626; }
-
-        /* Grille & Onglets */
-        .tabs { display: flex; border-top: 1px solid #262626; margin-top: 15px; }
-        .tab { flex: 1; text-align: center; padding: 12px; color: var(--text-gray); font-size: 20px; cursor: pointer; }
-        .tab.active { color: white; border-top: 2px solid white; }
-        
-        .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-        .grid-item { aspect-ratio: 1/1; background: #111; overflow: hidden; }
-        .grid-item img, .grid-item video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* NAV BAR SVG (Style Index) */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-icon { width: 24px; height: 24px; fill: white; cursor: pointer; }
-        .nav-icon.active { fill: var(--orange); }
 
         /* Modal Message */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: #1c1c1c; width: 100%; max-width: 350px; padding: 25px; border-radius: 20px; text-align: center; }
-        .modal-content textarea { width: 100%; background: #000; border: 1px solid #333; color: white; padding: 15px; border-radius: 12px; margin: 15px 0; outline: none; resize: none; box-sizing: border-box; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: #1c1c1c; width: 90%; max-width: 400px; padding: 20px; border-radius: 15px; }
+        textarea { width: 100%; background: #000; border: 1px solid #333; color: white; padding: 10px; border-radius: 8px; margin: 15px 0; box-sizing: border-box; resize: none; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <span class="username-header" id="header-user">Profil</span>
-        <i class="fas fa-bars" onclick="location.href='side-menu.html'"></i>
+        <i class="fas fa-chevron-left" onclick="history.back()"></i>
+        <span id="nav-username">Profil</span>
+        <i class="fas fa-ellipsis-v"></i>
     </div>
 
-    <div class="profile-container">
-        <div class="stats-row">
-            <div class="profile-pic-container">
-                <img id="profile-img" class="profile-pic" src="https://via.placeholder.com/150">
-            </div>
-            <div class="stats-box">
-                <div class="stat-item"><span class="stat-num" id="post-count">0</span><span class="stat-label">Posts</span></div>
-                <div class="stat-item"><span class="stat-num" id="follower-count">0</span><span class="stat-label">Abonnés</span></div>
-                <div class="stat-item"><span class="stat-num" id="following-count">0</span><span class="stat-label">Suivis</span></div>
-            </div>
-        </div>
-
-        <div class="user-info">
-            <div class="name-badge">
-                <b id="display-name">Chargement...</b>
-                <i id="v-badge" class="fas fa-check-circle" style="color:#0095f6; display:none; font-size:13px;"></i>
-            </div>
-            <p id="bio" class="bio-text">...</p>
-            
-            <div class="action-btns">
-                <button class="btn btn-follow" id="btn-follow">Suivre</button>
-                <button class="btn btn-gray" id="btn-open-msg">Message</button>
-                <a href="edit-profil.html" class="btn btn-gray"><i class="fas fa-cog"></i></a>
-            </div>
+    <div class="profile-header">
+        <img id="profile-img" class="avatar" src="https://via.placeholder.com/150">
+        <div class="stats">
+            <div class="stat-item"><span class="stat-num" id="count-posts">0</span><span class="stat-label">Posts</span></div>
+            <div class="stat-item"><span class="stat-num" id="count-followers">0</span><span class="stat-label">Abonnés</span></div>
         </div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" id="tab-posts"><i class="fas fa-th"></i></div>
-        <div class="tab" id="tab-videos"><i class="fas fa-play-circle"></i></div>
+    <div class="user-details">
+        <div class="username" id="display-name">Chargement...</div>
+        <div class="bio" id="display-bio">...</div>
     </div>
 
-    <div class="media-grid" id="grid"></div>
-
-    <div class="nav-bar">
-        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='index.html'"><path d="M12 2.099l-9 8.165v11.736h6v-6h6v6h6v-11.736l-9-8.165z"/></svg>
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
-        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='create.html'"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/></svg>
-        <svg class="nav-icon" viewBox="0 0 24 24" onclick="location.href='message-list.html'"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-        <svg class="nav-icon active" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <div class="btn-row">
+        <button id="btn-follow-action" class="btn btn-follow">Suivre</button>
+        <button id="open-msg-modal" class="btn btn-msg">Message</button>
     </div>
 
     <div id="msgModal" class="modal">
         <div class="modal-content">
-            <h3 style="margin:0">Envoyer un message</h3>
-            <textarea id="msg-input" rows="4" placeholder="Écris ton message ici..."></textarea>
-            <button class="btn btn-follow" style="width:100%" id="send-btn">Envoyer</button>
-            <p style="color:gray; font-size:13px; margin-top:15px; cursor:pointer" onclick="document.getElementById('msgModal').style.display='none'">Annuler</p>
+            <h3 style="margin:0">Nouveau message</h3>
+            <textarea id="msg-text" rows="3" placeholder="Écris quelque chose..."></textarea>
+            <button id="send-btn" class="btn btn-follow" style="width:100%">Envoyer</button>
+            <p style="text-align:center; font-size:13px; color:gray; margin-top:10px; cursor:pointer" onclick="closeModal()">Annuler</p>
         </div>
     </div>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { doc, onSnapshot, collection, query, where, getDocs, addDoc, serverTimestamp, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { doc, getDoc, onSnapshot, setDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const urlParams = new URLSearchParams(window.location.search);
-        let profileId = urlParams.get('id');
+        const params = new URLSearchParams(window.location.search);
+        let profileId = params.get('id');
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) { window.location.href = "connexion.html"; return; }
-            if (!profileId) profileId = user.uid;
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return;
+            if (!profileId) profileId = user.uid; // Si pas d'ID, c'est mon profil
 
-            // 1. Infos Utilisateur Live (Bio, Nom, Photo)
+            // 1. Charger les données du profil en temps réel
             onSnapshot(doc(db, "users", profileId), (snap) => {
-                if (snap.exists()) {
+                if(snap.exists()){
                     const d = snap.data();
-                    document.getElementById('header-user').innerText = d.username || "Profil";
-                    document.getElementById('display-name').innerText = d.username || "Sans nom";
-                    document.getElementById('bio').innerText = d.bio || "Aucune bio ajoutée.";
-                    document.getElementById('v-badge').style.display = d.isVerified ? "inline-block" : "none";
-                    if (d.avatarUrl) {
-                        const img = document.getElementById('profile-img');
-                        img.src = d.avatarUrl;
-                        img.onload = () => img.style.opacity = '1';
-                    }
+                    document.getElementById('display-name').innerText = d.username || "Utilisateur";
+                    document.getElementById('nav-username').innerText = d.username || "Profil";
+                    document.getElementById('display-bio').innerText = d.bio || "";
+                    if(d.avatarUrl) document.getElementById('profile-img').src = d.avatarUrl;
                 }
             });
 
-            // 2. Compteurs réels (Abonnés / Suivis)
-            onSnapshot(query(collection(db, "followers"), where("followingId", "==", profileId)), (s) => {
-                document.getElementById('follower-count').innerText = s.size;
-            });
-            onSnapshot(query(collection(db, "followers"), where("followerId", "==", profileId)), (s) => {
-                document.getElementById('following-count').innerText = s.size;
-            });
-
-            // 3. Logique du bouton Suivre
-            const followBtn = document.getElementById('btn-follow');
-            if (profileId === user.uid) {
-                followBtn.style.display = "none";
-            } else {
-                const followDocId = `${user.uid}_${profileId}`;
-                onSnapshot(doc(db, "followers", followDocId), (docSnap) => {
-                    if (docSnap.exists()) {
-                        followBtn.innerText = "Abonné(e)";
-                        followBtn.className = "btn btn-following";
-                        followBtn.onclick = async () => await deleteDoc(doc(db, "followers", followDocId));
-                    } else {
-                        followBtn.innerText = "Suivre";
-                        followBtn.className = "btn btn-follow";
-                        followBtn.onclick = async () => {
-                            await setDoc(doc(db, "followers", followDocId), {
-                                followerId: user.uid,
-                                followingId: profileId,
-                                timestamp: serverTimestamp()
-                            });
-                        };
-                    }
-                });
-            }
-
-            // 4. Système de Message
-            document.getElementById('btn-open-msg').onclick = () => {
-                if(profileId === user.uid) return alert("Vous ne pouvez pas vous envoyer de message.");
-                document.getElementById('msgModal').style.display = 'flex';
+            // 2. Gestion du bouton Message
+            const modal = document.getElementById('msgModal');
+            document.getElementById('open-msg-modal').onclick = () => {
+                if(profileId === user.uid) return alert("C'est votre profil !");
+                modal.style.display = 'flex';
             };
-            
+
+            window.closeModal = () => { modal.style.display = 'none'; };
+
             document.getElementById('send-btn').onclick = async () => {
-                const text = document.getElementById('msg-input').value;
-                if(!text.trim()) return;
+                const text = document.getElementById('msg-text').value.trim();
+                if(!text) return;
 
+                // Génération de l'ID unique (ID1_ID2)
                 const chatId = user.uid < profileId ? `${user.uid}_${profileId}` : `${profileId}_${user.uid}`;
-                
-                await setDoc(doc(db, "chats", chatId), {
-                    users: [user.uid, profileId],
-                    lastMessage: text,
-                    lastUpdate: serverTimestamp()
-                }, { merge: true });
 
-                await addDoc(collection(db, "chats", chatId, "messages"), {
-                    text: text,
-                    senderId: user.uid,
-                    createdAt: serverTimestamp()
-                });
+                try {
+                    // Créer/Mettre à jour la discussion (setDoc car on définit l'ID)
+                    await setDoc(doc(db, "chats", chatId), {
+                        users: [user.uid, profileId],
+                        lastMessage: text,
+                        lastUpdate: serverTimestamp()
+                    }, { merge: true });
 
-                document.getElementById('msg-input').value = "";
-                document.getElementById('msgModal').style.display = 'none';
-                alert("Message envoyé !");
+                    // Ajouter le message dans la sous-collection
+                    await addDoc(collection(db, "chats", chatId, "messages"), {
+                        text: text,
+                        senderId: user.uid,
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Envoyé !");
+                    modal.style.display = 'none';
+                    document.getElementById('msg-text').value = "";
+                } catch (e) {
+                    console.error(e);
+                    alert("Erreur lors de l'envoi.");
+                }
             };
 
-            // 5. Grille de médias
-            loadMedia(profileId);
+            // 3. Masquer le bouton Suivre si c'est notre propre profil
+            if(profileId === user.uid) {
+                document.getElementById('btn-follow-action').style.display = 'none';
+            }
         });
-
-        async function loadMedia(uid) {
-            const q = query(collection(db, "posts"), where("userId", "==", uid));
-            const snap = await getDocs(q);
-            const grid = document.getElementById('grid');
-            grid.innerHTML = "";
-            document.getElementById('post-count').innerText = snap.size;
-            snap.forEach(d => {
-                grid.innerHTML += `<div class="grid-item"><img src="${d.data().imageUrl}"></div>`;
-            });
-        }
     </script>
 </body>
 </html>
