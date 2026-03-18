@@ -58,36 +58,80 @@
     </nav>
 
     <script type="module">
-        import { auth, db } from './firebase-config.js';
-        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { auth, db } from './firebase-config.js';
+    import { collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        let selectedFile = null;
+    // 🔥 CONFIGURATION CLOUDINARY (Indispensable)
+    const CLOUD_NAME = "TON_CLOUD_NAME"; // Remplace par ton Cloud Name
+    const UPLOAD_PRESET = "floy_unsigned"; // Remplace par ton Preset non signé
 
-        window.previewPost = () => {
-            const file = document.getElementById('file-post').files[0];
-            if(file) {
-                selectedFile = file;
-                document.getElementById('preview-img').src = URL.createObjectURL(file);
-                document.getElementById('preview-img').style.display = 'block';
-                document.getElementById('placeholder').style.display = 'none';
-                document.getElementById('btn-share').style.display = 'block';
-                document.getElementById('caption-box').style.display = 'block';
-            }
-        };
+    let selectedFile = null;
+    let userData = null;
 
-        window.uploadPost = async () => {
-            document.getElementById('loader').style.display = 'flex';
-            // Simulation Cloudinary (à remplacer par ton fetch réel)
-            setTimeout(async () => {
-                await addDoc(collection(db, "posts"), {
-                    userId: auth.currentUser.uid,
-                    imageUrl: "URL_CLOUDINARY_ICI", 
-                    caption: document.getElementById('caption').value,
-                    createdAt: serverTimestamp()
-                });
-                location.href = 'index.html';
-            }, 2000);
-        };
+    // Récupérer les infos de l'utilisateur connecté (pour le badge orange)
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            userData = snap.data();
+        } else { location.href = 'login.html'; }
+    });
+
+    window.previewPost = () => {
+        const file = document.getElementById('file-post').files[0];
+        if(file) {
+            selectedFile = file;
+            document.getElementById('preview-img').src = URL.createObjectURL(file);
+            document.getElementById('preview-img').style.display = 'block';
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('btn-share').style.display = 'block'; // Affiche "Partager"
+            document.getElementById('caption-box').style.display = 'block'; // Affiche la légende
+        }
+    };
+
+    window.uploadPost = async () => {
+        if (!selectedFile || !userData) {
+            alert("Erreur : Image non sélectionnée ou utilisateur non chargé.");
+            return;
+        }
+
+        document.getElementById('loader').style.display = 'flex';
+
+        try {
+            // 1. ENVOI DE L'IMAGE À CLOUDINARY
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('upload_preset', UPLOAD_PRESET);
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const cloudData = await res.json();
+
+            if (!cloudData.secure_url) throw new Error("Échec de l'upload Cloudinary");
+
+            // 2. ENVOI DES DONNÉES À FIREBASE
+            await addDoc(collection(db, "posts"), {
+                userId: auth.currentUser.uid,
+                username: userData.username,
+                userAvatar: userData.avatarUrl || "",
+                isVerified: userData.isVerified || false, // Ton badge Arlein orange
+                imageUrl: cloudData.secure_url, // L'URL de l'image stockée
+                caption: document.getElementById('caption').value,
+                likes: [],
+                createdAt: serverTimestamp()
+            });
+
+            // Redirection vers l'accueil pour voir le post
+            location.href = 'index.html';
+
+        } catch (error) {
+            console.error(error);
+            alert("Erreur lors du lancement : " + error.message);
+            document.getElementById('loader').style.display = 'none';
+        }
+    };
+</script>
     </script>
 </body>
 </html>
