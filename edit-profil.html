@@ -2,149 +2,135 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Modifier le profil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier le profil - Floy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --bordure: #262626; --bleu: #0095f6; }
-        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding: 0; }
+        :root { --orange: #FF7A1A; }
+        body { background: #000; color: white; font-family: -apple-system, sans-serif; margin: 0; }
+        
+        .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .header span { color: var(--orange); font-weight: bold; cursor: pointer; }
 
-        /* HEADER */
-        .edit-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px; border-bottom: 1px solid var(--bordure); background: black;
-            position: sticky; top: 0; z-index: 100;
+        .edit-container { padding: 20px; text-align: center; }
+        
+        /* Photo de profil */
+        .profile-pic-section { margin-bottom: 30px; }
+        .current-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: #222; }
+        .change-text { color: var(--orange); display: block; margin-top: 10px; font-weight: bold; cursor: pointer; font-size: 14px; }
+
+        /* Formulaire */
+        .input-group { text-align: left; margin-bottom: 20px; border-bottom: 1px solid #333; }
+        .input-group label { font-size: 12px; color: #888; display: block; }
+        .input-group input, .input-group textarea { 
+            width: 100%; background: transparent; border: none; color: white; 
+            padding: 8px 0; font-size: 16px; outline: none; resize: none;
         }
-        .btn-cancel { color: white; text-decoration: none; font-size: 16px; }
-        .btn-done { color: var(--orange); background: none; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
-
-        /* PHOTO SECTION */
-        .photo-edit-section { display: flex; flex-direction: column; align-items: center; padding: 25px 0; }
-        .current-pic { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid var(--bordure); }
-        .change-photo-btn { color: var(--orange); font-weight: bold; font-size: 14px; cursor: pointer; }
-
-        /* FORMULAIRE */
-        .edit-form { padding: 0 15px; }
-        .input-group { border-bottom: 1px solid var(--bordure); padding: 15px 0; display: flex; align-items: flex-start; }
-        .label { width: 90px; font-size: 15px; color: #ccc; padding-top: 2px; }
-        .field { flex: 1; background: none; border: none; color: white; font-size: 16px; outline: none; font-family: inherit; }
-        .bio-field { height: 80px; resize: none; }
-
-        #upload-status { font-size: 12px; color: var(--orange); margin-top: 8px; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="edit-header">
-        <a href="profil.html" class="btn-cancel">Annuler</a>
-        <div style="font-weight: bold;">Modifier le profil</div>
-        <button class="btn-done" id="save-btn">Terminé</button>
+    <div class="header">
+        <i class="fas fa-times" onclick="history.back()"></i>
+        <b>Modifier le profil</b>
+        <span id="save-btn">Terminé</span>
     </div>
 
-    <div class="photo-edit-section">
-        <img id="preview-pic" class="current-pic" src="https://via.placeholder.com/100">
-        <div class="change-photo-btn" onclick="document.getElementById('file-input').click()">Changer la photo de profil</div>
-        <input type="file" id="file-input" style="display:none" accept="image/*">
-        <div id="upload-status">Téléchargement vers Cloudinary...</div>
-    </div>
-
-    <div class="edit-form">
-        <div class="input-group">
-            <div class="label">Nom</div>
-            <input type="text" id="edit-name" class="field" placeholder="Ton nom">
+    <div class="edit-container">
+        <div class="profile-pic-section">
+            <img id="preview-pic" class="current-pic" src="https://via.placeholder.com/100">
+            <label for="file-upload" class="change-text">Changer la photo de profil</label>
+            <input type="file" id="file-upload" style="display:none" accept="image/*">
         </div>
 
         <div class="input-group">
-            <div class="label">Bio</div>
-            <textarea id="edit-bio" class="field bio-field" placeholder="Écris ta bio ici..."></textarea>
+            <label>Nom d'affichage</label>
+            <input type="text" id="edit-username" placeholder="Pseudo">
         </div>
 
         <div class="input-group">
-            <div class="label">Lien Web</div>
-            <input type="text" id="edit-web" class="field" placeholder="https://tonsite.com">
+            <label>Bio</label>
+            <textarea id="edit-bio" rows="2" placeholder="Décrivez-vous..."></textarea>
         </div>
     </div>
 
     <script type="module">
-        import { db } from './firebase-config.js';
+        import { auth, db } from './firebase-config.js';
         import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // CONFIGURATION CLOUDINARY
-        const CLOUD_URL = "https://api.cloudinary.com/v1_1/ds79k3f9g/image/upload";
-        const PRESET = "floy_preset";
-        const MY_ID = "User_Floy_Account";
+        const CLOUD_NAME = "ds79k3f9g";
+        const UPLOAD_PRESET = "floy_preset";
 
-        const fileInput = document.getElementById('file-input');
-        const previewPic = document.getElementById('preview-pic');
-        const saveBtn = document.getElementById('save-btn');
-        const status = document.getElementById('upload-status');
+        let selectedFile = null;
 
-        let updatedAvatarUrl = "";
+        // 1. Charger les données actuelles
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                document.getElementById('edit-username').value = user.displayName || "";
+                if (user.photoURL) document.getElementById('preview-pic').src = user.photoURL;
 
-        // 1. Charger les données actuelles depuis Firestore
-        async function loadProfileData() {
-            const docRef = doc(db, "users", MY_ID);
-            const snap = await getDoc(docRef);
-            if (snap.exists()) {
-                const data = snap.data();
-                document.getElementById('edit-name').value = data.username || "";
-                document.getElementById('edit-bio').value = data.bio || "";
-                document.getElementById('edit-web').value = data.webLink || "";
-                previewPic.src = data.avatarUrl || "https://via.placeholder.com/100";
-                updatedAvatarUrl = data.avatarUrl;
+                // On récupère la bio depuis Firestore
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    document.getElementById('edit-bio').value = userSnap.data().bio || "";
+                }
             }
-        }
-        loadProfileData();
+        });
 
-        // 2. Gérer le changement de photo
-        fileInput.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+        // 2. Prévisualiser l'image choisie
+        document.getElementById('file-upload').addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = (event) => document.getElementById('preview-pic').src = event.target.result;
+                reader.readAsDataURL(selectedFile);
+            }
+        });
 
-            // Prévisualisation locale immédiate
-            previewPic.src = URL.createObjectURL(file);
-            status.style.display = "block";
-            saveBtn.disabled = true;
+        // 3. Sauvegarder les modifications
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            const newName = document.getElementById('edit-username').value;
+            const newBio = document.getElementById('edit-bio').value;
+            let photoUrl = user.photoURL;
 
-            const fd = new FormData();
-            fd.append('file', file);
-            fd.append('upload_preset', PRESET);
+            document.getElementById('save-btn').innerText = "En cours...";
 
             try {
-                const res = await fetch(CLOUD_URL, { method: 'POST', body: fd });
-                const data = await res.json();
-                updatedAvatarUrl = data.secure_url;
-                status.innerText = "Photo prête !";
-            } catch (err) {
-                alert("Erreur lors de l'envoi de la photo.");
-                status.style.display = "none";
-            } finally {
-                saveBtn.disabled = false;
-            }
-        };
+                // A. Si une nouvelle image est sélectionnée, l'envoyer sur Cloudinary
+                if (selectedFile) {
+                    const formData = new FormData();
+                    formData.append('file', selectedFile);
+                    formData.append('upload_preset', UPLOAD_PRESET);
 
-        // 3. Sauvegarder toutes les infos
-        saveBtn.onclick = async () => {
-            saveBtn.innerText = "Patience...";
-            saveBtn.disabled = true;
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    photoUrl = data.secure_url;
+                }
 
-            try {
-                const userRef = doc(db, "users", MY_ID);
-                await updateDoc(userRef, {
-                    username: document.getElementById('edit-name').value,
-                    bio: document.getElementById('edit-bio').value,
-                    webLink: document.getElementById('edit-web').value,
-                    avatarUrl: updatedAvatarUrl
+                // B. Mettre à jour le profil Firebase Auth
+                await updateProfile(user, { displayName: newName, photoURL: photoUrl });
+
+                // C. Mettre à jour Firestore
+                await updateDoc(doc(db, "users", user.uid), {
+                    username: newName,
+                    bio: newBio,
+                    avatarUrl: photoUrl
                 });
 
-                // Retour au profil après succès
-                window.location.href = "profil.html";
-            } catch (err) {
-                console.error(err);
-                alert("Erreur de sauvegarde.");
-                saveBtn.disabled = false;
-                saveBtn.innerText = "Terminé";
+                alert("Profil mis à jour !");
+                location.href = 'profil.html';
+            } catch (error) {
+                console.error(error);
+                alert("Erreur lors de la mise à jour.");
+                document.getElementById('save-btn').innerText = "Terminé";
             }
-        };
+        });
     </script>
 </body>
 </html>
