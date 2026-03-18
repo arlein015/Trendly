@@ -93,37 +93,48 @@
 
         let selectedFile = null;
 
-        // 1. AFFICHER L'IMAGE DÈS QU'ON LA CHOISIT
-        window.handleFile = (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                selectedFile = file;
-                const url = URL.createObjectURL(file);
-                
-                const previewImg = document.getElementById('preview-img');
-                const cameraIcon = document.getElementById('camera-icon');
-                const btnNext = document.getElementById('btn-next');
+       // Étape A : On définit les fonctions DIRECTEMENT pour qu'elles soient visibles partout
+        function handleFile(event) {
+        const file = event.target.files[0];
+        console.log("Tentative d'affichage du fichier :", file ? file.name : "Aucun fichier");
 
-                previewImg.src = url;
-                previewImg.style.display = 'block'; // On affiche l'image
-                cameraIcon.style.display = 'none';   // On cache l'icône
-                btnNext.style.display = 'block';    // On affiche "Suivant"
-            }
-        };
+        if (file) {
+            const previewImg = document.getElementById('preview-img');
+            const cameraIcon = document.getElementById('camera-icon');
+            const btnNext = document.getElementById('btn-next');
+
+            // On crée l'URL de l'image
+            const imageURL = URL.createObjectURL(file);
+            
+            // ON FORCE L'AFFICHAGE (Le secret est ici)
+            previewImg.src = imageURL;
+            previewImg.style.display = "block";
+            previewImg.style.width = "100%";
+            previewImg.style.height = "100%";
+            previewImg.style.objectFit = "cover";
+
+            if (cameraIcon) cameraIcon.style.display = "none";
+            if (btnNext) btnNext.style.display = "block";
+            
+            console.log("L'image devrait être visible maintenant !");
+        }
+    }
 
         // 2. PASSER À LA LÉGENDE
-        window.showConfig = () => {
-            document.getElementById('gallery-view').style.display = 'none';
-            document.getElementById('bottom-nav').style.display = 'none';
-            document.getElementById('config-view').style.display = 'block';
-            
-            document.getElementById('btn-next').style.display = 'none';
-            document.getElementById('btn-share').style.display = 'block';
-            document.getElementById('header-title').innerText = "Nouvelle publication";
-            
-            // On met la petite image à côté du texte
-            document.getElementById('mini-preview').src = URL.createObjectURL(selectedFile);
-        };
+       function showConfig() {
+        document.getElementById('gallery-view').style.display = 'none';
+        document.getElementById('bottom-nav').style.display = 'none';
+        document.getElementById('config-view').style.display = 'block';
+        
+        document.getElementById('btn-next').style.display = 'none';
+        document.getElementById('btn-share').style.display = 'block';
+        
+        // On récupère le fichier pour la petite miniature
+        const file = document.getElementById('file-input').files[0];
+        if(file) {
+            document.getElementById('mini-preview').src = URL.createObjectURL(file);
+        }
+    }
 
         // 3. PUBLIER RÉELLEMENT
         window.publishPost = async () => {
