@@ -3,7 +3,8 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD3cL4MokpURYKydVTugXArXC3-krQCAI",
+  // J'ai recopié la clé complète de ton image
+  apiKey: "AIzaSyD3cL4MokpURYKydVTugXArXC3-krQCAIc", 
   authDomain: "floy-2a96d.firebaseapp.com",
   projectId: "floy-2a96d",
   storageBucket: "floy-2a96d.firebasestorage.app",
