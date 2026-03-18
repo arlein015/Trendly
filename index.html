@@ -51,11 +51,43 @@
     </nav>
 
     <script type="module">
-        // Importation des outils nécessaires depuis tes sources
-        import { db } from './firebase-config.js'; 
-        import { collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { db } from './firebase-config.js'; 
+    // On ajoute doc, updateDoc, arrayUnion et arrayRemove pour manipuler les données
+    import { doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const feedContainer = document.getElementById('feed');
+    const auth = getAuth();
+
+    // Cette fonction sera appelée au clic sur l'icône coeur
+    window.toggleLike = async (postId, isLiked) => {
+        const user = auth.currentUser;
+
+        // Sécurité : Il faut être connecté pour liker
+        if (!user) {
+            alert("Tu dois être connecté pour liker ce post !");
+            return;
+        }
+        
+        const postRef = doc(db, "posts", postId);
+
+        try {
+            if (isLiked) {
+                // Si déjà liké, on retire l'ID de l'utilisateur de la liste
+                await updateDoc(postRef, {
+                    likes: arrayRemove(user.uid)
+                });
+                console.log("Like retiré");
+            } else {
+                // Sinon, on ajoute l'ID de l'utilisateur dans la liste
+                await updateDoc(postRef, {
+                    likes: arrayUnion(user.uid)
+                });
+                console.log("Like ajouté");
+            }
+        } catch (error) {
+            console.error("Erreur lors du Like :", error);
+        }
+    };
 
         // Création de la requête : On trie par date de création (du plus récent au plus ancien)
         const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
