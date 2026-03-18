@@ -2,149 +2,93 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Messages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussions - Floy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #262626; }
-        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
+        :root { --orange: #FF7A1A; }
+        body { background: #000; color: white; font-family: -apple-system, sans-serif; margin: 0; }
         
-        /* BARRE DE RECHERCHE */
-        .search-container { padding: 15px; position: sticky; top: 0; background: black; z-index: 100; }
-        .search-bar { background: var(--gris); display: flex; align-items: center; padding: 12px; border-radius: 12px; border: 1px solid var(--bordure); }
-        .search-bar input { background: none; border: none; color: white; outline: none; width: 100%; font-size: 16px; margin-left: 10px; }
+        .header { padding: 15px; display: flex; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; background: #000; z-index: 10; }
+        .header i { font-size: 20px; margin-right: 20px; cursor: pointer; }
+
+        .chat-list { padding: 10px 0; }
+        .chat-item { 
+            display: flex; align-items: center; padding: 12px 15px; 
+            text-decoration: none; color: white; cursor: pointer;
+        }
+        .chat-item:active { background: #1a1a1a; }
         
-        /* RÉSULTATS RECHERCHE */
-        #search-results { background: #080808; border-bottom: 1px solid var(--orange); display: none; }
-        .result-item { padding: 15px; border-bottom: 1px solid var(--bordure); display: flex; align-items: center; cursor: pointer; }
-        .result-item:active { background: #111; }
-
-        /* LISTE DE DISCUSSIONS */
-        header { padding: 10px 20px; font-weight: 800; font-size: 20px; letter-spacing: 0.5px; }
-        .chat-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #050505; text-decoration: none; color: white; transition: 0.2s; }
-        .chat-item:active { background: #111; }
-        .avatar { width: 55px; height: 55px; background: linear-gradient(45deg, #222, #333); border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
-        .chat-info { flex: 1; min-width: 0; }
-        .chat-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-        .chat-last { color: #888; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* VIDE (EMPTY STATE) */
-        .empty-state { text-align: center; padding: 100px 40px; color: #444; }
-        .empty-state svg { margin-bottom: 15px; opacity: 0.2; }
-
-        /* NAV BAR BAS */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.9); border-top: 1px solid var(--bordure); display: flex; justify-content: space-around; align-items: center; }
-        .nav-btn { color: #555; }
-        .nav-btn.active { color: white; }
+        .user-img { width: 55px; height: 55px; border-radius: 50%; background: #222; margin-right: 15px; object-fit: cover; }
+        
+        .chat-info { flex: 1; border-bottom: 0.5px solid #121212; padding-bottom: 10px; }
+        .chat-name { font-weight: bold; font-size: 15px; display: block; margin-bottom: 3px; }
+        .chat-last-msg { font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+        
+        .unread-dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; margin-left: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="search-container">
-        <div class="search-bar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="search-input" placeholder="Rechercher quelqu'un...">
-        </div>
+    <div class="header">
+        <i class="fas fa-arrow-left" onclick="history.back()"></i>
+        <b>Messages</b>
     </div>
 
-    <div id="search-results"></div>
-
-    <header>Discussions</header>
-
-    <div id="chats-list">
-        <div class="empty-state">Chargement des messages...</div>
+    <div id="list-container" class="chat-list">
+        <p style="text-align: center; color: #444; margin-top: 50px;">Chargement de vos messages...</p>
     </div>
-
-     <nav class="bottom-nav">
-    <div class="nav-item active" onclick="location.href='index.html'">
-        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    </div>
-
-    <div class="nav-item" onclick="location.href='explore.html'">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-    </div>
-
-    <div class="nav-item plus-btn" onclick="location.href='add-post.html'">
-        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-    </div>
-
-    <div class="nav-item" onclick="location.href='messages.html'">
-        <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 2.98 1 4.28L2.01 22l5.72-1c1.3.64 2.74 1 4.27 1 5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.38 0-2.68-.35-3.82-1l-.27-.15-3.41.6 1.01-3.21-.17-.28C4.69 14.83 4 13.48 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8z"/>
-        </svg>
-    </div>
-
-    <div class="nav-item" onclick="location.href='profil.html'">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    </div>
-</nav>
 
     <script type="module">
-        import { db } from './firebase-config.js';
-        import { collection, query, where, orderBy, onSnapshot, getDocs, limit, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { auth, db } from './firebase-config.js';
+        import { collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const monID = "User_Floy"; // À remplacer par le vrai ID utilisateur plus tard
-        const chatsList = document.getElementById('chats-list');
-        const searchInput = document.getElementById('search-input');
-        const searchResults = document.getElementById('search-results');
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Requête : Trouver les chats où l'utilisateur actuel est présent dans le tableau 'users'
+                const q = query(
+                    collection(db, "chats"),
+                    where("users", "array-contains", user.uid),
+                    orderBy("lastUpdate", "desc")
+                );
 
-        // --- 1. RECHERCHE D'UTILISATEURS ---
-        searchInput.oninput = async (e) => {
-            const val = e.target.value.trim();
-            if (val.length < 1) { searchResults.style.display = 'none'; return; }
+                onSnapshot(q, (snapshot) => {
+                    const container = document.getElementById('list-container');
+                    container.innerHTML = "";
 
-            const q = query(collection(db, "users"), where("username", ">=", val), where("username", "<=", val + '\uf8ff'), limit(5));
-            const snap = await getDocs(q);
-            
-            searchResults.innerHTML = "";
-            searchResults.style.display = 'block';
+                    if (snapshot.empty) {
+                        container.innerHTML = "<p style='text-align:center; color:#555; margin-top:50px;'>Aucune discussion pour le moment.</p>";
+                        return;
+                    }
 
-            snap.forEach(uDoc => {
-                const user = uDoc.data();
-                if (user.username === monID) return;
+                    snapshot.forEach((docSnap) => {
+                        const chat = docSnap.data();
+                        const chatId = docSnap.id;
+                        
+                        // Trouver le nom de l'autre personne (pas le nôtre)
+                        const otherUserId = chat.users.find(id => id !== user.uid);
+                        const otherUserName = chat.names ? chat.names[otherUserId] : "Utilisateur";
 
-                const item = document.createElement('div');
-                item.className = "result-item";
-                item.innerHTML = `<div class="avatar" style="width:35px; height:35px;"></div> <b>${user.username}</b>`;
-                item.onclick = () => démarrerChat(user.username);
-                searchResults.appendChild(item);
-            });
-        };
-
-        // --- 2. CRÉER OU OUVRIR UNE DISCUSSION ---
-        async function démarrerChat(autreUser) {
-            const chatID = [monID, autreUser].sort().join("_"); // ID unique permanent
-            
-            await setDoc(doc(db, "chats", chatID), {
-                users: [monID, autreUser],
-                lastMessage: "Discussion commencée",
-                timestamp: serverTimestamp()
-            }, { merge: true });
-
-            window.location.href = `chat_detail.html?id=${chatID}`;
-        }
-
-        // --- 3. LISTE DES DISCUSSIONS RÉELLES ---
-        const qChats = query(collection(db, "chats"), where("users", "array-contains", monID), orderBy("timestamp", "desc"));
-
-        onSnapshot(qChats, (snap) => {
-            chatsList.innerHTML = "";
-            if (snap.empty) {
-                chatsList.innerHTML = `<div class="empty-state"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><p>Pas encore de messages.</p></div>`;
-                return;
+                        // Création de l'élément HTML pour la liste
+                        const chatEl = document.createElement('div');
+                        chatEl.className = 'chat-item';
+                        chatEl.onclick = () => location.href = `chat.html?id=${chatId}`;
+                        
+                        chatEl.innerHTML = `
+                            <img src="https://via.placeholder.com/150" class="user-img">
+                            <div class="chat-info">
+                                <span class="chat-name">${otherUserName}</span>
+                                <p class="chat-last-msg">${chat.lastMessage || "Envoyer un message..."}</p>
+                            </div>
+                            ${chat.unseen ? '<div class="unread-dot"></div>' : ''}
+                        `;
+                        container.appendChild(chatEl);
+                    });
+                });
+            } else {
+                location.href = 'connexion.html';
             }
-
-            snap.forEach(docSnap => {
-                const chat = docSnap.data();
-                const autre = chat.users.find(u => u !== monID);
-                chatsList.innerHTML += `
-                    <a href="chat_detail.html?id=${docSnap.id}" class="chat-item">
-                        <div class="avatar"></div>
-                        <div class="chat-info">
-                            <div class="chat-name">${autre}</div>
-                            <div class="chat-last">${chat.lastMessage}</div>
-                        </div>
-                    </a>`;
-            });
         });
     </script>
 </body>
