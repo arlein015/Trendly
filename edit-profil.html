@@ -7,21 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --orange: #FF7A1A; }
-        body { background: #000; color: white; font-family: -apple-system, sans-serif; margin: 0; }
+        body { background: #000; color: white; font-family: -apple-system, sans-serif; margin: 0; display: block !important; }
         
-        .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; background: #000; z-index: 10; }
         .header span { color: var(--orange); font-weight: bold; cursor: pointer; }
 
         .edit-container { padding: 20px; text-align: center; }
         
-        /* Photo de profil */
         .profile-pic-section { margin-bottom: 30px; }
-        .current-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: #222; }
+        .current-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: #222; border: 1px solid #333; }
         .change-text { color: var(--orange); display: block; margin-top: 10px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* Formulaire */
-        .input-group { text-align: left; margin-bottom: 20px; border-bottom: 1px solid #333; }
-        .input-group label { font-size: 12px; color: #888; display: block; }
+        .input-group { text-align: left; margin-bottom: 25px; border-bottom: 1px solid #333; }
+        .input-group label { font-size: 12px; color: #888; display: block; margin-bottom: 5px; }
         .input-group input, .input-group textarea { 
             width: 100%; background: transparent; border: none; color: white; 
             padding: 8px 0; font-size: 16px; outline: none; resize: none;
@@ -31,7 +29,7 @@
 <body>
 
     <div class="header">
-        <i class="fas fa-times" onclick="history.back()"></i>
+        <i class="fas fa-times" onclick="history.back()" style="cursor:pointer;"></i>
         <b>Modifier le profil</b>
         <span id="save-btn">Terminé</span>
     </div>
@@ -45,41 +43,49 @@
 
         <div class="input-group">
             <label>Nom d'affichage</label>
-            <input type="text" id="edit-username" placeholder="Pseudo">
+            <input type="text" id="edit-username" placeholder="Ton pseudo">
         </div>
 
         <div class="input-group">
             <label>Bio</label>
-            <textarea id="edit-bio" rows="2" placeholder="Décrivez-vous..."></textarea>
+            <textarea id="edit-bio" rows="2" placeholder="Ajoute une petite description..."></textarea>
         </div>
     </div>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
         import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const CLOUD_NAME = "ds79k3f9g";
         const UPLOAD_PRESET = "floy_preset";
-
         let selectedFile = null;
 
-        // 1. Charger les données actuelles
-        auth.onAuthStateChanged(async (user) => {
+        console.log("Page Edit-Profil chargée. Attente de l'utilisateur...");
+
+        // 1. Charger les données au démarrage
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
+                console.log("Utilisateur détecté :", user.uid);
                 document.getElementById('edit-username').value = user.displayName || "";
                 if (user.photoURL) document.getElementById('preview-pic').src = user.photoURL;
 
-                // On récupère la bio depuis Firestore
-                const userRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userRef);
-                if (userSnap.exists()) {
-                    document.getElementById('edit-bio').value = userSnap.data().bio || "";
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        document.getElementById('edit-bio').value = userSnap.data().bio || "";
+                    }
+                } catch (e) {
+                    console.error("Erreur lors de la lecture Firestore :", e);
                 }
+            } else {
+                console.warn("Aucun utilisateur connecté. Redirection...");
+                location.href = 'connexion.html'; 
             }
         });
 
-        // 2. Prévisualiser l'image choisie
+        // 2. Aperçu de la photo
         document.getElementById('file-upload').addEventListener('change', (e) => {
             selectedFile = e.target.files[0];
             if (selectedFile) {
@@ -89,17 +95,21 @@
             }
         });
 
-        // 3. Sauvegarder les modifications
+        // 3. Sauvegarde
         document.getElementById('save-btn').addEventListener('click', async () => {
             const user = auth.currentUser;
+            if(!user) return;
+
             const newName = document.getElementById('edit-username').value;
             const newBio = document.getElementById('edit-bio').value;
             let photoUrl = user.photoURL;
 
-            document.getElementById('save-btn').innerText = "En cours...";
+            const btn = document.getElementById('save-btn');
+            btn.innerText = "Enregistrement...";
+            btn.style.opacity = "0.5";
 
             try {
-                // A. Si une nouvelle image est sélectionnée, l'envoyer sur Cloudinary
+                // Upload Cloudinary si nouvelle photo
                 if (selectedFile) {
                     const formData = new FormData();
                     formData.append('file', selectedFile);
@@ -113,22 +123,23 @@
                     photoUrl = data.secure_url;
                 }
 
-                // B. Mettre à jour le profil Firebase Auth
+                // Mise à jour Auth
                 await updateProfile(user, { displayName: newName, photoURL: photoUrl });
 
-                // C. Mettre à jour Firestore
+                // Mise à jour Firestore
                 await updateDoc(doc(db, "users", user.uid), {
                     username: newName,
                     bio: newBio,
                     avatarUrl: photoUrl
                 });
 
-                alert("Profil mis à jour !");
+                console.log("Mise à jour réussie !");
                 location.href = 'profil.html';
             } catch (error) {
-                console.error(error);
-                alert("Erreur lors de la mise à jour.");
-                document.getElementById('save-btn').innerText = "Terminé";
+                console.error("Erreur de sauvegarde :", error);
+                alert("Erreur lors de la sauvegarde.");
+                btn.innerText = "Terminé";
+                btn.style.opacity = "1";
             }
         });
     </script>
