@@ -2,138 +2,105 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Floy - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floy - Fil d'actualité</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --noir: #000; --gris: #121212; --bordure: #222; }
-        body { background: var(--noir); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 75px; }
+        body { background-color: #000; color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 70px; }
+        
+        /* Header */
+        .top-nav { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; position: sticky; top: 0; background: #000; border-bottom: 1px solid #121212; z-index: 100; }
+        .logo { font-size: 24px; font-weight: bold; font-style: italic; color: #FF7A1A; }
 
-        /* HEADER */
-        .top-nav { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid var(--bordure); z-index: 1000; box-sizing: border-box; }
-        .logo { font-size: 24px; font-weight: 900; color: var(--orange); letter-spacing: -1px; }
+        /* Conteneur des posts */
+        #feed { max-width: 500px; margin: 0 auto; }
 
-        /* STORIES */
-        .stories-bar { display: flex; gap: 12px; padding: 15px; overflow-x: auto; margin-top: 60px; border-bottom: 1px solid var(--bordure); scrollbar-width: none; }
-        .stories-bar::-webkit-scrollbar { display: none; }
-        .story-item { display: flex; flex-direction: column; align-items: center; min-width: 70px; cursor: pointer; }
-        .avatar-ring { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366); display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
-        .avatar-ring.me { background: #333; position: relative; }
-        .avatar-ring img { width: 62px; height: 62px; border-radius: 50%; border: 2px solid black; object-fit: cover; }
-        .plus-icon { position: absolute; bottom: 0; right: 0; background: var(--orange); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border: 2px solid black; font-size: 12px; }
-        .story-user { font-size: 11px; color: #aaa; max-width: 65px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        /* POSTS */
-        .post { border-bottom: 1px solid var(--bordure); }
-        .post-header { display: flex; align-items: center; padding: 12px; gap: 10px; }
-        .post-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
-        .badge-Arlein { width: 16px; height: 16px; margin-left: 4px; vertical-align: middle; }
+        /* Style d'un Post */
+        .post-card { border-bottom: 1px solid #121212; margin-bottom: 10px; }
+        .post-header { padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 32px; height: 32px; background: #333; border-radius: 50%; object-fit: cover; }
         .post-img { width: 100%; display: block; background: #050505; }
-        .post-actions { display: flex; gap: 20px; padding: 12px; }
-        .post-actions svg { width: 26px; height: 26px; fill: white; }
+        .post-actions { padding: 10px; display: flex; gap: 15px; font-size: 22px; }
+        .post-info { padding: 0 10px 15px 10px; line-height: 1.4; }
 
-        /* BOTTOM NAV MODERNE */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: rgba(0,0,0,0.95); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--bordure); z-index: 2000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item svg { width: 28px; height: 28px; fill: #666; transition: 0.2s; }
-        .nav-item.active svg { fill: white; }
-        .btn-create svg { fill: var(--orange) !important; width: 34px; height: 34px; }
+        /* Menu du bas */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid #121212; display: flex; justify-content: space-around; align-items: center; font-size: 22px; }
+        .bottom-nav i { cursor: pointer; color: white; }
     </style>
 </head>
 <body>
 
-    <audio id="pop-sound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-
     <nav class="top-nav">
-        <div class="logo">FLOY</div>
-        <div style="display:flex; gap:20px; font-size:20px;">
+        <div class="logo">Floy</div>
+        <div style="display: flex; gap: 20px; font-size: 20px;">
             <i class="far fa-heart"></i>
-            <i class="far fa-paper-plane" onclick="location.href='messages.html'"></i>
+            <i class="fab fa-facebook-messenger"></i>
         </div>
     </nav>
 
-    <div class="stories-bar" id="stories-bar">
-        </div>
-
-    <div id="main-feed">
-        </div>
+    <div id="feed">
+        <p style="text-align: center; color: #555; margin-top: 50px;">Chargement du fil...</p>
+    </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="location.href='index.html'"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
-        <div class="nav-item" onclick="location.href='explore.html'"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
-        <div class="nav-item btn-create" onclick="location.href='create.html'"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-        <div class="nav-item" onclick="location.href='reels.html'"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 2.98 1 4.28L2.01 22l5.72-1c1.3.64 2.74 1 4.27 1 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-        <div class="nav-item" onclick="location.href='profil.html'"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+        <i class="fas fa-home" onclick="location.href='index.html'"></i>
+        <i class="fas fa-search"></i>
+        <i class="far fa-plus-square" onclick="location.href='create.html'"></i>
+        <i class="fas fa-video"></i>
+        <i class="far fa-user-circle"></i>
     </nav>
 
     <script type="module">
-       import { db } from './firebase-config.js';
+        // Importation des outils nécessaires depuis tes sources
+        import { db } from './firebase-config.js'; 
         import { collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // On récupère les posts du plus récent au plus ancien
+        const feedContainer = document.getElementById('feed');
+
+        // Création de la requête : On trie par date de création (du plus récent au plus ancien)
         const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
 
+        // Écoute en temps réel de la base de données
         onSnapshot(q, (snapshot) => {
-        const feed = document.getElementById('feed'); // L'ID de ta zone de posts
-        if (!feed) return;
-    
-        feed.innerHTML = ""; // On vide pour mettre à jour
-    
-        snapshot.forEach((doc) => {
-        const post = doc.data();
-        feed.innerHTML += `
-            <div class="post-card" style="margin-bottom:20px; background:#000;">
-                <div style="padding:10px; font-weight:bold;">${post.username}</div>
-                <img src="${post.imageUrl}" style="width:100%; display:block;">
-                <div style="padding:10px;">
-                    <b>${post.username}</b> ${post.caption || ""}
-                </div>
-            </div>
-        `;
-    });
-});
+            if (!feedContainer) return;
+            
+            feedContainer.innerHTML = ""; // On vide la zone pour rafraîchir
 
-        // 1. CHARGER LES STORIES
-        onSnapshot(query(collection(db, "stories"), where("expiresAt", ">", Date.now())), (snap) => {
-            const bar = document.getElementById('stories-bar');
-            bar.innerHTML = `
-                <div class="story-item" onclick="location.href='story-creator.html'">
-                    <div class="avatar-ring me"><img src="${auth.currentUser?.photoURL || 'https://via.placeholder.com/60'}"><div class="plus-icon">+</div></div>
-                    <span class="story-user">Votre story</span>
-                </div>`;
-            snap.forEach(doc => {
-                const s = doc.data();
-                bar.innerHTML += `
-                    <div class="story-item" onclick="playPop(); setTimeout(()=>location.href='story-view.html?id=${doc.id}', 150)">
-                        <div class="avatar-ring"><img src="${s.userAvatar}"></div>
-                        <span class="story-user">${s.username}</span>
-                    </div>`;
-            });
-        });
+            if (snapshot.empty) {
+                feedContainer.innerHTML = `<p style="text-align:center; color:#888; margin-top:50px;">Aucun post pour le moment.</p>`;
+                return;
+            }
 
-        // 2. CHARGER LE FEED (POSTS)
-        onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), (snap) => {
-            const feed = document.getElementById('main-feed');
-            feed.innerHTML = "";
-            snap.forEach(doc => {
-                const p = doc.data();
-                feed.innerHTML += `
-                    <div class="post">
+            snapshot.forEach((doc) => {
+                const post = doc.data();
+                
+                // Génération du code HTML pour chaque photo
+                const postElement = `
+                    <div class="post-card">
                         <div class="post-header">
-                            <img src="${p.userAvatar}" class="post-avatar">
-                            <b style="font-size:14px">${p.username} ${p.isVerified ? badgeArlein : ''}</b>
+                            <div class="user-avatar"></div>
+                            <b>${post.username || "Utilisateur"}</b>
                         </div>
-                        <img src="${p.imageUrl}" class="post-img">
+                        
+                        <img src="${post.imageUrl}" class="post-img">
+                        
                         <div class="post-actions">
-                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            <svg viewBox="0 0 24 24" style="transform:rotate(-20deg)"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                            <i class="far fa-heart"></i>
+                            <i class="far fa-comment"></i>
+                            <i class="far fa-paper-plane"></i>
                         </div>
-                        <div style="padding:0 12px 15px 12px; font-size:14px;">
-                            <b>${p.username}</b> ${p.caption || ''}
+                        
+                        <div class="post-info">
+                            <b>${post.username || "Utilisateur"}</b> ${post.caption || ""}
                         </div>
-                    </div>`;
+                    </div>
+                `;
+                feedContainer.innerHTML += postElement;
             });
+        }, (error) => {
+            console.error("Erreur de lecture :", error);
+            feedContainer.innerHTML = `<p style="color:red; text-align:center;">Erreur de chargement des posts.</p>`;
         });
     </script>
 </body>
-        </html>
+</html>
