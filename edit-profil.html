@@ -3,150 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier le profil - Floy</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Modifier le Profil - Floy</title>
     <style>
-        :root { --orange: #FF7A1A; }
-        body { background: #000; color: white; font-family: -apple-system, sans-serif; margin: 0; display: block !important; }
-        
-        .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; background: #000; z-index: 10; }
-        .header span { color: var(--orange); font-weight: bold; cursor: pointer; }
-
-        .edit-container { padding: 20px; text-align: center; }
-        img { transition: opacity 0.3s ease-in; }
-        img[src=""] { opacity: 0; }
-        .profile-pic-section { margin-bottom: 30px; }
-        .current-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: #222; border: 1px solid #333; }
-        .change-text { color: var(--orange); display: block; margin-top: 10px; font-weight: bold; cursor: pointer; font-size: 14px; }
-
-        .input-group { text-align: left; margin-bottom: 25px; border-bottom: 1px solid #333; }
-        .input-group label { font-size: 12px; color: #888; display: block; margin-bottom: 5px; }
-        .input-group input, .input-group textarea { 
-            width: 100%; background: transparent; border: none; color: white; 
-            padding: 8px 0; font-size: 16px; outline: none; resize: none;
-        }
+        body { background: #000; color: white; font-family: sans-serif; padding: 20px; }
+        .input-group { margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 15px; background: #FF7A1A; border: none; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <i class="fas fa-times" onclick="history.back()" style="cursor:pointer;"></i>
-        <b>Modifier le profil</b>
-        <span id="save-btn">Terminé</span>
+    <h2>Modifier le profil</h2>
+    <div class="input-group">
+        <label>Nom d'utilisateur</label>
+        <input type="text" id="edit-username">
     </div>
-
-    <div class="edit-container">
-        <div class="profile-pic-section">
-            <img id="preview-pic" class="current-pic" src="https://via.placeholder.com/100">
-            <label for="file-upload" class="change-text">Changer la photo de profil</label>
-            <input type="file" id="file-upload" style="display:none" accept="image/*">
-        </div>
-
-        <div class="input-group">
-            <label>Nom d'affichage</label>
-            <input type="text" id="edit-username" placeholder="Ton pseudo">
-        </div>
-
-        <div class="input-group">
-            <label>Bio</label>
-            <textarea id="edit-bio" rows="2" placeholder="Ajoute une petite description..."></textarea>
-        </div>
+    <div class="input-group">
+        <label>Bio</label>
+        <textarea id="edit-bio" rows="4"></textarea>
     </div>
+    <button class="btn-save" id="save-profile">Enregistrer les modifications</button>
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { doc, getDoc, setDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        // CORRECTION : Ajout de setDoc et updateDoc dans les imports
+        import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const CLOUD_NAME = "ds79k3f9g";
-        const UPLOAD_PRESET = "floy_preset";
-        let selectedFile = null;
-
-        console.log("Page Edit-Profil chargée. Attente de l'utilisateur...");
-
-        // 1. Charger les données au démarrage
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                console.log("Utilisateur détecté :", user.uid);
-                document.getElementById('edit-username').value = user.displayName || "";
-                if (user.photoURL) document.getElementById('preview-pic').src = user.photoURL;
+            if (!user) return;
+            
+            // Charger les données actuelles
+            const userRef = doc(db, "users", user.uid);
+            const snap = await getDoc(userRef);
+            if (snap.exists()) {
+                document.getElementById('edit-username').value = snap.data().username || "";
+                document.getElementById('edit-bio').value = snap.data().bio || "";
+            }
+
+            // Bouton Enregistrer
+            document.getElementById('save-profile').onclick = async () => {
+                const newName = document.getElementById('edit-username').value;
+                const newBio = document.getElementById('edit-bio').value;
 
                 try {
-                    const userRef = doc(db, "users", user.uid);
-                    const userSnap = await getDoc(userRef);
-                    if (userSnap.exists()) {
-                        document.getElementById('edit-bio').value = userSnap.data().bio || "";
-                    }
+                    await setDoc(userRef, {
+                        username: newName,
+                        bio: newBio
+                    }, { merge: true });
+                    
+                    alert("Profil mis à jour !");
+                    window.location.href = "profil.html";
                 } catch (e) {
-                    console.error("Erreur lors de la lecture Firestore :", e);
+                    console.error("Erreur de sauvegarde:", e);
+                    alert("Erreur lors de la sauvegarde.");
                 }
-            } else {
-                console.warn("Aucun utilisateur connecté. Redirection...");
-                location.href = 'connexion.html'; 
-            }
+            };
         });
-
-        // 2. Aperçu de la photo
-        document.getElementById('file-upload').addEventListener('change', (e) => {
-            selectedFile = e.target.files[0];
-            if (selectedFile) {
-                const reader = new FileReader();
-                reader.onload = (event) => document.getElementById('preview-pic').src = event.target.result;
-                reader.readAsDataURL(selectedFile);
-            }
-        });
-
-        // Remplace toute la partie du bouton Save dans edit-profil.html
-document.getElementById('save-btn').onclick = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const newName = document.getElementById('edit-username').value;
-    const newBio = document.getElementById('edit-bio').value;
-    let finalPhotoUrl = user.photoURL; // On garde l'ancienne par défaut
-
-    const btn = document.getElementById('save-btn');
-    btn.innerText = "⏳...";
-
-    try {
-        // ÉTAPE A : Si on a choisi une nouvelle photo
-        if (selectedFile) {
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-            formData.append('upload_preset', UPLOAD_PRESET);
-
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json();
-            finalPhotoUrl = data.secure_url; // On récupère la nouvelle URL
-        }
-
-        // ÉTAPE B : Mise à jour de Firebase AUTH (Le compte)
-        await updateProfile(user, { 
-            displayName: newName, 
-            photoURL: finalPhotoUrl 
-        });
-
-        // ÉTAPE C : Mise à jour de FIRESTORE (La base de données)
-        // C'est ICI que profil.html va lire les infos !
-        await setDoc(doc(db, "users", user.uid), {
-            username: newName,
-            bio: newBio,
-            avatarUrl: finalPhotoUrl,
-            userId: user.uid // Très important pour que tes posts ne disparaissent pas
-        }, { merge: true });
-
-        alert("Profil mis à jour !");
-        location.href = 'profil.html';
-
-    } catch (error) {
-        console.error("Erreur complète :", error);
-        alert("Erreur. Regarde la console (F12)");
-        btn.innerText = "Terminé";
-    }
-};
     </script>
 </body>
 </html>
