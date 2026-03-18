@@ -6,46 +6,45 @@
     <title>Messages - Floy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --orange: #FF7A1A; --bg: #000; --card: #121212; }
-        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 70px; }
+        :root { --orange: #FF7A1A; --bg: #000; --card: #121212; --text-gray: #a8a8a8; }
+        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
 
         /* Header */
-        .header { padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; background: #000; z-index: 10; }
-        .header h2 { margin: 0; font-size: 20px; flex: 1; text-align: center; margin-right: 25px; }
+        .header { padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #1a1a1a; position: sticky; top: 0; background: #000; z-index: 100; }
+        .header h2 { margin: 0; font-size: 18px; flex: 1; text-align: center; margin-right: 30px; }
 
         /* Liste des discussions */
         .chat-list { padding: 5px 0; }
         .chat-item { 
-            display: flex; align-items: center; padding: 12px 15px; 
-            text-decoration: none; color: white; transition: 0.2s;
+            display: flex; align-items: center; padding: 12px 18px; 
+            text-decoration: none; color: white; border-bottom: 0.5px solid #111;
         }
-        .chat-item:active { background: #1a1a1a; }
+        .chat-item:active { background: #161616; }
         
-        .user-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #222; margin-right: 15px; border: 1px solid #333; }
+        .user-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: #222; margin-right: 15px; }
         
-        .chat-info { flex: 1; border-bottom: 0.5px solid #1a1a1a; padding-bottom: 12px; min-width: 0; }
-        .chat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .chat-name { font-weight: bold; font-size: 15px; }
-        .chat-time { font-size: 11px; color: #666; }
+        .chat-content { flex: 1; min-width: 0; }
+        .chat-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .chat-name { font-weight: 700; font-size: 15px; }
+        .chat-time { font-size: 11px; color: var(--text-gray); }
         
-        .chat-preview { font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .unread-dot { width: 10px; height: 10px; background: var(--orange); border-radius: 50%; margin-left: 10px; }
+        .chat-msg-preview { font-size: 13px; color: var(--text-gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Barre de navigation (Style Index) */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 60px; background: #000; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; align-items: center; }
-        .nav-icon { width: 24px; height: 24px; fill: white; }
+        /* Nav Bar SVG Moderne */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-icon { width: 24px; height: 24px; fill: white; cursor: pointer; }
         .nav-icon.active { fill: var(--orange); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <i class="fas fa-arrow-left" onclick="history.back()"></i>
-        <h2>Messages</h2>
+        <i class="fas fa-arrow-left" onclick="history.back()" style="cursor:pointer"></i>
+        <h2>Discussions</h2>
     </div>
 
-    <div id="conversations-container" class="chat-list">
-        <p style="text-align: center; color: #444; margin-top: 50px;">Chargement de vos discussions...</p>
+    <div id="chats-container" class="chat-list">
+        <p style="text-align: center; color: #444; margin-top: 50px;">Recherche de vos messages...</p>
     </div>
 
     <div class="nav-bar">
@@ -63,67 +62,77 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Requête pour trouver les discussions où l'utilisateur est présent
+                // LA REQUÊTE : On cherche les chats où TU es dans le tableau 'users'
                 const q = query(
                     collection(db, "chats"),
                     where("users", "array-contains", user.uid),
                     orderBy("lastUpdate", "desc")
                 );
 
-                onSnapshot(q, async (snapshot) => {
-                    const container = document.getElementById('conversations-container');
+                onSnapshot(q, (snapshot) => {
+                    const container = document.getElementById('chats-container');
                     container.innerHTML = "";
 
                     if (snapshot.empty) {
-                        container.innerHTML = "<p style='text-align:center; color:#555; margin-top:50px;'>Aucun message pour le moment.</p>";
+                        container.innerHTML = "<p style='text-align:center; color:#555; margin-top:50px;'>Aucune discussion trouvée.</p>";
                         return;
                     }
 
-                    // On boucle sur chaque discussion trouvée
                     snapshot.forEach(async (docSnap) => {
                         const chat = docSnap.data();
                         const chatId = docSnap.id;
                         
-                        // Identifier l'autre personne
+                        // Trouver l'ID de l'autre personne
                         const otherUserId = chat.users.find(id => id !== user.uid);
                         
-                        // Créer l'élément HTML (on met des placeholders pendant le chargement des infos user)
+                        // Créer le squelette de la ligne
                         const chatItem = document.createElement('div');
                         chatItem.className = 'chat-item';
-                        chatItem.id = `chat-${chatId}`;
+                        chatItem.style.cursor = "pointer";
                         chatItem.onclick = () => location.href = `chat.html?id=${chatId}`;
                         
                         chatItem.innerHTML = `
-                            <img src="https://via.placeholder.com/150" class="user-avatar" id="img-${chatId}">
-                            <div class="chat-info">
-                                <div class="chat-top">
-                                    <span class="chat-name" id="name-${chatId}">Utilisateur Floy</span>
-                                    <span class="chat-time">Maintenant</span>
+                            <img src="https://via.placeholder.com/100" class="user-avatar" id="img-${chatId}">
+                            <div class="chat-content">
+                                <div class="chat-header-row">
+                                    <span class="chat-name" id="name-${chatId}">Chargement...</span>
+                                    <span class="chat-time">${formatTime(chat.lastUpdate)}</span>
                                 </div>
-                                <div class="chat-preview">${chat.lastMessage || "Nouveau message..."}</div>
+                                <div class="chat-msg-preview">${chat.lastMessage || "Nouveau message"}</div>
                             </div>
                         `;
                         container.appendChild(chatItem);
 
-                        // Récupérer les infos (Nom/Photo) de l'autre personne dans la collection "users"
-                        const userRef = doc(db, "users", otherUserId);
-                        const userSnap = await getDoc(userRef);
-                        if (userSnap.exists()) {
-                            const userData = userSnap.data();
-                            document.getElementById(`name-${chatId}`).innerText = userData.username || "Anonyme";
-                            if (userData.avatarUrl) {
+                        // Récupérer les infos de l'autre personne en direct
+                        const uRef = doc(db, "users", otherUserId);
+                        const uSnap = await getDoc(uRef);
+                        if(uSnap.exists()) {
+                            const userData = uSnap.data();
+                            document.getElementById(`name-${chatId}`).innerText = userData.username || "Utilisateur";
+                            if(userData.avatarUrl) {
                                 document.getElementById(`img-${chatId}`).src = userData.avatarUrl;
                             }
                         }
                     });
                 }, (error) => {
-                    console.error("Erreur d'index ou de droits : ", error);
-                    // Si tu vois cette erreur dans la console F12, clique sur le lien pour créer l'index !
+                    console.error("Erreur Firestore:", error);
+                    if(error.message.includes("index")) {
+                        document.getElementById('chats-container').innerHTML = `
+                            <p style="padding:20px; color:orange; text-align:center; font-size:12px;">
+                                L'index Firestore est en cours de création. Revenez dans 2 minutes.
+                            </p>`;
+                    }
                 });
             } else {
                 window.location.href = "connexion.html";
             }
         });
+
+        function formatTime(timestamp) {
+            if(!timestamp) return "";
+            const date = timestamp.toDate();
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
     </script>
 </body>
 </html>
