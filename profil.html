@@ -2,479 +2,209 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Officiel | Floy</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="data:;base64,iVBORw0KGgo="> <style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FLOY | Profil Officiel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
         :root {
-            --bg-black: #000000;
-            --card-gray: #121212;
-            --btn-gray: #262626;
-            --text-white: #ffffff;
-            --text-gray: #a8a8a8;
-            --accent-orange: #FF7A1A; /* Ton badge orange */
-            --insta-blue: #0095f6;
+            --bg: #000; --card: #121212; --border: #262626; --accent: #FF7A1A;
+            --text: #fff; --dim: #a8a8a8; --blue: #0095f6;
+            --story-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; overflow-x: hidden; }
 
-        body {
-            background-color: var(--bg-black);
-            color: var(--text-white);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+        /* LOADER FLOY */
+        #floy-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 10000;
         }
+        .floy-logo { font-size: 40px; font-weight: 900; letter-spacing: 10px; color: var(--accent); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .progress-bar { width: 200px; height: 2px; background: #333; margin-top: 20px; border-radius: 5px; overflow: hidden; }
+        #fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.3s; }
 
-        /* --- HEADER SECTION --- */
-        .profile-container {
-            max-width: 935px;
-            margin: 0 auto;
-            padding: 20px 15px;
+        /* HEADER */
+        .p-container { max-width: 935px; margin: 0 auto; padding: 20px; }
+        .h-top { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; }
+        .avatar-box { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+        .s-ring { 
+            position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+            background: var(--story-gradient); border-radius: 50%; display: none; 
         }
+        .p-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #000; position: relative; z-index: 2; cursor: pointer; }
+        .add-s { position: absolute; bottom: 0; right: 0; background: var(--blue); width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 5; border: 2px solid #000; font-size: 12px; cursor: pointer; }
 
-        .header-main {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
+        .u-info { flex: 1; }
+        .u-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .u-stats { display: flex; list-style: none; padding: 0; gap: 20px; font-size: 14px; }
+        .u-bio { font-size: 14px; line-height: 1.4; margin-top: 10px; }
+        .u-link { color: #e0f1ff; text-decoration: none; font-weight: 600; font-size: 14px; }
 
-        .profile-pic-container {
-            position: relative;
-            flex-shrink: 0;
-        }
+        /* BUTTONS */
+        .btn-row { display: flex; gap: 10px; margin-bottom: 30px; }
+        .btn { flex: 1; background: var(--border); color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn:active { opacity: 0.7; }
 
-        .profile-pic {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--btn-gray);
-            padding: 2px;
-            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-        }
+        /* GRID */
+        .tabs { display: flex; border-top: 1px solid var(--border); }
+        .tab { flex: 1; padding: 15px; text-align: center; color: var(--dim); cursor: pointer; font-size: 20px; }
+        .tab.active { color: #fff; border-top: 1px solid #fff; margin-top: -1px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .g-item { aspect-ratio: 1/1; background: var(--card); overflow: hidden; }
+        .g-item img, .g-item video { width: 100%; height: 100%; object-fit: cover; }
 
-        .add-story-btn {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: var(--insta-blue);
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--bg-black);
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .user-stats-info {
-            flex-grow: 1;
-        }
-
-        .username-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .username-text {
-            font-size: 24px;
-            font-weight: 300;
-        }
-
-        .verified-badge {
-            color: var(--accent-orange);
-            font-size: 18px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-style {
-            background-color: var(--btn-gray);
-            color: var(--text-white);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-style:hover { background-color: #363636; }
-
-        .stats-numbers {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 15px;
-            list-style: none;
-            padding: 0;
-        }
-
-        .bio-text {
-            font-size: 14px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-        }
-
-        .web-link {
-            color: #e0f1ff;
-            text-decoration: none;
-            font-weight: 600;
-            display: block;
-            margin-top: 5px;
-        }
-
-        /* --- HIGHLIGHTS (COLLECTIONS) --- */
-        .highlights-scroll {
-            display: flex;
-            gap: 20px;
-            padding: 15px 0;
-            overflow-x: auto;
-            scrollbar-width: none;
-            margin-bottom: 20px;
-        }
-
-        .highlight-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 75px;
-            cursor: pointer;
-        }
-
-        .hl-circle-add {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            border: 1px solid var(--btn-gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: var(--text-gray);
-            margin-bottom: 5px;
-        }
-
-        /* --- TABS & GRID --- */
-        .profile-tabs {
-            display: flex;
-            justify-content: center;
-            border-top: 1px solid var(--btn-gray);
-            gap: 60px;
-        }
-
-        .tab-item {
-            padding: 15px 0;
-            color: var(--text-gray);
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .tab-item.active {
-            color: var(--text-white);
-            border-top: 1px solid var(--text-white);
-            margin-top: -1px;
-        }
-
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 3px;
-            margin-top: 10px;
-        }
-
-        .grid-post {
-            aspect-ratio: 1 / 1;
-            background-color: var(--card-gray);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .grid-post img, .grid-post video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* --- MODAL EDIT --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: var(--btn-gray);
-            width: 100%;
-            max-width: 420px;
-            border-radius: 15px;
-            overflow: hidden;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #363636;
-        }
-
-        .modal-body { padding: 20px; }
-
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 8px; }
-        .form-input {
-            width: 100%;
-            background: var(--bg-black);
-            border: 1px solid #363636;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-
-        .save-btn { color: var(--insta-blue); font-weight: 700; cursor: pointer; }
+        /* MODALE */
+        .m-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 9000; }
+        .m-card { background: var(--border); width: 90%; max-width: 400px; border-radius: 15px; overflow: hidden; }
+        .m-header { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #333; font-weight: 700; }
+        .m-body { padding: 20px; }
+        .m-input { width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; margin-top: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-    <div class="profile-container">
-        <header class="header-main">
-            <div class="profile-pic-container">
-                <img id="main-avatar" src="" class="profile-pic">
-                <div class="add-story-btn"><i class="fas fa-plus"></i></div>
-            </div>
-            
-            <div class="user-stats-info">
-                <div class="username-row">
-                    <span id="display-username" class="username-text">...</span>
-                    <span id="verified-icon" class="verified-badge" style="display:none;"><i class="fas fa-check-circle"></i></span>
-                    <div class="action-buttons">
-                        <button onclick="openEditModal()" class="btn-style">Modifier le profil</button>
-                        <button onclick="shareProfile()" class="btn-style">Partager</button>
-                    </div>
-                </div>
+    <div id="floy-loader">
+        <div class="floy-logo">FLOY</div>
+        <div class="progress-bar"><div id="fill"></div></div>
+    </div>
 
-                <ul class="stats-numbers">
-                    <li><b id="count-posts">0</b> publications</li>
-                    <li><b id="count-followers">0</b> abonnés</li>
-                    <li><b id="count-following">0</b> abonnements</li>
+    <div class="p-container">
+        <div class="h-top">
+            <div class="avatar-box">
+                <div id="ui-ring" class="s-ring"></div>
+                <img id="ui-avatar" src="https://via.placeholder.com/150" class="p-img" onclick="triggerGallery('p')">
+                <div class="add-s" onclick="triggerGallery('s')"><i class="fas fa-plus"></i></div>
+            </div>
+            <div class="u-info">
+                <div class="u-row">
+                    <h2 id="ui-username" style="margin:0; font-weight:400;">...</h2>
+                    <i id="ui-badge" class="fas fa-check-circle" style="color:var(--accent); display:none;"></i>
+                </div>
+                <ul class="u-stats">
+                    <li><b id="c-posts">0</b> publications</li>
+                    <li><b id="c-followers">0</b> abonnés</li>
                 </ul>
-
-                <div class="bio-section">
-                    <p id="display-bio" class="bio-text"></p>
-                    <a id="display-link" href="#" target="_blank" class="web-link"></a>
+                <div class="u-bio">
+                    <p id="ui-bio" style="margin:0;"></p>
+                    <a id="ui-link" href="#" class="u-link"></a>
                 </div>
             </div>
-        </header>
-
-        <div class="highlights-scroll" id="highlights-area">
-            <div class="highlight-item" onclick="createNewHighlight()">
-                <div class="hl-circle-add"><i class="fas fa-plus"></i></div>
-                <span style="font-size: 12px;">Nouveau</span>
-            </div>
         </div>
 
-        <div class="profile-tabs">
-            <div class="tab-item active"><i class="fas fa-grid-3x3"></i> PUBLICATIONS</div>
-            <div class="tab-item"><i class="far fa-bookmark"></i> ENREGISTRÉ</div>
-            <div class="tab-item"><i class="far fa-id-badge"></i> IDENTIFIÉ</div>
+        <div class="btn-row">
+            <button class="btn" onclick="openEditModal()">Modifier le profil</button>
+            <button class="btn" onclick="copyProfile()">Partager</button>
         </div>
 
-        <div class="posts-grid" id="main-grid">
+        <div class="tabs">
+            <div class="tab active"><i class="fas fa-grid-3x3"></i></div>
+            <div class="tab"><i class="far fa-bookmark"></i></div>
+        </div>
+        <div class="grid" id="ui-grid"></div>
+    </div>
+
+    <div id="m-edit" class="m-overlay">
+        <div class="m-card">
+            <div class="m-header">
+                <span onclick="closeEditModal()" style="font-weight:400; cursor:pointer;">Annuler</span>
+                <span>Modifier</span>
+                <span onclick="saveProfile()" style="color:var(--blue); cursor:pointer;">Terminé</span>
             </div>
-        <div id="scroll-loader" style="text-align:center; padding:20px; display:none;">
-            <i class="fas fa-circle-notch fa-spin" style="color:var(--accent-orange)"></i>
+            <div class="m-body">
+                <input id="in-user" class="m-input" type="text" placeholder="Nom d'utilisateur">
+                <textarea id="in-bio" class="m-input" rows="3" placeholder="Bio"></textarea>
+                <input id="in-link" class="m-input" type="text" placeholder="Lien">
+            </div>
         </div>
     </div>
 
-    <div id="edit-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span onclick="closeEditModal()" style="cursor:pointer;">Annuler</span>
-                <span style="font-weight:700;">Modifier le profil</span>
-                <span id="btn-submit-edit" class="save-btn">Terminé</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group" style="text-align:center;">
-                    <img id="edit-preview" src="" style="width:80px; height:80px; border-radius:50%; object-fit:cover;">
-                    <p style="color:var(--insta-blue); font-size:14px; margin-top:10px; cursor:pointer;">Changer la photo</p>
-                    <input type="text" id="inp-avatar-url" class="form-input" placeholder="URL de l'image">
-                </div>
-                <div class="form-group">
-                    <label>Nom d'utilisateur</label>
-                    <input type="text" id="inp-username" class="form-input">
-                </div>
-                <div class="form-group">
-                    <label>Bio</label>
-                    <textarea id="inp-bio" class="form-input" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Lien Web</label>
-                    <input type="text" id="inp-link" class="form-input" placeholder="https://ton-site.com">
-                </div>
-            </div>
-        </div>
-    </div>
+    <input type="file" id="f-p" accept="image/*" style="display:none;">
+    <input type="file" id="f-s" accept="image/*" style="display:none;">
 
     <script type="module">
-        import { db, auth } from './firebase-config.js';
-        import { doc, onSnapshot, updateDoc, collection, query, where, orderBy, limit, getDocs, startAfter } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { db, auth, storage } from './firebase-config.js';
+        import { doc, onSnapshot, updateDoc, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-        let lastVisibleDoc = null;
-        let isFetching = false;
-
-        // 1. GESTION DES FONCTIONS GLOBALES (Fix de l'erreur ReferenceError)
-        window.openEditModal = () => document.getElementById('edit-modal').style.display = 'flex';
-        window.closeEditModal = () => document.getElementById('edit-modal').style.display = 'none';
-        window.shareProfile = () => {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Lien du profil copié dans le presse-papier !");
+        // --- ATTACHEMENT GLOBAL (FIX REFERENCE ERROR) ---
+        window.openEditModal = () => document.getElementById('m-edit').style.display = 'flex';
+        window.closeEditModal = () => document.getElementById('m-edit').style.display = 'none';
+        window.triggerGallery = (t) => {
+            if(t === 'p') document.getElementById('f-p').click();
+            else document.getElementById('f-s').click();
         };
 
-        // 2. ÉCOUTEUR DE CHANGEMENTS EN TEMPS RÉEL (Pour toutes les pages)
+        const loader = (show) => document.getElementById('floy-loader').style.display = show ? 'flex' : 'none';
+
+        // --- UPLOAD PHOTO PROFIL ---
+        document.getElementById('f-p').onchange = async (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            loader(true);
+            const sRef = ref(storage, `profiles/${auth.currentUser.uid}`);
+            const task = uploadBytesResumable(sRef, file);
+            task.on('state_changed', (s) => {
+                document.getElementById('fill').style.width = (s.bytesTransferred / s.totalBytes) * 100 + '%';
+            }, null, async () => {
+                const url = await getDownloadURL(task.snapshot.ref);
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { avatarUrl: url });
+                loader(false);
+            });
+        };
+
+        // --- SYNCHRO FIREBASE ---
         auth.onAuthStateChanged(user => {
-            if (user) {
-                const userRef = doc(db, "users", user.uid);
-
-                // Cette fonction met à jour TOUT le profil dès qu'un changement a lieu dans Firestore
-                onSnapshot(userRef, (snap) => {
-                    if (snap.exists()) {
-                        const data = snap.data();
-                        
-                        // Mise à jour visuelle immédiate
-                        document.getElementById('display-username').innerText = data.username || "Utilisateur";
-                        document.getElementById('display-bio').innerText = data.bio || "";
-                        document.getElementById('display-link').innerText = data.webLink || "";
-                        document.getElementById('display-link').href = data.webLink || "#";
-                        document.getElementById('main-avatar').src = data.avatarUrl || "https://via.placeholder.com/150";
-                        document.getElementById('edit-preview').src = data.avatarUrl || "https://via.placeholder.com/150";
-                        
-                        // Badge Vérifié
-                        document.getElementById('verified-icon').style.display = data.isVerified ? 'inline' : 'none';
-
-                        // Stats
-                        document.getElementById('count-posts').innerText = data.postsCount || 0;
-                        document.getElementById('count-followers').innerText = data.followersCount || 0;
-                        document.getElementById('count-following').innerText = data.followingCount || 0;
-
-                        // Remplissage de la modale pour la prochaine édition
-                        document.getElementById('inp-username').value = data.username || "";
-                        document.getElementById('inp-bio').value = data.bio || "";
-                        document.getElementById('inp-link').value = data.webLink || "";
-                        document.getElementById('inp-avatar-url').value = data.avatarUrl || "";
-                    }
+            if(user) {
+                onSnapshot(doc(db, "users", user.uid), (snap) => {
+                    const d = snap.data();
+                    document.getElementById('ui-username').innerText = d.username || "User";
+                    document.getElementById('ui-avatar').src = d.avatarUrl || "https://via.placeholder.com/150";
+                    document.getElementById('ui-bio').innerText = d.bio || "";
+                    document.getElementById('ui-link').innerText = d.webLink || "";
+                    document.getElementById('ui-ring').style.display = d.hasStory ? 'block' : 'none';
+                    document.getElementById('ui-badge').style.display = d.isVerified ? 'inline' : 'none';
+                    
+                    // Inputs
+                    document.getElementById('in-user').value = d.username || "";
+                    document.getElementById('in-bio').value = d.bio || "";
+                    document.getElementById('in-link').value = d.webLink || "";
                 });
-
-                // Lancement initial de la grille
-                loadGridPosts(user.uid);
-            } else {
-                window.location.href = "login.html";
+                loadGrid(user.uid);
             }
         });
 
-        // 3. ENREGISTREMENT DES MODIFICATIONS (Permanent)
-        document.getElementById('btn-submit-edit').onclick = async () => {
-            const user = auth.currentUser;
-            if (!user) return;
-
-            const newValues = {
-                username: document.getElementById('inp-username').value,
-                bio: document.getElementById('inp-bio').value,
-                webLink: document.getElementById('inp-link').value,
-                avatarUrl: document.getElementById('inp-avatar-url').value
-            };
-
-            try {
-                await updateDoc(doc(db, "users", user.uid), newValues);
-                closeEditModal();
-                console.log("Profil mis à jour avec succès dans toute l'application.");
-            } catch (err) {
-                console.error("Erreur de sauvegarde:", err);
-                alert("Impossible d'enregistrer les modifications.");
-            }
+        // --- SAUVEGARDE PROFIL ---
+        window.saveProfile = async () => {
+            loader(true);
+            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                username: document.getElementById('in-user').value,
+                bio: document.getElementById('in-bio').value,
+                webLink: document.getElementById('in-link').value
+            });
+            closeEditModal();
+            loader(false);
         };
 
-        // 4. GRILLE DE PHOTOS AVEC SCROLL INFINI
-        async function loadGridPosts(uid) {
-            if (isFetching) return;
-            isFetching = true;
-            const grid = document.getElementById('main-grid');
-            const loader = document.getElementById('scroll-loader');
-            loader.style.display = 'block';
-
-            let q = query(collection(db, "posts"), where("userId", "==", uid), orderBy("createdAt", "desc"), limit(12));
-            if (lastVisibleDoc) {
-                q = query(collection(db, "posts"), where("userId", "==", uid), orderBy("createdAt", "desc"), startAfter(lastVisibleDoc), limit(12));
-            }
-
-            const snap = await getDocs(q);
-            if (!snap.empty) {
-                lastVisibleDoc = snap.docs[snap.docs.length - 1];
+        // --- CHARGEMENT GRILLE (Nécessite l'index Firebase) ---
+        async function loadGrid(uid) {
+            const grid = document.getElementById('ui-grid');
+            grid.innerHTML = '';
+            try {
+                const q = query(collection(db, "posts"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
                 snap.forEach(d => {
-                    const post = d.data();
-                    const item = document.createElement('div');
-                    item.className = 'grid-post';
-                    
-                    if (post.type === 'video') {
-                        item.innerHTML = `<video src="${post.url}"></video><i class="fas fa-play" style="position:absolute; top:10px; right:10px; font-size:12px;"></i>`;
-                    } else {
-                        item.innerHTML = `<img src="${post.url}" loading="lazy">`;
-                    }
-                    grid.appendChild(item);
+                    const p = d.data();
+                    const div = document.createElement('div');
+                    div.className = 'g-item';
+                    div.innerHTML = `<img src="${p.url}">`;
+                    grid.appendChild(div);
                 });
-            }
-            
-            isFetching = false;
-            loader.style.display = 'none';
+            } catch(e) { console.error("Index manquant ? Cliquez sur le lien dans la console."); }
         }
 
-        // Détection du scroll en bas de page
-        window.onscroll = () => {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
-                if(auth.currentUser) loadGridPosts(auth.currentUser.uid);
-            }
-        };
-
-        // 5. GESTION DES COLLECTIONS (Bouton Nouveau)
-        window.createNewHighlight = () => {
-            const name = prompt("Nom de la collection :");
-            if (name) {
-                const area = document.getElementById('highlights-area');
-                const newItem = document.createElement('div');
-                newItem.className = 'highlight-item';
-                newItem.innerHTML = `
-                    <div style="width:64px; height:64px; border-radius:50%; border:1px solid #363636; padding:3px;">
-                        <img src="https://via.placeholder.com/150" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
-                    </div>
-                    <span style="font-size:12px; margin-top:5px;">${name}</span>
-                `;
-                area.appendChild(newItem);
-            }
-        };
+        window.copyProfile = () => { navigator.clipboard.writeText(window.location.href); alert("Lien copié !"); };
     </script>
 </body>
 </html>
