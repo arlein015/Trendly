@@ -9,127 +9,103 @@
         body { background-color: #000; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .orange-text { color: #FF6B00; }
         .bg-orange { background-color: #FF6B00; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .tab-active { border-bottom: 2px solid #FF6B00; color: #FF6B00; }
-        /* Animation au clic */
-        .click-scale:active { transform: scale(0.9); transition: 0.1s; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Badge Bleu avec Étoiles */
+        .badge-container { position: relative; display: inline-block; }
+        .badge-blue { color: #38bdf8; filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5)); }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; animation: twinkle 2s infinite; }
+        @keyframes twinkle { 
+            0%, 100% { opacity: 0; transform: scale(0.3); } 
+            50% { opacity: 1; transform: scale(1); } 
+        }
+
+        /* Menu Latéral */
+        #side-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(100%); }
+        #side-menu.open { transform: translateX(0); }
+
+        /* Fenêtres Modales */
+        .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
     </style>
 </head>
 <body class="antialiased">
 
-    <nav class="sticky top-0 z-50 bg-black/80 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-white/5">
-        <div class="flex items-center space-x-2">
-            <h1 class="font-black text-xl tracking-tighter">Floy<span class="orange-text">.</span></h1>
-        </div>
+    <nav class="sticky top-0 z-40 bg-black/80 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-white/5">
+        <h1 class="font-black text-xl tracking-tighter cursor-pointer">Floy<span class="orange-text">.</span></h1>
         <div class="flex items-center space-x-5">
-            <button class="click-scale opacity-80 hover:opacity-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-                </svg>
-            </button>
-            <button class="click-scale">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
-                </svg>
-            </button>
+            <button class="opacity-80 hover:opacity-100"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg></button>
+            <button onclick="toggleMenu(true)"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg></button>
         </div>
     </nav>
 
     <main class="max-w-4xl mx-auto pt-8 px-4">
-        
         <header class="flex flex-col md:flex-row items-center md:items-start md:space-x-14 mb-10">
-            <div class="relative mb-6 md:mb-0">
-                <div class="w-28 h-28 md:w-40 md:h-40 rounded-full p-[3px] bg-gradient-to-tr from-[#FF6B00] to-[#FF3D00] shadow-[0_0_30px_rgba(255,107,0,0.15)]">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400" 
-                         class="w-full h-full rounded-full object-cover border-4 border-black">
-                </div>
+            <div class="w-28 h-28 md:w-40 md:h-40 rounded-full p-[3px] bg-gradient-to-tr from-[#FF6B00] to-[#FF3D00] mb-6">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400" class="w-full h-full rounded-full object-cover border-4 border-black">
             </div>
 
             <div class="flex-1 text-center md:text-left">
                 <div class="flex items-center justify-center md:justify-start space-x-2 mb-5">
                     <h2 class="text-2xl font-bold">Floy</h2>
-                    <svg class="w-5 h-5 orange-text" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
-                    </svg>
+                    <div class="badge-container">
+                        <svg class="w-5 h-5 badge-blue" fill="currentColor" viewBox="0 0 20 20"><path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
+                        <div class="star w-1 h-1" style="top:-5px; left:5px; animation-delay: 0.2s;"></div>
+                        <div class="star w-[2px] h-[2px]" style="top:5px; right:-5px; animation-delay: 0.5s;"></div>
+                        <div class="star w-1 h-1" style="bottom:-3px; left:10px; animation-delay: 0.8s;"></div>
+                    </div>
                 </div>
 
                 <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-8">
-                    <button id="follow-btn" onclick="handleFollow()" class="bg-orange text-black font-black px-8 py-2 rounded-lg text-xs uppercase click-scale">
-                        Suivre
-                    </button>
-                    <button class="glass px-6 py-2 rounded-lg font-bold text-xs click-scale">
-                        Modifier le profil
-                    </button>
+                    <button class="bg-orange text-black font-black px-8 py-2 rounded-lg text-xs uppercase">Suivre</button>
+                    <button onclick="toggleModal('modal-edit', true)" class="glass px-6 py-2 rounded-lg font-bold text-xs hover:bg-white/10 transition">Modifier le profil</button>
+                    <button onclick="toggleModal('modal-msg', true)" class="glass px-6 py-2 rounded-lg font-bold text-xs hover:border-[#FF6B00] transition">Message</button>
                 </div>
 
-                <div class="flex justify-center md:justify-start space-x-10 mb-6">
-                    <div class="text-center md:text-left"><span class="block font-bold text-xl">42</span><span class="text-[10px] text-gray-500 uppercase font-black tracking-widest">Posts</span></div>
-                    <div class="text-center md:text-left"><span id="follower-count" class="block font-bold text-xl">15400</span><span class="text-[10px] text-gray-500 uppercase font-black tracking-widest">Abonnés</span></div>
-                    <div class="text-center md:text-left"><span class="block font-bold text-xl">891</span><span class="text-[10px] text-gray-500 uppercase font-black tracking-widest">Suivis</span></div>
-                </div>
-
-                <div class="max-w-xs mx-auto md:mx-0">
-                    <p class="text-sm text-gray-400 leading-relaxed border-l-2 border-orange-600 pl-4">
-                        CEO & Founder de Floy Network. <br> 
-                        Innovating the social future. 🚀
-                    </p>
-                </div>
+                <div class="max-w-xs mx-auto md:mx-0"><p class="text-sm text-gray-400 border-l-2 border-[#FF6B00] pl-4">CEO @ Floy Network. <br>Bâtir l'indépendance numérique. 🚀</p></div>
             </div>
         </header>
-
-        <div class="flex border-t border-white/10">
-            <button onclick="switchTab('photos')" id="tab-photos" class="flex-1 py-4 flex justify-center items-center tab-active transition">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                <span class="text-xs font-black uppercase tracking-tighter">Photos</span>
-            </button>
-            <button onclick="switchTab('videos')" id="tab-videos" class="flex-1 py-4 flex justify-center items-center opacity-40 hover:opacity-100 transition">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                <span class="text-xs font-black uppercase tracking-tighter">Vidéos</span>
-            </button>
-        </div>
-
-        <div id="grid-content" class="grid grid-cols-3 gap-1 md:gap-4 pb-20 mt-2">
-            <div class="aspect-square bg-white/5 animate-pulse rounded"></div>
-            <div class="aspect-square bg-white/5 animate-pulse rounded"></div>
-            <div class="aspect-square bg-white/5 animate-pulse rounded"></div>
-        </div>
-
     </main>
 
+    <div id="side-menu" class="fixed inset-y-0 right-0 w-64 bg-[#0A0A0A] border-l border-white/10 z-[60] p-6 shadow-2xl">
+        <button onclick="toggleMenu(false)" class="mb-8 opacity-50 font-bold">Fermer ✕</button>
+        <nav class="space-y-6">
+            <a href="#" class="block text-lg font-bold hover:text-[#FF6B00]">Paramètres</a>
+            <a href="#" class="block text-lg font-bold hover:text-[#FF6B00]">Monétisation</a>
+            <a href="#" class="block text-lg font-bold hover:text-[#FF6B00]">Statistiques</a>
+            <div class="pt-10 border-t border-white/5">
+                <a href="#" class="block text-sm text-red-500">Déconnexion</a>
+            </div>
+        </nav>
+    </div>
+
+    <div id="modal-edit" class="modal">
+        <div class="glass w-[90%] max-w-md p-8 rounded-3xl relative">
+            <button onclick="toggleModal('modal-edit', false)" class="absolute top-4 right-6 opacity-50">✕</button>
+            <h3 class="text-xl font-black mb-6">Éditer Profil</h3>
+            <div class="space-y-4">
+                <input type="text" placeholder="Nom complet" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 outline-none focus:border-[#FF6B00]">
+                <textarea placeholder="Bio" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 h-24 outline-none"></textarea>
+                <button class="w-full bg-orange text-black font-black py-3 rounded-xl uppercase">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-msg" class="modal">
+        <div class="glass w-[90%] max-w-sm p-6 rounded-2xl relative border-[#FF6B00]/30 shadow-[0_0_50px_rgba(255,107,0,0.1)]">
+            <button onclick="toggleModal('modal-msg', false)" class="absolute top-4 right-6 opacity-50">✕</button>
+            <div class="flex items-center space-x-3 mb-4">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100" class="w-10 h-10 rounded-full">
+                <p class="font-bold">Message à Floy</p>
+            </div>
+            <textarea placeholder="Écrire un message..." class="w-full bg-transparent border-b border-white/20 p-2 h-32 outline-none text-sm mb-4"></textarea>
+            <button class="w-full bg-[#FF6B00] text-black font-bold py-2 rounded-lg text-sm">Envoyer</button>
+        </div>
+    </div>
+
     <script>
-        // LOGIQUE ABONNEMENT
-        let isFollowing = false;
-        let count = 15400;
-        function handleFollow() {
-            const btn = document.getElementById('follow-btn');
-            const counter = document.getElementById('follower-count');
-            isFollowing = !isFollowing;
-            count = isFollowing ? count + 1 : count - 1;
-            btn.innerText = isFollowing ? "Suivi" : "Suivre";
-            btn.className = isFollowing 
-                ? "glass text-white font-black px-8 py-2 rounded-lg text-xs uppercase click-scale" 
-                : "bg-orange text-black font-black px-8 py-2 rounded-lg text-xs uppercase click-scale";
-            counter.innerText = count.toLocaleString();
-        }
-
-        // LOGIQUE ONGLETS (Switch Photos/Vidéos)
-        function switchTab(type) {
-            const tabP = document.getElementById('tab-photos');
-            const tabV = document.getElementById('tab-videos');
-            const grid = document.getElementById('grid-content');
-
-            if(type === 'photos') {
-                tabP.classList.add('tab-active'); tabP.classList.remove('opacity-40');
-                tabV.classList.remove('tab-active'); tabV.classList.add('opacity-40');
-                grid.innerHTML = '<div class="aspect-square bg-orange/20 rounded"></div>'.repeat(6); // Simule photos
-            } else {
-                tabV.classList.add('tab-active'); tabV.classList.remove('opacity-40');
-                tabP.classList.remove('tab-active'); tabP.classList.add('opacity-40');
-                grid.innerHTML = '<div class="aspect-square bg-blue-500/10 rounded flex items-center justify-center text-[10px]">VIDEO</div>'.repeat(3); // Simule vidéos
-            }
-        }
-        // Initialiser la grille
-        switchTab('photos');
+        function toggleMenu(show) { document.getElementById('side-menu').classList.toggle('open', show); }
+        function toggleModal(id, show) { document.getElementById(id).classList.toggle('active', show); }
     </script>
 </body>
 </html>
