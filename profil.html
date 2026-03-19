@@ -3,125 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Profil - Floy</title>
+    <title>Profil Officiel | Floy</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="data:;base64,iVBORw0KGgo="> <style>
-        :root { --border: #262626; --bg: #000; --accent: #FF7A1A; }
-        body { background-color: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 50px; }
-        
-        /* HEADER SECTION */
-        .profile-header { padding: 20px 15px; }
-        .header-top { display: flex; align-items: center; gap: 20px; }
-        .avatar-wrapper { position: relative; width: 85px; height: 85px; }
-        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
-        .story-plus-badge { 
-            position: absolute; bottom: 0; right: 0; background: #0095f6; 
-            border-radius: 50%; width: 22px; height: 22px; display: flex; 
-            align-items: center; justify-content: center; border: 2px solid black; font-size: 10px;
+        :root {
+            --bg-black: #000000;
+            --card-gray: #121212;
+            --btn-gray: #262626;
+            --text-white: #ffffff;
+            --text-gray: #a8a8a8;
+            --accent-orange: #FF7A1A; /* Ton badge orange */
+            --insta-blue: #0095f6;
         }
 
-        /* STATS & BUTTONS */
-        .username-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-        .btn-row { display: flex; gap: 8px; margin-top: 15px; }
-        .btn-f { 
-            flex: 1; height: 36px; border: none; border-radius: 8px; 
-            font-weight: 600; font-size: 14px; cursor: pointer !important; 
-            background: var(--border); color: white; transition: opacity 0.2s;
-        }
-        .btn-f:active { opacity: 0.7; }
-
-        /* HIGHLIGHTS SECTION */
-        .highlights-container { 
-            padding: 15px; display: flex; gap: 18px; overflow-x: auto; 
-            border-bottom: 1px solid var(--border); scrollbar-width: none;
-        }
-        .highlight-item { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 64px; }
-        .hl-circle { 
-            width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--border); 
-            display: flex; align-items: center; justify-content: center; font-size: 24px; color: #555;
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
 
-        /* TABS & GRID */
-        .tabs { display: flex; border-top: 1px solid var(--border); margin-top: 10px; }
-        .tab { flex: 1; text-align: center; padding: 12px; color: #8e8e8e; cursor: pointer; }
-        .tab.active { color: white; border-top: 2px solid white; }
-        
-        .post-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-        .post-item { aspect-ratio: 1/1; background: #121212; position: relative; overflow: hidden; }
-        .post-item img, .post-item video { width: 100%; height: 100%; object-fit: cover; }
-        .video-icon { position: absolute; top: 8px; right: 8px; font-size: 12px; text-shadow: 0 0 2px black; }
+        /* --- HEADER SECTION --- */
+        .profile-container {
+            max-width: 935px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
 
-        /* MODALE */
-        .modal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); display: none; align-items: center; 
-            justify-content: center; z-index: 10000; 
+        .header-main {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
         }
-        .modal-content { background: #262626; width: 90%; max-width: 400px; border-radius: 12px; overflow: hidden; }
-        .modal-header { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #363636; }
-        .edit-field { 
-            width: 100%; background: #121212; border: 1px solid #363636; 
-            padding: 12px; color: white; border-radius: 8px; margin-top: 10px; box-sizing: border-box;
+
+        .profile-pic-container {
+            position: relative;
+            flex-shrink: 0;
         }
+
+        .profile-pic {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--btn-gray);
+            padding: 2px;
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+        }
+
+        .add-story-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--insta-blue);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-black);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .user-stats-info {
+            flex-grow: 1;
+        }
+
+        .username-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .username-text {
+            font-size: 24px;
+            font-weight: 300;
+        }
+
+        .verified-badge {
+            color: var(--accent-orange);
+            font-size: 18px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-style {
+            background-color: var(--btn-gray);
+            color: var(--text-white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-style:hover { background-color: #363636; }
+
+        .stats-numbers {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 15px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .bio-text {
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .web-link {
+            color: #e0f1ff;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* --- HIGHLIGHTS (COLLECTIONS) --- */
+        .highlights-scroll {
+            display: flex;
+            gap: 20px;
+            padding: 15px 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            margin-bottom: 20px;
+        }
+
+        .highlight-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 75px;
+            cursor: pointer;
+        }
+
+        .hl-circle-add {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 1px solid var(--btn-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: var(--text-gray);
+            margin-bottom: 5px;
+        }
+
+        /* --- TABS & GRID --- */
+        .profile-tabs {
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid var(--btn-gray);
+            gap: 60px;
+        }
+
+        .tab-item {
+            padding: 15px 0;
+            color: var(--text-gray);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-item.active {
+            color: var(--text-white);
+            border-top: 1px solid var(--text-white);
+            margin-top: -1px;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            margin-top: 10px;
+        }
+
+        .grid-post {
+            aspect-ratio: 1 / 1;
+            background-color: var(--card-gray);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .grid-post img, .grid-post video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- MODAL EDIT --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--btn-gray);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 15px;
+            overflow: hidden;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #363636;
+        }
+
+        .modal-body { padding: 20px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 8px; }
+        .form-input {
+            width: 100%;
+            background: var(--bg-black);
+            border: 1px solid #363636;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .save-btn { color: var(--insta-blue); font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="profile-header">
-        <div class="header-top">
-            <div class="avatar-wrapper">
-                <img id="h-avatar" src="https://via.placeholder.com/150" class="avatar-img">
-                <div class="story-plus-badge"><i class="fas fa-plus"></i></div>
+    <div class="profile-container">
+        <header class="header-main">
+            <div class="profile-pic-container">
+                <img id="main-avatar" src="" class="profile-pic">
+                <div class="add-story-btn"><i class="fas fa-plus"></i></div>
             </div>
-            <div style="flex: 1;">
+            
+            <div class="user-stats-info">
                 <div class="username-row">
-                    <h2 id="h-username" style="margin:0; font-size: 20px;">...</h2>
-                    <i id="h-verify" class="fas fa-check-circle" style="color: var(--accent); display:none;"></i>
+                    <span id="display-username" class="username-text">...</span>
+                    <span id="verified-icon" class="verified-badge" style="display:none;"><i class="fas fa-check-circle"></i></span>
+                    <div class="action-buttons">
+                        <button onclick="openEditModal()" class="btn-style">Modifier le profil</button>
+                        <button onclick="shareProfile()" class="btn-style">Partager</button>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 15px; font-size: 14px;">
-                    <span><b id="c-posts">0</b> publications</span>
-                    <span><b id="c-followers">0</b> followers</span>
+
+                <ul class="stats-numbers">
+                    <li><b id="count-posts">0</b> publications</li>
+                    <li><b id="count-followers">0</b> abonnés</li>
+                    <li><b id="count-following">0</b> abonnements</li>
+                </ul>
+
+                <div class="bio-section">
+                    <p id="display-bio" class="bio-text"></p>
+                    <a id="display-link" href="#" target="_blank" class="web-link"></a>
                 </div>
             </div>
+        </header>
+
+        <div class="highlights-scroll" id="highlights-area">
+            <div class="highlight-item" onclick="createNewHighlight()">
+                <div class="hl-circle-add"><i class="fas fa-plus"></i></div>
+                <span style="font-size: 12px;">Nouveau</span>
+            </div>
         </div>
-        <p id="h-bio" style="margin-top: 15px; font-size: 14px; white-space: pre-wrap;"></p>
-        
-        <div class="btn-row">
-            <button onclick="openEditModal()" class="btn-f">Modifier le profil</button>
-            <button onclick="copyProfileLink()" class="btn-f">Partager le profil</button>
+
+        <div class="profile-tabs">
+            <div class="tab-item active"><i class="fas fa-grid-3x3"></i> PUBLICATIONS</div>
+            <div class="tab-item"><i class="far fa-bookmark"></i> ENREGISTRÉ</div>
+            <div class="tab-item"><i class="far fa-id-badge"></i> IDENTIFIÉ</div>
+        </div>
+
+        <div class="posts-grid" id="main-grid">
+            </div>
+        <div id="scroll-loader" style="text-align:center; padding:20px; display:none;">
+            <i class="fas fa-circle-notch fa-spin" style="color:var(--accent-orange)"></i>
         </div>
     </div>
 
-    <div class="highlights-container">
-        <div class="highlight-item" onclick="alert('Bientôt disponible !')">
-            <div class="hl-circle"><i class="fas fa-plus"></i></div>
-            <span style="font-size: 12px;">Nouveau</span>
-        </div>
-    </div>
-
-    <div class="tabs">
-        <div class="tab active"><i class="fas fa-grid-3x3"></i></div>
-        <div class="tab"><i class="far fa-bookmark"></i></div>
-        <div class="tab"><i class="far fa-id-badge"></i></div>
-    </div>
-
-    <div id="post-grid" class="post-grid"></div>
-    <div id="loader" style="text-align:center; padding: 20px; display:none;">
-        <i class="fas fa-spinner fa-spin" style="color: var(--accent);"></i>
-    </div>
-
-    <div id="edit-modal" class="modal">
+    <div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <span onclick="closeEditModal()" style="cursor:pointer; color:#a8a8a8;">Annuler</span>
-                <b>Modifier le profil</b>
-                <span id="btn-save" style="cursor:pointer; color:#0095f6; font-weight:600;">Terminé</span>
+                <span onclick="closeEditModal()" style="cursor:pointer;">Annuler</span>
+                <span style="font-weight:700;">Modifier le profil</span>
+                <span id="btn-submit-edit" class="save-btn">Terminé</span>
             </div>
-            <div style="padding: 20px;">
-                <label style="font-size: 12px; color: #a8a8a8;">Bio</label>
-                <textarea id="inp-bio" class="edit-field" rows="3"></textarea>
-                <label style="font-size: 12px; color: #a8a8a8; margin-top:15px; display:block;">URL de la Photo</label>
-                <input type="text" id="inp-avatar" class="edit-field">
+            <div class="modal-body">
+                <div class="form-group" style="text-align:center;">
+                    <img id="edit-preview" src="" style="width:80px; height:80px; border-radius:50%; object-fit:cover;">
+                    <p style="color:var(--insta-blue); font-size:14px; margin-top:10px; cursor:pointer;">Changer la photo</p>
+                    <input type="text" id="inp-avatar-url" class="form-input" placeholder="URL de l'image">
+                </div>
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" id="inp-username" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="inp-bio" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Lien Web</label>
+                    <input type="text" id="inp-link" class="form-input" placeholder="https://ton-site.com">
+                </div>
             </div>
         </div>
     </div>
@@ -130,87 +344,135 @@
         import { db, auth } from './firebase-config.js';
         import { doc, onSnapshot, updateDoc, collection, query, where, orderBy, limit, getDocs, startAfter } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        let lastDoc = null;
+        let lastVisibleDoc = null;
         let isFetching = false;
 
-        // FONCTIONS GLOBALES (Accessibles via onclick)
+        // 1. GESTION DES FONCTIONS GLOBALES (Fix de l'erreur ReferenceError)
         window.openEditModal = () => document.getElementById('edit-modal').style.display = 'flex';
         window.closeEditModal = () => document.getElementById('edit-modal').style.display = 'none';
-        window.copyProfileLink = () => {
+        window.shareProfile = () => {
             navigator.clipboard.writeText(window.location.href);
-            alert("Lien copié !");
+            alert("Lien du profil copié dans le presse-papier !");
         };
 
-        // CHARGEMENT DES DONNÉES UTILISATEUR
+        // 2. ÉCOUTEUR DE CHANGEMENTS EN TEMPS RÉEL (Pour toutes les pages)
         auth.onAuthStateChanged(user => {
             if (user) {
                 const userRef = doc(db, "users", user.uid);
-                
-                // Temps réel Header
-                onSnapshot(userRef, snap => {
+
+                // Cette fonction met à jour TOUT le profil dès qu'un changement a lieu dans Firestore
+                onSnapshot(userRef, (snap) => {
                     if (snap.exists()) {
-                        const d = snap.data();
-                        document.getElementById('h-username').innerText = d.username || "User";
-                        document.getElementById('h-bio').innerText = d.bio || "";
-                        document.getElementById('h-avatar').src = d.avatarUrl || "https://via.placeholder.com/150";
-                        document.getElementById('c-posts').innerText = d.postsCount || 0;
-                        document.getElementById('c-followers').innerText = d.followersCount || 0;
-                        document.getElementById('h-verify').style.display = d.isVerified ? 'inline' : 'none';
+                        const data = snap.data();
                         
-                        document.getElementById('inp-bio').value = d.bio || "";
-                        document.getElementById('inp-avatar').value = d.avatarUrl || "";
+                        // Mise à jour visuelle immédiate
+                        document.getElementById('display-username').innerText = data.username || "Utilisateur";
+                        document.getElementById('display-bio').innerText = data.bio || "";
+                        document.getElementById('display-link').innerText = data.webLink || "";
+                        document.getElementById('display-link').href = data.webLink || "#";
+                        document.getElementById('main-avatar').src = data.avatarUrl || "https://via.placeholder.com/150";
+                        document.getElementById('edit-preview').src = data.avatarUrl || "https://via.placeholder.com/150";
+                        
+                        // Badge Vérifié
+                        document.getElementById('verified-icon').style.display = data.isVerified ? 'inline' : 'none';
+
+                        // Stats
+                        document.getElementById('count-posts').innerText = data.postsCount || 0;
+                        document.getElementById('count-followers').innerText = data.followersCount || 0;
+                        document.getElementById('count-following').innerText = data.followingCount || 0;
+
+                        // Remplissage de la modale pour la prochaine édition
+                        document.getElementById('inp-username').value = data.username || "";
+                        document.getElementById('inp-bio').value = data.bio || "";
+                        document.getElementById('inp-link').value = data.webLink || "";
+                        document.getElementById('inp-avatar-url').value = data.avatarUrl || "";
                     }
                 });
 
-                // Sauvegarde
-                document.getElementById('btn-save').onclick = async () => {
-                    await updateDoc(userRef, {
-                        bio: document.getElementById('inp-bio').value,
-                        avatarUrl: document.getElementById('inp-avatar').value
-                    });
-                    closeEditModal();
-                };
-
-                // Lancer le chargement des posts
-                loadPosts(user.uid);
+                // Lancement initial de la grille
+                loadGridPosts(user.uid);
+            } else {
+                window.location.href = "login.html";
             }
         });
 
-        // CHARGEMENT INFINI DES POSTS
-        async function loadPosts(uid) {
+        // 3. ENREGISTREMENT DES MODIFICATIONS (Permanent)
+        document.getElementById('btn-submit-edit').onclick = async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const newValues = {
+                username: document.getElementById('inp-username').value,
+                bio: document.getElementById('inp-bio').value,
+                webLink: document.getElementById('inp-link').value,
+                avatarUrl: document.getElementById('inp-avatar-url').value
+            };
+
+            try {
+                await updateDoc(doc(db, "users", user.uid), newValues);
+                closeEditModal();
+                console.log("Profil mis à jour avec succès dans toute l'application.");
+            } catch (err) {
+                console.error("Erreur de sauvegarde:", err);
+                alert("Impossible d'enregistrer les modifications.");
+            }
+        };
+
+        // 4. GRILLE DE PHOTOS AVEC SCROLL INFINI
+        async function loadGridPosts(uid) {
             if (isFetching) return;
             isFetching = true;
-            const grid = document.getElementById('post-grid');
-            const loader = document.getElementById('loader');
+            const grid = document.getElementById('main-grid');
+            const loader = document.getElementById('scroll-loader');
             loader.style.display = 'block';
 
             let q = query(collection(db, "posts"), where("userId", "==", uid), orderBy("createdAt", "desc"), limit(12));
-            if (lastDoc) q = query(collection(db, "posts"), where("userId", "==", uid), orderBy("createdAt", "desc"), startAfter(lastDoc), limit(12));
+            if (lastVisibleDoc) {
+                q = query(collection(db, "posts"), where("userId", "==", uid), orderBy("createdAt", "desc"), startAfter(lastVisibleDoc), limit(12));
+            }
 
             const snap = await getDocs(q);
             if (!snap.empty) {
-                lastDoc = snap.docs[snap.docs.length - 1];
-                snap.forEach(doc => {
-                    const post = doc.data();
-                    const div = document.createElement('div');
-                    div.className = 'post-item';
+                lastVisibleDoc = snap.docs[snap.docs.length - 1];
+                snap.forEach(d => {
+                    const post = d.data();
+                    const item = document.createElement('div');
+                    item.className = 'grid-post';
                     
                     if (post.type === 'video') {
-                        div.innerHTML = `<video src="${post.url}"></video><i class="fas fa-play video-icon"></i>`;
+                        item.innerHTML = `<video src="${post.url}"></video><i class="fas fa-play" style="position:absolute; top:10px; right:10px; font-size:12px;"></i>`;
                     } else {
-                        div.innerHTML = `<img src="${post.url}">`;
+                        item.innerHTML = `<img src="${post.url}" loading="lazy">`;
                     }
-                    grid.appendChild(div);
+                    grid.appendChild(item);
                 });
             }
+            
             isFetching = false;
             loader.style.display = 'none';
         }
 
-        // SCROLL DETECTION
+        // Détection du scroll en bas de page
         window.onscroll = () => {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
-                if(auth.currentUser) loadPosts(auth.currentUser.uid);
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
+                if(auth.currentUser) loadGridPosts(auth.currentUser.uid);
+            }
+        };
+
+        // 5. GESTION DES COLLECTIONS (Bouton Nouveau)
+        window.createNewHighlight = () => {
+            const name = prompt("Nom de la collection :");
+            if (name) {
+                const area = document.getElementById('highlights-area');
+                const newItem = document.createElement('div');
+                newItem.className = 'highlight-item';
+                newItem.innerHTML = `
+                    <div style="width:64px; height:64px; border-radius:50%; border:1px solid #363636; padding:3px;">
+                        <img src="https://via.placeholder.com/150" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                    </div>
+                    <span style="font-size:12px; margin-top:5px;">${name}</span>
+                `;
+                area.appendChild(newItem);
             }
         };
     </script>
