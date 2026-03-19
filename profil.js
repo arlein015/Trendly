@@ -48,3 +48,33 @@ window.listenToFollowStatus = (targetUid, currentUid) => {
         }
     });
 };
+// 1. Fonction pour copier le lien du profil
+window.copyProfileLink = () => {
+    const profileUrl = window.location.href;
+    navigator.clipboard.writeText(profileUrl).then(() => {
+        alert("Lien du profil copié !");
+    }).catch(err => {
+        console.error("Erreur lors de la copie : ", err);
+    });
+};
+
+// 2. Gestion du clic Suivre (Couleur + Compteur)
+window.handleFollowClick = async () => {
+    const btn = document.getElementById('follow-btn');
+    const followerCountEl = document.getElementById('s-followers');
+    let currentCount = parseInt(followerCountEl.innerText);
+
+    // On appelle la fonction Firebase (déjà créée précédemment)
+    await window.toggleFollow(profileId); 
+
+    // Changement visuel immédiat (Feedback)
+    if (btn.innerText === "Suivre") {
+        btn.innerText = "Abonné";
+        btn.style.background = "#262626"; // Devient gris
+        followerCountEl.innerText = currentCount + 1; // Simulation temps réel
+    } else {
+        btn.innerText = "Suivre";
+        btn.style.background = "#FF7A1A"; // Repasse en orange
+        followerCountEl.innerText = Math.max(0, currentCount - 1); // Simulation temps réel
+    }
+};
