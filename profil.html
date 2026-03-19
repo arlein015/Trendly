@@ -9,7 +9,7 @@
         :root { --floy-orange: #FF7A1A; --floy-black: #000; }
         body { background: var(--floy-black); margin: 0; font-family: -apple-system, sans-serif; color: white; overflow-x: hidden; }
         
-        /* LOADER FLOY - S'affiche en premier */
+        /* LOADER FLOY */
         #floy-loader {
             position: fixed; inset: 0; background: #000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -21,22 +21,18 @@
             border-top: 3px solid var(--floy-orange);
             border-radius: 50%; animation: spin 0.8s linear infinite;
         }
-        .floy-logo-text {
-            margin-top: 20px; color: white; font-size: 14px;
-            letter-spacing: 5px; text-transform: uppercase; font-weight: 300;
-        }
+        .floy-logo-text { margin-top: 20px; color: white; font-size: 14px; letter-spacing: 5px; text-transform: uppercase; font-weight: 300; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Conteneur de l'application */
         .app-container { width: 100%; max-width: 500px; margin: 0 auto; padding-bottom: 80px; }
         
-        /* Navigation basse */
+        /* Nav Basse */
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; max-width: 500px; height: 65px;
             background: rgba(0,0,0,0.95); border-top: 1px solid #1a1a1a;
             display: flex; justify-content: space-around; align-items: center; z-index: 1000;
         }
-        .nav-bar i { font-size: 22px; color: #555; }
+        .nav-bar i { font-size: 22px; color: #555; cursor: pointer; }
         .nav-active { color: var(--floy-orange) !important; }
     </style>
 </head>
@@ -54,13 +50,11 @@
         <div id="grid-zone"></div>
     </div>
 
-    <div id="modal-zone"></div>
-
-    <nav class="nav-bar">
+    <div id="modal-zone"></div> <nav class="nav-bar">
         <i class="fas fa-home" onclick="location.href='index.html'"></i>
-        <i class="fas fa-découvrir"></i>
+        <i class="fas fa-search"></i>
         <i class="fas fa-plus-square"></i>
-        <i class="fas fa-message"></i>
+        <i class="fas fa-comment"></i>
         <i class="fas fa-user nav-active"></i>
     </nav>
 
@@ -68,24 +62,24 @@
         import { auth } from './firebase-config.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Fonction d'injection sécurisée
         async function loadModule(file, targetId) {
             try {
                 const res = await fetch(file);
-                if (!res.ok) return;
+                if (!res.ok) throw new Error(file + " introuvable");
                 const html = await res.text();
                 const container = document.getElementById(targetId);
-                container.innerHTML = html;
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                container.appendChild(tempDiv);
                 
-                // Exécution des scripts du module
-                const scripts = container.querySelectorAll("script");
+                const scripts = tempDiv.querySelectorAll("script");
                 scripts.forEach(s => {
                     const newScript = document.createElement("script");
                     newScript.type = "module";
                     newScript.textContent = s.textContent;
                     document.body.appendChild(newScript);
                 });
-            } catch (e) { console.error("Erreur module:", file, e); }
+            } catch (e) { console.error(e); }
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -94,26 +88,22 @@
             const urlParams = new URLSearchParams(window.location.search);
             const viewId = urlParams.get('id') || user.uid;
 
-            // Chargement de tous les modules
-            await Promise.all([
-                loadModule('profile_header.html', 'header-zone'),
-                loadModule('profile_stats.html', 'stats-zone'),
-                loadModule('profile_tabs.html', 'tabs-zone'),
-                loadModule('profile_grid.html', 'grid-zone'),
-                loadModule('profile_edit_modal.html', 'modal-zone')
-            ]);
+            // Chargement séquentiel pour éviter les conflits
+            await loadModule('profile_header.html', 'header-zone');
+            await loadModule('profile_stats.html', 'stats-zone');
+            await loadModule('profile_tabs.html', 'tabs-zone');
+            await loadModule('profile_grid.html', 'grid-zone');
+            await loadModule('profile_edit_modal.html', 'modal-zone');
+            await loadModule('quick_chat.html', 'modal-zone');
 
-            // Initialisation des données après injection
             setTimeout(() => {
                 if(window.loadHeader) window.loadHeader(viewId, user.uid);
-                if(window.loadStats) window.loadStats(viewId);
-                if(window.loadGrid) window.loadGrid('posts', viewId);
-                
-                // Cacher le loader Floy avec transition
                 const loader = document.getElementById('floy-loader');
-                loader.style.opacity = '0';
-                setTimeout(() => loader.remove(), 500);
-            }, 400);
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 500);
+                }
+            }, 600);
         });
     </script>
 </body>
