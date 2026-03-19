@@ -1,46 +1,36 @@
 <style>
-    .profile-header { padding: 20px 15px; color: white; background: #000; }
+    .profile-header { padding: 20px 15px; color: white; background: #000; font-family: -apple-system, sans-serif; }
     .header-top { display: flex; align-items: center; gap: 20px; }
     
-    /* Photo et badge story */
-    .avatar-wrapper { position: relative; width: 85px; height: 85px; cursor: pointer; }
+    .avatar-wrapper { position: relative; width: 85px; height: 85px; }
     .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid #262626; }
     .story-plus { 
         position: absolute; bottom: 0; right: 0; background: #0095f6; 
         color: white; border-radius: 50%; width: 22px; height: 22px; 
         display: flex; align-items: center; justify-content: center; 
-        border: 2px solid black; font-size: 11px; 
+        border: 2px solid black; font-size: 11px; cursor: pointer;
     }
 
-    /* Actions */
-    .btn-row { display: flex; gap: 8px; margin-top: 15px; align-items: center; }
-    .btn-f { flex: 1; height: 34px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .btn-orange { background: #FF7A1A; color: white; }
-    .btn-gray { background: #262626; color: white; }
-
-    .btn-icon-svg { width: 34px; height: 34px; background: #262626; border: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-    .btn-icon-svg svg { fill: white; width: 18px; height: 18px; }
-
-    #copy-toast {
-        position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-        background: #333; color: white; padding: 10px 20px; border-radius: 20px;
-        font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 10000;
-    }
+    .stats-row { display: flex; gap: 15px; font-size: 14px; margin-top: 5px; }
+    .username-row { display: flex; align-items: center; gap: 8px; }
+    .btn-row { display: flex; gap: 8px; margin-top: 15px; }
+    .btn-f { flex: 1; height: 36px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; background: #262626; color: white; }
+    .btn-orange { background: #FF7A1A; }
 </style>
 
 <div class="profile-header">
-    <div id="copy-toast">Lien copié !</div>
     <div class="header-top">
         <div class="avatar-wrapper">
             <img id="h-avatar" src="" class="avatar-img">
             <div class="story-plus" id="h-plus-icon" style="display:none;"><i class="fas fa-plus"></i></div>
         </div>
         <div style="flex: 1;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <h2 id="h-username" style="margin:0; font-size: 19px; font-weight: 500;">...</h2>
-                <div id="h-badge-container"></div>
+            <div class="username-row">
+                <h2 id="h-username" style="margin:0; font-size: 20px;">...</h2>
+                <div id="h-badge"></div>
+                <i class="fas fa-cog" style="font-size: 18px; margin-left: auto; cursor:pointer;"></i>
             </div>
-            <div style="display: flex; gap: 15px; font-size: 13px; margin-top: 5px;">
+            <div class="stats-row">
                 <span><b id="c-posts">0</b> publications</span>
                 <span><b id="c-followers">0</b> followers</span>
             </div>
@@ -48,36 +38,15 @@
     </div>
 
     <div style="margin-top: 12px;">
-        <span id="h-fullname" style="font-weight: 600; font-size: 14px; display:block;"></span>
-        <p id="h-bio" style="margin: 3px 0; font-size: 14px; color: #efefef;"></p>
+        <p id="h-bio" style="margin: 3px 0; font-size: 14px;"></p>
     </div>
 
-    <div id="dynamic-actions-zone" class="btn-row"></div>
+    <div id="dynamic-actions" class="btn-row"></div>
 </div>
 
 <script type="module">
     import { db, auth } from './firebase-config.js';
-    import { doc, onSnapshot, updateDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    window.copyProfileLink = () => {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            const toast = document.getElementById('copy-toast');
-            toast.style.opacity = '1';
-            setTimeout(() => toast.style.opacity = '0', 2000);
-        });
-    };
-
-    window.toggleFollow = async (profileId) => {
-        const myId = auth.currentUser.uid;
-        const userRef = doc(db, "users", profileId);
-        const btn = document.getElementById('btn-main');
-        const isFollowing = btn.getAttribute('data-following') === 'true';
-
-        await updateDoc(userRef, {
-            followersCount: increment(isFollowing ? -1 : 1),
-            followersList: isFollowing ? arrayRemove(myId) : arrayUnion(myId)
-        });
-    };
+    import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     window.loadHeader = (profileId, myId) => {
         onSnapshot(doc(db, "users", profileId), (snap) => {
@@ -85,37 +54,29 @@
             const data = snap.data();
             
             document.getElementById('h-username').innerText = data.username || "";
-            document.getElementById('h-fullname').innerText = data.fullName || "";
             document.getElementById('h-bio').innerText = data.bio || "";
             document.getElementById('h-avatar').src = data.avatarUrl || "https://via.placeholder.com/150";
             document.getElementById('c-posts').innerText = data.postsCount || 0;
             document.getElementById('c-followers').innerText = data.followersCount || 0;
+            
+            // Badge vérifié orange
+            document.getElementById('h-badge').innerHTML = data.isVerified ? 
+                `<i class="fas fa-check-circle" style="color:#FF7A1A;"></i>` : '';
 
-            const badgeCont = document.getElementById('h-badge-container');
-            badgeCont.innerHTML = data.isVerified ? `<i class="fas fa-check-circle" style="color:#FF7A1A; font-size:16px;"></i>` : '';
-
-            const actionsZone = document.getElementById('dynamic-actions-zone');
+            const actions = document.getElementById('dynamic-actions');
             const plusIcon = document.getElementById('h-plus-icon');
-            actionsZone.innerHTML = "";
 
             if (profileId === myId) {
                 plusIcon.style.display = 'flex';
-                actionsZone.innerHTML = `
-                    <button onclick="window.location.href='edit_profile.html'" class="btn-f btn-gray">Modifier le profil</button>
-                    <button onclick="copyProfileLink()" class="btn-f btn-gray">Partager le profil</button>
-                    <button class="btn-icon-svg" onclick="window.location.href='edit_profile.html'">
-                        <svg viewBox="0 0 24 24"><path d="M19.91 15.51a1.29 1.29 0 0 1-1.02-1.46l.16-1.14a1.29 1.29 0 0 1 1.02-1.46l.94-.13a1.29 1.29 0 0 0 1.02-1.46l-1.06-4.25a1.29 1.29 0 0 0-1.02-1.46l-.94-.13a1.29 1.29 0 0 1-1.02-1.46l-.16-1.14a1.29 1.29 0 0 0-1.02-1.46l-4.25 1.06a1.29 1.29 0 0 0-1.02 1.46l-.16 1.14a1.29 1.29 0 0 1-1.02 1.46l-.94.13a1.29 1.29 0 0 0-1.02 1.46l1.06 4.25a1.29 1.29 0 0 0 1.02 1.46l.94.13a1.29 1.29 0 0 1 1.02 1.46l.16 1.14a1.29 1.29 0 0 0 1.02 1.46l4.25-1.06a1.29 1.29 0 0 0 1.02-1.46l-.16-1.14z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
+                actions.innerHTML = `
+                    <button onclick="openEditModal()" class="btn-f">Modifier le profil</button>
+                    <button onclick="copyProfileLink()" class="btn-f">Partager le profil</button>
                 `;
             } else {
-                const isFollowing = data.followersList?.includes(myId);
                 plusIcon.style.display = 'none';
-                actionsZone.innerHTML = `
-                    <button id="btn-main" data-following="${isFollowing}" onclick="toggleFollow('${profileId}')" class="btn-f ${isFollowing ? 'btn-gray' : 'btn-orange'}">${isFollowing ? 'Suivi(e)' : 'Suivre'}</button>
-                    <button onclick="openQuickChat('${profileId}')" class="btn-f btn-gray">Message</button>
-                    <button class="btn-icon-svg" onclick="copyProfileLink()">
-                        <svg viewBox="0 0 24 24"><path d="M12 2.75a.75.75 0 0 1 .75.75V15a.75.75 0 0 1-1.5 0V3.5a.75.75 0 0 1 .75-.75Z"/><path d="M7.22 5.53a.75.75 0 0 1 1.06 0L12 9.25l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L7.22 6.59a.75.75 0 0 1 0-1.06Z"/><path d="M3.75 13.25a.75.75 0 0 1 .75.75v5.5c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75V14a.75.75 0 0 1 1.5 0v5.5A2.25 2.25 0 0 1 18.75 21.75H5.25A2.25 2.25 0 0 1 3 19.5V14a.75.75 0 0 1 .75-.75Z"/></svg>
-                    </button>
+                actions.innerHTML = `
+                    <button onclick="toggleFollow()" class="btn-f btn-orange">Suivre</button>
+                    <button onclick="openChat()" class="btn-f">Message</button>
                 `;
             }
         });
