@@ -1,57 +1,52 @@
 <style>
     .header-main { padding: 20px 15px; background: #000; color: white; }
     
-    /* Alignement Photo + Stats */
+    /* Alignement Photo à gauche et Stats à droite */
     .header-top-row { 
         display: flex; 
         align-items: center; 
-        justify-content: flex-start; 
-        gap: 30px; /* Espace entre photo et stats */
-        margin-bottom: 15px; 
+        gap: 25px; 
+        margin-bottom: 12px; 
     }
     
-    .profile-pic-box { position: relative; width: 85px; height: 85px; flex-shrink: 0; }
+    .profile-pic-box { width: 85px; height: 85px; flex-shrink: 0; }
     .profile-pic-box img { 
         width: 100%; height: 100%; border-radius: 50%; 
         object-fit: cover; border: 2px solid #FF7A1A; 
     }
 
-    .stats-right { display: flex; gap: 25px; flex-grow: 1; justify-content: flex-start; }
-    .stat-item { text-align: center; cursor: pointer; }
-    .stat-item b { display: block; font-size: 18px; color: white; }
+    .stats-right { display: flex; gap: 20px; flex-grow: 1; justify-content: space-around; }
+    .stat-item { text-align: center; }
+    .stat-item b { display: block; font-size: 17px; color: white; }
     .stat-item span { font-size: 12px; color: #8e8e8e; }
 
-    /* Zone Nom et Bio sous la photo */
+    /* Infos utilisateur sous la photo */
     .user-details { margin-top: 5px; }
-    .name-badge { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 17px; }
+    .name-container { display: flex; align-items: center; gap: 6px; }
+    #p-username { font-weight: bold; font-size: 16px; margin: 0; }
     
-    /* Le badge bleu "Vrai" */
-    .verification-blue { 
-        color: #0095f6; 
-        font-size: 15px; 
-        display: flex; align-items: center;
-    }
+    /* Le Badge Bleu avec le symbole "Vrai" */
+    .verify-badge { color: #0095f6; display: flex; align-items: center; }
 
     .bio-text { font-size: 14px; margin: 4px 0; color: #ffffff; }
-    .user-link { color: #FF7A1A; text-decoration: none; font-size: 14px; font-weight: 500; }
+    .user-link { color: #FF7A1A; text-decoration: none; font-size: 13px; font-weight: 500; }
 
-    /* Barre de boutons : Suivre Orange / Message Noir et Blanc */
-    .action-bar { display: flex; gap: 10px; margin-top: 15px; }
+    /* Boutons Suivre (Orange) et Message (Blanc) */
+    .action-buttons { display: flex; gap: 8px; margin-top: 15px; }
     
     .btn-follow { 
         background: #FF7A1A; color: white; border: none; 
-        flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        flex: 1; padding: 9px; border-radius: 8px; font-weight: bold; cursor: pointer;
     }
     
-    .btn-msg { 
+    .btn-message { 
         background: #ffffff; color: #000000; border: none; 
-        flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        flex: 1; padding: 9px; border-radius: 8px; font-weight: bold; cursor: pointer;
     }
 
-    .icon-btn-dark { 
-        background: #262626; border: none; padding: 10px; 
-        border-radius: 8px; color: white; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
+    .btn-icon-small { 
+        background: #262626; color: white; border: none; 
+        padding: 9px 12px; border-radius: 8px; cursor: pointer;
     }
 </style>
 
@@ -62,28 +57,28 @@
         </div>
 
         <div class="stats-right">
-            <div class="stat-item"><b id="s-posts">0</b><span>Pubs</span></div>
-            <div class="stat-item" onclick="openFollowersModal('followers')"><b id="s-followers">0</b><span>Abonnés</span></div>
-            <div class="stat-item" onclick="openFollowersModal('following')"><b id="s-following">0</b><span>Abos</span></div>
+            <div class="stat-item"><b>0</b><span>Pubs</span></div>
+            <div class="stat-item"><b>0</b><span>Abonnés</span></div>
+            <div class="stat-item"><b>0</b><span>Abos</span></div>
         </div>
     </div>
 
     <div class="user-details">
-        <div class="name-badge">
-            <span id="p-username">Arlein</span>
-            <svg class="verification-blue" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22.5 12.5c0-1.58-.8-3-2.1-3.88c.26-1.55-.18-3.15-1.23-4.2c-1.04-1.04-2.65-1.49-4.2-1.23C14.1 2.1 12.58 1.3 11 1.3c-1.58 0-3.1.8-3.88 2.1c-1.55-.26-3.15.18-4.2 1.23c-1.04 1.04-1.49 2.65-1.23 4.2C1 11.9 1 13.1 2.1 13.88c-.26 1.55.18 3.15 1.23 4.2c1.04 1.04 2.65 1.49 4.2 1.23c.78 1.3 2.3 2.1 3.88 2.1s3.1-.8 3.88-2.1c1.55.26 3.15-.18 4.2-1.23c1.04-1.04 1.49-2.65 1.23-4.2c1.3-.78 2.1-2.3 2.1-3.88zM10 16.5l-4.5-4.5l1.4-1.4l3.1 3.1l6.1-6.1l1.4 1.4l-7.5 7.5z"/>
-            </svg>
+        <div class="name-container">
+            <p id="p-username">Chargement...</p>
+            <span class="verify-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.5 12.5c0-1.58-.8-3-2.1-3.88c.26-1.55-.18-3.15-1.23-4.2c-1.04-1.04-2.65-1.49-4.2-1.23C14.1 2.1 12.58 1.3 11 1.3c-1.58 0-3.1.8-3.88 2.1c-1.55-.26-3.15.18-4.2 1.23c-1.04 1.04-1.49 2.65-1.23 4.2C1 11.9 1 13.1 2.1 13.88c-.26 1.55.18 3.15 1.23 4.2c1.04 1.04 2.65 1.49 4.2 1.23c.78 1.3 2.3 2.1 3.88 2.1s3.1-.8 3.88-2.1c1.55.26 3.15-.18 4.2-1.23c1.04-1.04 1.49-2.65 1.23-4.2c1.3-.78 2.1-2.3 2.1-3.88zM10 16.5l-4.5-4.5l1.4-1.4l3.1 3.1l6.1-6.1l1.4 1.4l-7.5 7.5z"/>
+                </svg>
+            </span>
         </div>
-        <p class="bio-text" id="p-bio">Zah bgs aiii</p>
-        <a href="#" class="user-link" id="p-link">floy.app/arlein</a>
+        <p class="bio-text" id="p-bio">...</p>
+        <a href="#" class="user-link" id="p-link">floy.app/user</a>
     </div>
 
-    <div class="action-bar" id="p-actions">
+    <div class="action-buttons">
         <button class="btn-follow">Suivre</button>
-        <button class="btn-msg">Message</button>
-        <button class="icon-btn-dark">
-            <i class="fas fa-chevron-down"></i>
-        </button>
+        <button class="btn-message">Message</button>
+        <button class="btn-icon-small"><i class="fas fa-user-plus"></i></button>
     </div>
 </div>
