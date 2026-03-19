@@ -1,163 +1,67 @@
-<style>
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.85);
-        display: none; /* Caché par défaut */
-        align-items: center;
-        justify-content: center;
-        z-index: 2000;
-        backdrop-filter: blur(5px);
-    }
+<div id="edit-modal" style="display:none; position:fixed; inset:0; background:black; z-index:5000; padding:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+        <span onclick="closeEditModal()" style="cursor:pointer;">Annuler</span>
+        <b style="font-size:16px;">Modifier le profil</b>
+        <span onclick="saveProfileChanges()" style="color:#FF7A1A; font-weight:bold; cursor:pointer;" id="save-btn">Terminé</span>
+    </div>
 
-    .modal-content {
-        background: #121212;
-        width: 90%;
-        max-width: 400px;
-        border-radius: 15px;
-        padding: 20px;
-        border: 1px solid #262626;
-        color: white;
-    }
+    <div style="text-align:center; margin-bottom:20px;">
+        <img id="edit-avatar-preview" src="" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
+        <label for="pdp-input" style="display:block; color:#FF7A1A; font-size:14px; font-weight:600;">Changer la photo de profil</label>
+        <input type="file" id="pdp-input" accept="image/*" style="display:none;" onchange="previewImage(this)">
+    </div>
 
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .modal-header h3 { margin: 0; font-size: 18px; }
-
-    .edit-field {
-        margin-bottom: 15px;
-    }
-
-    .edit-field label {
-        display: block;
-        font-size: 12px;
-        color: #8e8e8e;
-        margin-bottom: 5px;
-    }
-
-    .edit-field input, .edit-field textarea {
-        width: 100%;
-        background: #000;
-        border: 1px solid #333;
-        border-radius: 8px;
-        padding: 10px;
-        color: white;
-        font-size: 14px;
-        box-sizing: border-box;
-    }
-
-    .edit-field textarea {
-        height: 80px;
-        resize: none;
-    }
-
-    .modal-footer {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-    }
-
-    .btn-save {
-        background: #FF7A1A;
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        font-weight: bold;
-        flex: 2;
-        cursor: pointer;
-    }
-
-    .btn-cancel {
-        background: #262626;
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        flex: 1;
-        cursor: pointer;
-    }
-</style>
-
-<div id="edit-profile-modal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Modifier le profil</h3>
-            <i class="fas fa-times" onclick="closeEditModal()" style="cursor:pointer; color:#8e8e8e;"></i>
+    <div style="display:flex; flex-direction:column; gap:20px;">
+        <div style="border-bottom:1px solid #262626; padding-bottom:5px;">
+            <label style="color:#888; font-size:12px;">Nom complet</label>
+            <input type="text" id="edit-fullname" style="width:100%; background:none; border:none; color:white; padding:5px 0; outline:none;">
         </div>
-
-        <div class="edit-field">
-            <label>Nom d'utilisateur</label>
-            <input type="text" id="edit-username-input" placeholder="Ton nom Floy">
-        </div>
-
-        <div class="edit-field">
-            <label>Bio</label>
-            <textarea id="edit-bio-input" placeholder="Raconte ta story..."></textarea>
-        </div>
-
-        <div class="edit-field">
-    <label>Lien / Site web</label>
-    <input type="text" id="edit-link-input" placeholder="https://tonsite.com">
-</div>
-        <div class="modal-footer">
-            <button class="btn-cancel" onclick="closeEditModal()">Annuler</button>
-            <button class="btn-save" id="save-profile-btn">Enregistrer</button>
+        <div style="border-bottom:1px solid #262626; padding-bottom:5px;">
+            <label style="color:#888; font-size:12px;">Bio</label>
+            <textarea id="edit-bio-text" style="width:100%; background:none; border:none; color:white; padding:5px 0; outline:none; resize:none;"></textarea>
         </div>
     </div>
 </div>
 
 <script type="module">
+    import { MediaHandler } from './media_handler.js';
     import { db, auth } from './firebase-config.js';
-    import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 1. Ouvrir la modal et pré-remplir les champs
-    window.openEditModal = async () => {
-        const user = auth.currentUser;
-        if (!user) return;
-
-        const modal = document.getElementById('edit-profile-modal');
-        modal.style.display = 'flex';
-
-        // Récupérer les données actuelles pour les afficher dans les inputs
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-            const data = userDoc.data();
-            document.getElementById('edit-username-input').value = data.username || "";
-            document.getElementById('edit-bio-input').value = data.bio || "";
+    window.previewImage = (input) => {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => document.getElementById('edit-avatar-preview').src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
         }
     };
 
-    // 2. Fermer la modal
-    window.closeEditModal = () => {
-        document.getElementById('edit-profile-modal').style.display = 'none';
-    };
-
-    // 3. Sauvegarder les modifications
-    document.getElementById('save-profile-btn').onclick = async () => {
+    window.saveProfileChanges = async () => {
+        const btn = document.getElementById('save-btn');
+        btn.innerText = "...";
         const user = auth.currentUser;
-        if (!user) return;
+        const file = document.getElementById('pdp-input').files[0];
+        
+        let updates = {
+            fullName: document.getElementById('edit-fullname').value,
+            bio: document.getElementById('edit-bio-text').value
+        };
 
-        const newUsername = document.getElementById('edit-username-input').value;
-        const newBio = document.getElementById('edit-bio-input').value;
-
-        try {
-            const userRef = doc(db, "users", user.uid);
-            await updateDoc(userRef, {
-                username: newUsername,
-                bio: newBio
-            });
-
-            console.log("Profil mis à jour !");
-            closeEditModal();
-        } catch (error) {
-            console.error("Erreur de mise à jour :", error);
-            alert("Erreur lors de la sauvegarde.");
+        if(file) {
+            const url = await MediaHandler.uploadProfilePicture(file);
+            updates.avatarUrl = url;
         }
+
+        await updateDoc(doc(db, "users", user.uid), updates);
+        location.reload();
     };
+
+    window.openEditModal = () => {
+        document.getElementById('edit-modal').style.display = 'block';
+        document.getElementById('edit-avatar-preview').src = document.getElementById('h-avatar').src;
+        document.getElementById('edit-fullname').value = document.getElementById('h-fullname').innerText;
+        document.getElementById('edit-bio-text').value = document.getElementById('h-bio').innerText;
+    };
+
+    window.closeEditModal = () => document.getElementById('edit-modal').style.display = 'none';
 </script>
