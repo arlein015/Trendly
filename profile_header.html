@@ -1,12 +1,12 @@
 <style>
     .header-main { padding: 20px 15px; background: #000; color: white; }
     
-    /* Ligne du haut : Photo à gauche, Stats à droite */
+    /* Ligne du haut : Photo et Stats alignées */
     .header-top-row { 
         display: flex; 
         align-items: center; 
         justify-content: flex-start; 
-        gap: 30px; /* Espace entre photo et stats */
+        gap: 35px; 
         margin-bottom: 15px; 
     }
     
@@ -16,45 +16,28 @@
         object-fit: cover; border: 2px solid #FF7A1A; 
     }
 
-    .stats-right { display: flex; gap: 25px; flex-grow: 1; justify-content: flex-start; }
-    .stat-item { text-align: center; cursor: pointer; }
+    /* Stats à droite de la photo */
+    .stats-right { display: flex; gap: 20px; flex-grow: 1; justify-content: flex-start; }
+    .stat-item { text-align: center; cursor: pointer; min-width: 60px; }
     .stat-item b { display: block; font-size: 18px; color: white; }
     .stat-item span { font-size: 12px; color: #8e8e8e; }
 
-    /* Zone Nom, Bio et Lien sous la photo */
-    .user-details { margin-top: 5px; }
+    /* Infos utilisateur SOUS la photo */
+    .user-info-bottom { margin-top: 10px; }
+    .name-badge-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+    #p-username { font-weight: bold; font-size: 18px; margin: 0; }
     
-    .name-badge-row { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 17px; }
-    
-    /* Le Badge Dentelle Bleu Officiel */
-    .verification-rosette { 
-        color: #0095f6; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-    }
+    .bio-text { font-size: 14px; color: #ffffff; margin: 2px 0; }
+    .user-email { color: #FF7A1A; font-size: 13px; margin-bottom: 4px; display: block; }
 
-    .bio-text { font-size: 14px; margin: 4px 0; color: #ffffff; }
-    .user-link { color: #FF7A1A; text-decoration: none; font-size: 14px; font-weight: 500; }
-
-    /* Barre d'action avec les couleurs demandées */
+    /* Boutons : Suivre (Orange) et Message (Blanc) */
     .action-bar { display: flex; gap: 10px; margin-top: 15px; }
+    .btn-follow { background: #FF7A1A; color: white; border: none; flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-msg { background: #ffffff; color: #000; border: none; flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     
-    .btn-follow { 
-        background: #FF7A1A; color: white; border: none; 
-        flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;
-    }
-    
-    .btn-msg { 
-        background: #ffffff; color: #000000; border: none; 
-        flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;
-    }
-
-    .icon-btn-dark { 
-        background: #262626; border: none; padding: 10px; 
-        border-radius: 8px; color: white; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-    }
+    /* Boutons Icones Paramètres et Partage */
+    .btn-icon { background: #262626; border: none; padding: 10px; border-radius: 8px; color: white; cursor: pointer; display: flex; align-items: center; }
+    .btn-icon svg { width: 18px; height: 18px; fill: white; }
 </style>
 
 <div class="header-main">
@@ -62,7 +45,6 @@
         <div class="profile-pic-box">
             <img id="p-img" src="https://via.placeholder.com/150">
         </div>
-
         <div class="stats-right">
             <div class="stat-item"><b id="s-posts">0</b><span>Pubs</span></div>
             <div class="stat-item" onclick="openFollowersModal('followers')"><b id="s-followers">0</b><span>Abonnés</span></div>
@@ -70,39 +52,26 @@
         </div>
     </div>
 
-    <div class="user-details">
-    <div class="name-container">
-        <p id="p-username" style="margin:0; font-weight:bold; font-size:16px;">Arlein</p>
-        
-        <svg class="verify-badge" width="20" height="20" viewBox="0 0 24 24" style="color: #007bff; display: inline-block; vertical-align: middle; margin-left: 5px;">
-            <path fill="currentColor" d="M23.16 11.19c.3.56.44 1.18.44 1.81c0 .63-.14 1.25-.44 1.81a3 3 0 0 0-2.35-2.35l.48-1.28c.11-.29.13-.59.08-.89a3 3 0 0 0-3.67-.48l-1.28.48c-.28.11-.53.28-.73.49c-.2-.21-.45-.38-.73-.49l-1.28-.48a3 3 0 0 0-3.67.48a3 3 0 0 0-.48 3.67l.48 1.28c.11.28.28.53.49.73c-.21.2-.38.45-.49.73l-.48 1.28a3 3 0 0 0 .48 3.67a3 3 0 0 0 3.67.48l1.28-.48c.28-.11.53-.28.73-.49c.2.21.45.38.73.49l1.28.48a3 3 0 0 0 3.67-.48c.11-.08.2-.18.28-.28a3 3 0 0 0 .44-1.81c0-.63-.14-1.25-.44-1.81zM10 16.5l-4.5-4.5l1.41-1.41L10 13.67l7.59-7.59L19 7.5l-9 9z"/>
-            <path fill="white" d="M10 16.5l-4.5-4.5l1.41-1.41L10 13.67l7.59-7.59L19 7.5L10 16.5z"/>
-        </svg>
-
-    </div>
-    </div>
+    <div class="user-info-bottom">
+        <div class="name-badge-row">
+            <span id="p-username">Arlein</span>
+            <svg width="20" height="20" viewBox="0 0 24 24">
+                <path fill="#007bff" d="M23.16 11.19a3 3 0 0 0-2.35-2.35l.48-1.28a3 3 0 0 0-.48-3.67 3 3 0 0 0-3.67-.48l-1.28.48a3 3 0 0 0-2.35-2.35L12 .48a3 3 0 0 0-1.66 0l-1.36 1.05a3 3 0 0 0-2.35 2.35l-1.28-.48a3 3 0 0 0-3.67.48 3 3 0 0 0-.48 3.67l.48 1.28A3 3 0 0 0 .48 11.19L.48 12.86a3 3 0 0 0 2.35 2.35l-.48 1.28a3 3 0 0 0 .48 3.67 3 3 0 0 0 3.67.48l1.28-.48a3 3 0 0 0 2.35 2.35l1.36 1.05a3 3 0 0 0 1.66 0L12 23.52a3 3 0 0 0 1.66 0l1.36-1.05a3 3 0 0 0 2.35-2.35l1.28.48a3 3 0 0 0 3.67-.48 3 3 0 0 0 .48-3.67l-.48-1.28a3 3 0 0 0 2.35-2.35L23.52 12.86a3 3 0 0 0-.36-1.67z"/>
+                <path fill="white" d="M10 16.5l-4.5-4.5l1.41-1.41L10 13.67l7.59-7.59L19 7.5l-9 9z"/>
+            </svg>
         </div>
+        <span class="user-email" id="p-email">rachehua45@gmail.com</span>
         <p class="bio-text" id="p-bio">Zah bgs aiii</p>
-        <a href="#" class="user-link" id="p-link">floy.app/arlein</a>
     </div>
 
     <div class="action-bar" id="p-actions">
-    <button id="follow-btn" class="btn-follow" onclick="handleFollowClick()">
-        Suivre
-    </button>
-    
-    <button class="btn-msg">Message</button>
-    
-    <button class="icon-btn-dark" onclick="copyProfileLink()" title="Copier le lien">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1-1 1 .45 1 1 1 1-.45 1-1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-        </svg>
-    </button>
-
-    <button class="icon-btn-dark" onclick="openEditModal()" title="Paramètres">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-            <path d="M12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5zm7.43-2.53l1.19-.93c.11-.08.14-.24.07-.37l-1.13-1.96a.296.296 0 0 0-.36-.13l-1.39.56c-.29-.22-.61-.41-.94-.55l-.21-1.48a.295.295 0 0 0-.29-.24h-2.26a.29.29 0 0 0-.29.24l-.21 1.48c-.33.14-.65.33-.94.55l-1.39-.56a.296.296 0 0 0-.36.13l-1.13 1.96c-.08.13-.04.29.07.37l1.19.93c-.02.17-.03.35-.03.53s.01.36.03.53l-1.19.93c-.11.08-.14.24-.07.37l1.13 1.96c.07.13.22.18.36.13l1.39-.56c.29.22.61.41.94.55l.21 1.48c.03.14.16.24.3.24h2.26c.14 0 .26-.1.29-.24l.21-1.48c.33-.14.65-.33.94-.55l1.39.56c.14.05.3.01.36-.13l1.13-1.96c.07-.13.04-.29-.07-.37l-1.19-.93c.02-.17.03-.35.03-.53s-.01-.36-.03-.53z"/>
-        </svg>
-    </button>
-</div>
+        <button id="follow-btn" class="btn-follow" onclick="handleFollowClick()">Suivre</button>
+        <button class="btn-msg">Message</button>
+        <button class="btn-icon" onclick="copyProfileLink()">
+            <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+        </button>
+        <button class="btn-icon" onclick="openEditModal()">
+            <svg viewBox="0 0 24 24"><path d="M12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5zm7.43-2.53l1.19-.93c.11-.08.14-.24.07-.37l-1.13-1.96a.296.296 0 0 0-.36-.13l-1.39.56c-.29-.22-.61-.41-.94-.55l-.21-1.48a.295.295 0 0 0-.29-.24h-2.26a.29.29 0 0 0-.29.24l-.21 1.48c-.33.14-.65.33-.94.55l-1.39-.56a.296.296 0 0 0-.36.13l-1.13 1.96c-.08.13-.04.29.07.37l1.13 1.96c.07.13.22.18.36.13l1.39-.56c.29.22.61.41.94.55l.21 1.48c.03.14.16.24.3.24h2.26c.14 0 .26-.1.29-.24l.21-1.48c.33-.14.65-.33.94-.55l1.39.56c.14.05.3.01.36-.13l1.13-1.96c.07-.13.04-.29-.07-.37l-1.19-.93z"/></svg>
+        </button>
+    </div>
 </div>
