@@ -1,0 +1,60 @@
+<div id="media-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; background: #000;">
+    </div>
+
+<div id="empty-msg" style="display: none; text-align: center; padding: 50px; color: #555;">
+    <i class="fas fa-camera" style="font-size: 40px; margin-bottom: 10px;"></i>
+    <p>Aucune publication pour le moment</p>
+</div>
+
+<script type="module">
+    import { db } from './firebase-config.js';
+    import { collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    window.loadGrid = async (type = 'posts', uid) => {
+        const grid = document.getElementById('media-grid');
+        const empty = document.getElementById('empty-msg');
+        grid.innerHTML = ""; // On vide pour recharger
+        
+        try {
+            const q = query(
+                collection(db, "posts"), 
+                where("userId", "==", uid),
+                where("type", "==", type) // Filtre par photo ou vidéo
+            );
+            
+            const snap = await getDocs(q);
+            
+            if(snap.empty) {
+                empty.style.display = "block";
+                return;
+            }
+            
+            empty.style.display = "none";
+            snap.forEach(doc => {
+                const post = doc.data();
+                const item = document.createElement('div');
+                item.style.aspectRatio = "1/1";
+                item.style.background = "#111";
+                item.style.overflow = "hidden";
+                item.style.cursor = "pointer";
+                
+                // Si c'est une image
+                if(type === 'posts') {
+                    item.innerHTML = `<img src="${post.imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                } else {
+                    // Si c'est un reel (vidéo)
+                    item.innerHTML = `
+                        <div style="position:relative; width:100%; height:100%;">
+                            <video src="${post.videoUrl}" style="width:100%; height:100%; object-fit:cover;"></video>
+                            <i class="fas fa-play" style="position:absolute; top:10px; right:10px; color:white; font-size:12px; text-shadow: 0 0 5px rgba(0,0,0,0.5);"></i>
+                        </div>`;
+                }
+                
+                item.onclick = () => location.href = `post-view.html?id=${doc.id}`;
+                grid.appendChild(item);
+            });
+        } catch (e) {
+            console.error("Erreur grille:", e);
+        }
+    };
+</script>
