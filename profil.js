@@ -1,24 +1,23 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Fonction d'injection des modules HTML
 async function injectModule(id, file) {
     try {
         const response = await fetch(file);
-        if (!response.ok) return;
+        if (!response.ok) {
+            console.warn(`⚠️ Module manquant : ${file}. Vérifie qu'il est bien sur GitHub.`);
+            return false; 
+        }
         const html = await response.text();
         const element = document.getElementById(id);
         if (element) {
             element.innerHTML = html;
-            // Relancer les scripts internes au module
-            element.querySelectorAll("script").forEach(s => {
-                const newS = document.createElement("script");
-                newS.type = s.type || "text/javascript";
-                newS.textContent = s.textContent;
-                document.body.appendChild(newS);
-            });
+            return true;
         }
-    } catch (e) { console.error("Erreur module:", file); }
+    } catch (e) { 
+        console.error("Erreur injection:", e);
+        return false;
+    }
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -27,8 +26,8 @@ onAuthStateChanged(auth, async (user) => {
     const params = new URLSearchParams(window.location.search);
     const profileId = params.get('id') || user.uid;
 
-    // Chargement de la structure
-    await Promise.all([
+    // On attend que les injections soient finies
+    const results = await Promise.all([
         injectModule('header-module', 'profile_header.html'),
         injectModule('stats-module', 'profile_stats.html'),
         injectModule('tabs-module', 'profile_tabs.html'),
@@ -36,14 +35,20 @@ onAuthStateChanged(auth, async (user) => {
         injectModule('modal-module', 'profile_edit_modal.html')
     ]);
 
-    // Initialisation des données (avec petit délai pour être sûr que le HTML est là)
+    // SECURITÉ : On ne lance les fonctions que si l'élément existe vraiment
     setTimeout(() => {
-        if(window.loadHeader) window.loadHeader(profileId, user.uid);
-        if(window.loadStats) window.loadStats(profileId);
-        if(window.loadGrid) window.loadGrid('posts', profileId);
-        if(window.loadBadge) window.loadBadge(profileId);
-        
-        // Cacher le loader
-        document.getElementById('main-loader').style.display = 'none';
-    }, 200);
+        if(document.getElementById('p-username') && window.loadHeader) {
+            window.loadHeader(profileId, user.uid);
+        }
+        if(document.getElementById('s-posts') && window.loadStats) {
+            window.loadStats(profileId);
+        }
+        if(window.loadGrid) {
+            window.loadGrid('posts', profileId);
+        }
+
+        // FORCE le retrait du chargement même s'il y a une petite erreur
+        const loader = document.getElementById('main-loader');
+        if(loader) loader.style.display = 'none';
+    }, 500); 
 });
