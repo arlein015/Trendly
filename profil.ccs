@@ -1,0 +1,30 @@
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: -apple-system, sans-serif;
+    margin: 0;
+}
+
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: 70px;
+}
+
+/* Style pour les boutons modernes */
+.btn-orange {
+    background-color: #FF7A1A;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Style de la grille */
+#grid-module {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+}
