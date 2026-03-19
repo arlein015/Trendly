@@ -3,22 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil - Floy</title>
-    
+    <title>Profil | Floy</title>
     <link rel="stylesheet" href="profil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="profile-container">
-        <header id="header-module"></header>
-
-        <section id="stats-module"></section>
-
-        <nav id="tabs-module"></nav>
-
-        <main id="grid-module"></main>
+    <div id="main-loader" class="loader-overlay">
+        <div class="spinner"></div>
     </div>
+
+    <div class="profile-main-container">
+        <div id="header-module"></div>
+
+        <div id="stats-module"></div>
+
+        <div id="tabs-module"></div>
+
+        <div id="grid-module" class="media-grid"></div>
+    </div>
+
+    <div id="modal-module"></div>
+
+    <nav class="bottom-nav">
+        <i class="fas fa-home" onclick="location.href='index.html'"></i>
+        <i class="fas fa-search"></i>
+        <div class="nav-add-btn"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-comment" onclick="location.href='messages.html'"></i>
+        <i class="fas fa-user active-icon"></i>
+    </nav>
 
     <script type="module" src="profil.js"></script>
 </body>
