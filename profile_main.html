@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} • Profil du réseau social</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Masquer la barre de défilement pour un look plus "App" */
+        body::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-white text-black font-sans">
+
+    <nav class="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-2 flex justify-between items-center md:hidden">
+        <button onclick="window.history.back()">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        <span class="font-bold text-sm">{{ user.username }}</span>
+        <button>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
+        </button>
+    </nav>
+
+    <main class="max-w-screen-md mx-auto">
+        
+        {% include 'profile_header.html' %}
+
+        <div class="flex space-x-4 overflow-x-auto px-4 py-4 md:hidden border-b border-gray-100">
+            </div>
+
+        <section class="pb-20">
+            {% include 'profile_grid.html' %}
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-6 flex justify-between items-center md:hidden">
+        <a href="/" class="text-black">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+        </a>
+        <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+        <img src="{{ user.profile_pic }}" class="w-7 h-7 rounded-full border border-black p-0.5">
+    </footer>
+
+    <script>
+        // Exemple : Animation au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Profil de {{ user.username }} chargé avec succès.");
+        });
+    </script>
+
+</body>
+</html>
