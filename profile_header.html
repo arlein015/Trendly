@@ -21,7 +21,14 @@
 <script type="module">
     import { auth, db } from './firebase-config.js';
     import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+    import { FollowSystem } from './follow_system.js';
+    btnFollow.onclick = async () => {
+    if (isFollowing) {
+        await FollowSystem.unfollow(profileId);
+    } else {
+        await FollowSystem.follow(profileId);
+    }
+};
     // Cette fonction sera appelée par le fichier parent
     window.loadHeader = (uid, currentUid) => {
         onSnapshot(doc(db, "users", uid), (snap) => {
