@@ -13,50 +13,86 @@
         <div class="spinner"></div>
     </div>
 
-    <div class="profile-container">
-        <header class="header">
-            <div class="avatar-wrapper">
-                <img id="p-img" src="https://via.placeholder.com/150" alt="Avatar">
-            </div>
-            <div class="user-info">
-                <div class="username-row">
-                    <h2 id="p-username">...</h2>
-                    <div id="badge-container"></div>
-                </div>
-                <p id="p-email" class="email-display"></p>
-                <p id="p-bio">Chargement de la bio...</p>
-            </div>
-        </header>
+    <div class="profile-main-wrapper">
+        
+        <div id="header-module"></div>
 
-        <div class="profile-actions">
-            <button class="btn-orange" onclick="openEditModal()">Modifier le profil</button>
-            <button class="btn-dark">Partager</button>
-        </div>
+        <div id="tabs-module"></div>
 
-        <section class="stats-bar">
-            <div class="stat-item"><b id="s-posts">0</b><span>publications</span></div>
-            <div class="stat-item"><b id="s-followers">0</b><span>abonnés</span></div>
-            <div class="stat-item"><b id="s-following">0</b><span>abonnements</span></div>
-        </section>
+        <main id="grid-module" class="photo-grid">
+            </main>
 
-        <nav class="tabs">
-            <div class="tab active"><i class="fas fa-th"></i></div>
-            <div class="tab"><i class="fas fa-play-circle"></i></div>
-        </nav>
-
-        <main id="media-grid" class="photo-grid">
-            <div class="empty-msg">Aucune publication pour le moment</div>
-        </main>
     </div>
+
+    <div id="modal-edit-container"></div>
+    <div id="modal-followers-container"></div>
 
     <nav class="bottom-nav">
         <i class="fas fa-home" onclick="location.href='index.html'"></i>
-        <i class="fas fa-search"></i>
-        <div class="add-btn"><i class="fas fa-plus"></i></div>
-        <i class="fas fa-comment"></i>
-        <i class="fas fa-user active"></i>
+        <i class="fas fa-search" onclick="location.href='explore.html'"></i>
+        <div class="nav-add-btn" onclick="location.href='create.html'">
+            <i class="fas fa-plus"></i>
+        </div>
+        <i class="fas fa-comment" onclick="location.href='messages.html'"></i>
+        <i class="fas fa-user nav-active"></i>
     </nav>
 
-    <script type="module" src="profil.js"></script>
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Fonction pour injecter les composants HTML
+        async function loadComponent(id, file) {
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error("Erreur 404 sur " + file);
+                const html = await response.text();
+                const target = document.getElementById(id);
+                if (target) {
+                    target.innerHTML = html;
+                    // Exécuter les scripts <script> contenus dans les fichiers injectés
+                    const scripts = target.querySelectorAll("script");
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement("script");
+                        newScript.type = "module";
+                        newScript.textContent = oldScript.textContent;
+                        document.body.appendChild(newScript);
+                    });
+                }
+            } catch (err) {
+                console.warn(err.message);
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'connexion.html';
+                return;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const profileId = params.get('id') || user.uid;
+
+            // 1. Charger tous les modules HTML
+            await Promise.all([
+                loadComponent('header-module', 'profile_header.html'),
+                loadComponent('tabs-module', 'profile_tabs.html'),
+                loadComponent('grid-module', 'profile_grid.html'),
+                loadComponent('modal-edit-container', 'profile_edit_modal.html'),
+                loadComponent('modal-followers-container', 'modal_followers.html')
+            ]);
+
+            // 2. Activer les fonctions une fois que le HTML est chargé
+            setTimeout(() => {
+                if (window.loadHeader) window.loadHeader(profileId, user.uid);
+                if (window.loadGrid) window.loadGrid('posts', profileId);
+                
+                // On retire enfin le loader orange
+                const loader = document.getElementById('main-loader');
+                if(loader) loader.style.display = 'none';
+            }, 300);
+        });
+    </script>
+
 </body>
 </html>
