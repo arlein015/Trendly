@@ -9,7 +9,7 @@
         body { background: #000; margin: 0; padding-bottom: 80px; font-family: -apple-system, sans-serif; color: white; overflow-x: hidden; }
         .module-container { width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; }
         
-        /* Loader plein écran */
+        /* Loader de démarrage */
         #main-loader { 
             position: fixed; inset: 0; background: #000; 
             display: flex; align-items: center; justify-content: center; z-index: 9999; 
@@ -52,17 +52,18 @@
         import { auth } from './firebase-config.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Fonction robuste pour charger les modules
+        // Fonction pour charger dynamiquement les fichiers HTML
         async function loadModule(file, elementId) {
             try {
                 const response = await fetch(file);
-                if (!response.ok) throw new Error(`Fichier ${file} introuvable (Erreur 404)`);
+                if (!response.ok) throw new Error(`Erreur 404: ${file}`);
                 const html = await response.text();
-                const container = document.getElementById(elementId);
-                if (container) {
-                    container.innerHTML = html;
-                    // Ré-exécution des scripts injectés
-                    const scripts = container.querySelectorAll("script");
+                const target = document.getElementById(elementId);
+                
+                if (target) {
+                    target.innerHTML = html;
+                    // Exécution des scripts contenus dans les modules
+                    const scripts = target.querySelectorAll("script");
                     scripts.forEach(oldScript => {
                         const newScript = document.createElement("script");
                         newScript.type = oldScript.type || "text/javascript";
@@ -71,7 +72,7 @@
                     });
                 }
             } catch (err) {
-                console.error("Erreur Module:", err.message);
+                console.error("Erreur de chargement du module:", err);
             }
         }
 
@@ -81,7 +82,7 @@
             const params = new URLSearchParams(window.location.search);
             const profileId = params.get('id') || user.uid;
 
-            // Chargement de la structure frontend
+            // Chargement de TOUS les modules en parallèle pour la vitesse
             await Promise.all([
                 loadModule('profile_header.html', 'header-module'),
                 loadModule('profile_stats.html', 'stats-module'),
@@ -91,19 +92,21 @@
                 loadModule('badge_verification.html', 'header-module')
             ]);
 
-            // Sécurité pour s'assurer que le DOM est prêt avant l'appel des fonctions
+            // Petit délai de sécurité pour laisser le DOM respirer
             setTimeout(() => {
                 try {
+                    // Initialisation des fonctions contenues dans les modules
                     if(window.loadHeader) window.loadHeader(profileId, user.uid);
                     if(window.loadStats) window.loadStats(profileId);
                     if(window.loadGrid) window.loadGrid('posts', profileId);
                     if(window.loadBadge) window.loadBadge(profileId);
                     
+                    // On retire le loader une fois que tout est prêt
                     document.getElementById('main-loader').style.display = "none";
                 } catch (e) {
-                    console.warn("Certains modules ne sont pas encore prêts :", e.message);
+                    console.warn("Certaines fonctions de modules ne sont pas encore prêtes :", e);
                 }
-            }, 150);
+            }, 200);
         });
     </script>
 </body>
