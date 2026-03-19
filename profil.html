@@ -9,28 +9,47 @@
 </head>
 <body>
 
-    <div id="main-loader" class="loader-overlay">
-        <div class="spinner"></div>
+    <div class="profile-container">
+        <header class="header">
+            <div class="avatar-wrapper">
+                <img id="p-img" src="https://via.placeholder.com/150" alt="Avatar">
+            </div>
+            <div class="user-info">
+                <div class="username-row">
+                    <h2 id="p-username">Utilisateur</h2>
+                    <div id="badge-container"></div>
+                </div>
+                <p id="p-bio">Chargement de la bio...</p>
+            </div>
+        </header>
+
+        <div class="profile-actions">
+            <button class="btn-orange" onclick="openEditModal()">Modifier le profil</button>
+            <button class="btn-dark">Partager</button>
+        </div>
+
+        <section class="stats-bar">
+            <div class="stat-item"><b id="s-posts">0</b><span>publications</span></div>
+            <div class="stat-item"><b id="s-followers">0</b><span>abonnés</span></div>
+            <div class="stat-item"><b id="s-following">0</b><span>abonnements</span></div>
+        </section>
+
+        <nav class="tabs">
+            <div class="tab active" onclick="switchTab('posts')"><i class="fas fa-th"></i></div>
+            <div class="tab" onclick="switchTab('reels')"><i class="fas fa-play-circle"></i></div>
+        </nav>
+
+        <main id="grid-module" class="photo-grid">
+            <div class="empty-msg">Aucune publication pour le moment</div>
+        </main>
     </div>
-
-    <div class="profile-main-container">
-        <div id="header-module"></div>
-
-        <div id="stats-module"></div>
-
-        <div id="tabs-module"></div>
-
-        <div id="grid-module" class="media-grid"></div>
-    </div>
-
-    <div id="modal-module"></div>
 
     <nav class="bottom-nav">
         <i class="fas fa-home" onclick="location.href='index.html'"></i>
         <i class="fas fa-search"></i>
-        <div class="nav-add-btn"><i class="fas fa-plus"></i></div>
-        <i class="fas fa-comment" onclick="location.href='messages.html'"></i>
-        <i class="fas fa-user active-icon"></i>
+        <div class="add-btn"><i class="fas fa-plus"></i></div>
+        <i class="fas fa-comment"></i>
+        <i class="fas fa-user active"></i>
     </nav>
 
     <script type="module" src="profil.js"></script>
