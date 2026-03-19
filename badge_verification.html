@@ -1,63 +1,25 @@
 <style>
-    .badge-modern {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 16px;
-        height: 16px;
-        background: linear-gradient(45deg, #FF7A1A, #FFD700); /* Dégradé Orange vers Or */
-        border-radius: 50%;
-        margin-left: 4px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 0 8px rgba(255, 122, 26, 0.4);
-    }
-
-    /* L'encoche blanche au centre */
-    .badge-modern i {
-        color: white;
-        font-size: 10px;
-        z-index: 2;
-    }
-
-    /* Animation de brillance qui passe sur le badge */
-    .badge-modern::after {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -150%;
-        width: 100%;
-        height: 200%;
-        background: rgba(255, 255, 255, 0.4);
-        transform: rotate(45deg);
+    .badge-floy {
+        display: inline-flex; width: 16px; height: 16px;
+        background: linear-gradient(45deg, #FF7A1A, #FFD700);
+        border-radius: 50%; color: white; font-size: 10px;
+        align-items: center; justify-content: center;
         animation: shine 3s infinite;
     }
-
-    @keyframes shine {
-        0% { left: -150%; }
-        20% { left: 150%; }
-        100% { left: 150%; }
-    }
+    @keyframes shine { 0% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.8; } }
 </style>
 
-<span id="verified-badge-container" style="display: none; vertical-align: middle;">
-    <div class="badge-modern">
-        <i class="fas fa-check"></i>
-    </div>
-</span>
+<div id="v-badge" style="display:none;" class="badge-floy"><i class="fas fa-check"></i></div>
 
 <script type="module">
     import { db } from './firebase-config.js';
     import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     window.loadBadge = (uid) => {
-        const container = document.getElementById('verified-badge-container');
-        
         onSnapshot(doc(db, "users", uid), (snap) => {
             if (snap.exists() && snap.data().isVerified) {
-                container.style.display = 'inline-flex';
-            } else {
-                container.style.display = 'none';
+                document.getElementById('badge-container').innerHTML = document.getElementById('v-badge').outerHTML;
+                document.querySelector('#badge-container .badge-floy').style.display = 'inline-flex';
             }
         });
     };
