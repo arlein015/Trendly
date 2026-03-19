@@ -1,0 +1,31 @@
+<div class="profile-tabs" style="display: flex; border-top: 1px solid #1a1a1a; background: #000;">
+    <div id="tab-grid" class="tab active" onclick="switchTab('grid')" 
+         style="flex: 1; text-align: center; padding: 12px; cursor: pointer; color: white; border-top: 2px solid white;">
+        <i class="fas fa-th" style="font-size: 20px;"></i>
+    </div>
+    <div id="tab-reels" class="tab" onclick="switchTab('reels')" 
+         style="flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #888;">
+        <i class="fas fa-play-circle" style="font-size: 20px;"></i>
+    </div>
+</div>
+
+<script>
+    window.switchTab = (type) => {
+        const gridTab = document.getElementById('tab-grid');
+        const reelsTab = document.getElementById('tab-reels');
+        
+        if(type === 'grid') {
+            gridTab.style.color = "white";
+            gridTab.style.borderTop = "2px solid white";
+            reelsTab.style.color = "#888";
+            reelsTab.style.borderTop = "none";
+            window.loadGrid('posts'); // On demande à profile_grid de charger les photos
+        } else {
+            reelsTab.style.color = "white";
+            reelsTab.style.borderTop = "2px solid white";
+            gridTab.style.color = "#888";
+            gridTab.style.borderTop = "none";
+            window.loadGrid('reels'); // On demande à profile_grid de charger les vidéos
+        }
+    };
+</script>
