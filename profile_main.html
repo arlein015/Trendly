@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
     <title>{{ user.username }} • Profil du réseau social</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -51,6 +54,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log("Profil de {{ user.username }} chargé avec succès.");
         });
+        // Enregistrement du Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('App prête pour le mode hors-ligne !'))
+        .catch(err => console.log('Erreur SW:', err));
+    });
+  }
     </script>
 
 </body>
