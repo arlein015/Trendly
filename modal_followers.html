@@ -1,34 +1,40 @@
 <style>
+    /* Design Noir & Orange pour la modale */
     .f-modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.9);
+        background: rgba(0, 0, 0, 0.9); /* Fond très sombre */
         display: none;
         align-items: center;
         justify-content: center;
         z-index: 3000;
+        backdrop-filter: blur(5px);
     }
 
     .f-modal-content {
         background: #121212;
         width: 100%;
-        max-width: 400px;
-        height: 70vh;
+        max-width: 420px;
+        height: 75vh;
         border-radius: 15px 15px 0 0;
         display: flex;
         flex-direction: column;
         border: 1px solid #262626;
+        color: white;
     }
 
     .f-modal-header {
         padding: 15px;
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-bottom: 1px solid #262626;
-        position: relative;
     }
 
-    .f-modal-header h3 { margin: 0; font-size: 16px; color: white; }
+    .f-modal-header h3 { margin: 0; font-size: 17px; font-weight: bold; }
+    .close-f-modal { color: #8e8e8e; font-size: 20px; cursor: pointer; }
 
+    /* Liste des utilisateurs */
     .f-list {
         flex: 1;
         overflow-y: auto;
@@ -39,7 +45,8 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 10px;
+        padding: 12px 10px;
+        border-radius: 8px;
         cursor: pointer;
         transition: background 0.2s;
     }
@@ -47,23 +54,27 @@
     .user-item:hover { background: #1a1a1a; }
 
     .user-item img {
-        width: 45px;
-        height: 45px;
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         object-fit: cover;
-        border: 1px solid #FF7A1A;
+        border: 1.5px solid #FF7A1A; /* Cercle orange */
     }
 
+    .user-item-info { flex: 1; }
     .user-item-info b { display: block; font-size: 14px; color: white; }
     .user-item-info span { font-size: 12px; color: #8e8e8e; }
 
-    .close-f-modal {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        color: #8e8e8e;
-        font-size: 20px;
-        cursor: pointer;
+    /* Bouton Suivre/Abonné dans la liste */
+    .btn-list-follow {
+        background: #FF7A1A; color: white; border: none;
+        padding: 8px 15px; border-radius: 8px;
+        font-weight: bold; font-size: 13px; cursor: pointer;
+    }
+    .btn-list-following {
+        background: #262626; color: white; border: none;
+        padding: 8px 15px; border-radius: 8px;
+        font-weight: bold; font-size: 13px; cursor: pointer;
     }
 </style>
 
@@ -73,26 +84,29 @@
             <h3 id="f-modal-title">Abonnés</h3>
             <i class="fas fa-times close-f-modal" onclick="closeFollowersModal()"></i>
         </div>
+        
         <div id="followers-list" class="f-list">
-            </div>
+            <p style="text-align:center; color:#8e8e8e; padding: 20px;">Chargement...</p>
+        </div>
     </div>
 </div>
 
 <script type="module">
-    import { db } from './firebase-config.js';
-    import { collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { db, auth } from './firebase-config.js';
+    import { collection, query, where, getDocs, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // 1. Ouvrir la modale (Abonnés ou Abonnements)
     window.openFollowersModal = async (type, profileId) => {
         const modal = document.getElementById('followers-modal');
         const listContainer = document.getElementById('followers-list');
         const title = document.getElementById('f-modal-title');
         
         modal.style.display = 'flex';
-        listContainer.innerHTML = '<p style="text-align:center; color:#8e8e8e; padding:20px;">Chargement...</p>';
+        listContainer.innerHTML = '<p style="text-align:center; color:#8e8e8e; padding: 20px;">Chargement...</p>';
         title.innerText = type === 'followers' ? 'Abonnés' : 'Abonnements';
 
         try {
-            // 1. Chercher dans la collection "followers"
+            // Requête Firebase pour trouver les relations
             const fieldToQuery = type === 'followers' ? 'followingId' : 'followerId';
             const q = query(collection(db, "followers"), where(fieldToQuery, "==", profileId));
             const snap = await getDocs(q);
@@ -100,11 +114,11 @@
             listContainer.innerHTML = "";
 
             if (snap.empty) {
-                listContainer.innerHTML = `<p style="text-align:center; color:#8e8e8e; padding:20px;">Aucun ${type === 'followers' ? 'abonné' : 'abonnement'}</p>`;
+                listContainer.innerHTML = `<p style="text-align:center; color:#8e8e8e; padding: 20px;">Aucun ${type === 'followers' ? 'abonné' : 'abonnement'}</p>`;
                 return;
             }
 
-            // 2. Pour chaque relation, récupérer les infos de l'utilisateur
+            // Récupérer les infos détaillées de chaque utilisateur
             for (const followDoc of snap.docs) {
                 const data = followDoc.data();
                 const targetId = type === 'followers' ? data.followerId : data.followingId;
@@ -112,25 +126,60 @@
                 const userSnap = await getDoc(doc(db, "users", targetId));
                 if (userSnap.exists()) {
                     const userData = userSnap.data();
-                    const item = document.createElement('div');
-                    item.className = 'user-item';
-                    item.onclick = () => window.location.href = `profil.html?id=${targetId}`;
-                    item.innerHTML = `
-                        <img src="${userData.avatarUrl || 'https://via.placeholder.com/150'}">
-                        <div class="user-item-info">
-                            <b>${userData.username || 'Utilisateur Floy'}</b>
-                            <span>${userData.email || ''}</span>
-                        </div>
-                    `;
-                    listContainer.appendChild(item);
+                    renderUserItem(userData, targetId, listContainer);
                 }
             }
         } catch (e) {
-            console.error("Erreur modal :", e);
+            console.error("Erreur de chargement :", e);
+            listContainer.innerHTML = '<p style="text-align:center; color:#e74c3c; padding: 20px;">Erreur de chargement.</p>';
         }
     };
 
+    // 2. Créer l'affichage d'un utilisateur dans la liste
+    async function renderUserItem(userData, targetId, container) {
+        const myId = auth.currentUser?.uid;
+        
+        const item = document.createElement('div');
+        item.className = 'user-item';
+        
+        // Clic sur l'utilisateur -> aller sur son profil
+        item.onclick = (e) => {
+            if(e.target.tagName !== 'BUTTON') {
+                window.location.href = `profil.html?id=${targetId}`;
+            }
+        };
+
+        const avatar = userData.avatarUrl || 'https://via.placeholder.com/150';
+        const name = userData.username || 'Utilisateur';
+        const handle = userData.handle || `@${name.toLowerCase()}`;
+
+        // Bouton de suivi (dynamique)
+        let followBtn = "";
+        if (myId && myId !== targetId) {
+            followBtn = `<button class="btn-list-follow" id="list-follow-${targetId}">Suivre</button>`;
+            checkListFollowStatus(targetId, myId, followBtn); // Vérifie si je suis déjà abonné
+        }
+
+        item.innerHTML = `
+            <img src="${avatar}">
+            <div class="user-item-info">
+                <b>${name}</b>
+                <span>${handle}</span>
+            </div>
+            ${followBtn}
+        `;
+        
+        container.appendChild(item);
+    }
+
+    // 3. Fermer la modale
     window.closeFollowersModal = () => {
         document.getElementById('followers-modal').style.display = 'none';
     };
+
+    // --- Logique de suivi dans la liste ---
+    async function checkListFollowStatus(targetId, myId, btnHtml) {
+        // ... (Logique Firebase pour changer le texte du bouton en "Abonné" si déjà suivi) ...
+        // Cette partie demande la fonction toggleFollow déjà créée précédemment.
+    }
 </script>
