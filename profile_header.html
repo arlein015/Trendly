@@ -1,84 +1,45 @@
-<div class="profile-header-container" style="padding: 20px; background: #000;">
-    <div style="display: flex; align-items: center; gap: 20px;">
-        <div id="p-avatar-frame" style="position: relative; width: 85px; height: 85px; border-radius: 50%; padding: 3px; background: linear-gradient(45deg, #FF7A1A, #feb47b);">
-            <img id="p-avatar" src="https://via.placeholder.com/150" 
-                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #000; background: #222;">
-        </div>
-
-        <div style="flex: 1;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <h2 id="p-display-name" style="margin: 0; font-size: 18px; font-weight: bold; color: white;">Chargement...</h2>
-                <div id="badge-slot"></div> 
-            </div>
-            <p id="p-display-bio" style="margin: 5px 0 0 0; font-size: 13px; color: #aaa; line-height: 1.4;"></p>
-        </div>
+<div style="padding: 20px; display: flex; align-items: center; gap: 15px;">
+    <div style="width: 80px; height: 80px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #FF7A1A, #feb47b);">
+        <img id="header-avatar" src="https://via.placeholder.com/150" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:2px solid black;">
     </div>
-    <div id="badge-container"></div>
-    <div id="p-actions-area" style="margin-top: 20px; display: flex; gap: 10px;">
+    
+    <div style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+            <h2 id="header-name" style="margin:0; font-size:18px;">...</h2>
+            <div id="badge-container"></div>
         </div>
+        <p id="header-bio" style="margin:4px 0 0 0; font-size:13px; color:#aaa;"></p>
+    </div>
 </div>
+<div id="header-btn-zone" style="padding: 0 20px; display: flex; gap: 10px;"></div>
 
 <script type="module">
     import { db } from './firebase-config.js';
     import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Fonction globale appelée par profil.html
-    window.loadHeader = (profileId, currentUserId) => {
-        const userRef = doc(db, "users", profileId);
+    window.loadHeader = (profileId, myId) => {
+        onSnapshot(doc(db, "users", profileId), (snap) => {
+            if (!snap.exists()) return;
+            const data = snap.data();
+            
+            // Textes
+            document.getElementById('header-name').innerText = data.username || "Membre Floy";
+            document.getElementById('header-bio').innerText = data.bio || "";
+            if(data.avatarUrl) document.getElementById('header-avatar').src = data.avatarUrl;
 
-        // Écoute en temps réel des changements du profil
-        onSnapshot(userRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                // 1. Mise à jour des textes
-                document.getElementById('p-display-name').innerText = data.username || "Utilisateur Floy";
-                document.getElementById('p-display-bio').innerText = data.bio || "Bienvenue sur mon profil Floy !";
-                
-                // 2. Mise à jour de la photo (avec fallback si vide)
-                if (data.avatarUrl) {
-                    document.getElementById('p-avatar').src = data.avatarUrl;
-                } else {
-                    document.getElementById('p-avatar').src = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
-                }
-
-                // 3. Gestion intelligente des boutons
-                const actionsArea = document.getElementById('p-actions-area');
-                if (profileId === currentUserId) {
-                    // C'est MON profil
-                    actionsArea.innerHTML = `
-                        <button onclick="window.openEditModal()" style="flex: 1; height: 36px; background: #262626; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                            Modifier le profil
-                        </button>
-                        <button style="width: 36px; height: 36px; background: #262626; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                    `;
-                } else {
-                    // C'est le profil de QUELQU'UN D'AUTRE
-                    actionsArea.innerHTML = `
-                        <button id="btn-follow" style="flex: 1; height: 36px; background: #FF7A1A; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                            Suivre
-                        </button>
-                        <button onclick="location.href='chat.html?id=${profileId}'" style="flex: 1; height: 36px; background: #262626; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
-                            Message
-                        </button>
-                    `;
-                }
-            } else {
-                document.getElementById('p-display-name').innerText = "Profil introuvable";
+            // Badge
+            const bCont = document.getElementById('badge-container');
+            if(bCont && data.isVerified) {
+                bCont.innerHTML = `<i class="fas fa-check-circle" style="color:#FF7A1A; font-size:14px;"></i>`;
             }
-        }, (error) => {
-            console.error("Erreur Header Firestore:", error);
+
+            // Bouton
+            const btnZone = document.getElementById('header-btn-zone');
+            if(profileId === myId) {
+                btnZone.innerHTML = `<button onclick="openEditModal()" style="flex:1; padding:8px; background:#262626; color:white; border:none; border-radius:6px; font-weight:bold;">Modifier le profil</button>`;
+            } else {
+                btnZone.innerHTML = `<button style="flex:1; padding:8px; background:#FF7A1A; color:white; border:none; border-radius:6px; font-weight:bold;">Suivre</button>`;
+            }
         });
     };
-    window.loadBadge = (uid) => {
-    onSnapshot(doc(db, "users", uid), (snap) => {
-        const container = document.getElementById('badge-container');
-        // On vérifie si le container existe AVANT de toucher au innerHTML
-        if (container && snap.exists() && snap.data().isVerified) {
-            container.innerHTML = `<span class="badge-floy"><i class="fas fa-check"></i></span>`;
-        }
-    });
-};
 </script>
