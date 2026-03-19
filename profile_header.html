@@ -83,10 +83,22 @@
     </div>
 
     <div class="action-bar" id="p-actions">
-        <button class="btn-follow">Suivre</button>
-        <button class="btn-msg">Message</button>
-        <button class="icon-btn-dark">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-    </div>
+    <button id="follow-btn" class="btn-follow" onclick="handleFollowClick()">
+        Suivre
+    </button>
+    
+    <button class="btn-msg">Message</button>
+    
+    <button class="icon-btn-dark" onclick="copyProfileLink()" title="Copier le lien">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1-1 1 .45 1 1 1 1-.45 1-1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+        </svg>
+    </button>
+
+    <button class="icon-btn-dark" onclick="openEditModal()" title="Paramètres">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5zm7.43-2.53l1.19-.93c.11-.08.14-.24.07-.37l-1.13-1.96a.296.296 0 0 0-.36-.13l-1.39.56c-.29-.22-.61-.41-.94-.55l-.21-1.48a.295.295 0 0 0-.29-.24h-2.26a.29.29 0 0 0-.29.24l-.21 1.48c-.33.14-.65.33-.94.55l-1.39-.56a.296.296 0 0 0-.36.13l-1.13 1.96c-.08.13-.04.29.07.37l1.19.93c-.02.17-.03.35-.03.53s.01.36.03.53l-1.19.93c-.11.08-.14.24-.07.37l1.13 1.96c.07.13.22.18.36.13l1.39-.56c.29.22.61.41.94.55l.21 1.48c.03.14.16.24.3.24h2.26c.14 0 .26-.1.29-.24l.21-1.48c.33-.14.65-.33.94-.55l1.39.56c.14.05.3.01.36-.13l1.13-1.96c.07-.13.04-.29-.07-.37l-1.19-.93c.02-.17.03-.35.03-.53s-.01-.36-.03-.53z"/>
+        </svg>
+    </button>
+</div>
 </div>
